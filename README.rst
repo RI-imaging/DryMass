@@ -36,6 +36,6 @@ Testing
    :target: https://travis-ci.org/RI-imaging/DryMass
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/DryMass/master.svg
    :target: https://codecov.io/gh/RI-imaging/DryMass
-.. |Docs Status| image:: https://readthedocs.org/projects/DryMass/badge/?version=latest
-   :target: https://readthedocs.org/projects/DryMass/builds/
+.. |Docs Status| image:: https://readthedocs.org/projects/drymass/badge/?version=latest
+   :target: https://readthedocs.org/projects/drymass/builds/
 
