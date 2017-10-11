@@ -22,7 +22,7 @@ script:
        coverage report -m;
        codecov;
   else
-       flake8 qpsphere;
+       flake8 drymass;
        flake8 examples;
        flake8 tests --ignore E402;
   fi;
