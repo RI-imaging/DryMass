@@ -8,7 +8,7 @@ import sys
 author = u"Paul Müller"
 authors = [author]
 description = 'user-friendly quantitative phase imaging analysis'
-name = 'DryMass'
+name = 'drymass'
 year = "2017"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
