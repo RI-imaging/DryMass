@@ -5,6 +5,118 @@ from skimage.morphology import label
 from skimage.measure import regionprops
 
 
+def approx_bg(data, filter_size=None):
+    """ Approximate the image background with Gaussian convolution
+
+    Parameters
+    ----------
+    data : 2d ndarray
+        Data from which to compute the background
+    size : float
+        Approximate size of the objects on the background. The size
+        of the Gaussian is heuristically determined with
+        ..math::
+            \sigma = 5 \cdot \texttt{size}
+
+
+    Returns
+    -------
+    Approximate background of `data`.
+    """
+    if filter_size is None:
+        filter_size = np.sum(data.shape) / 6
+
+    a = np.fft.fft2(data)
+    x = np.fft.fftfreq(data.shape[0]).reshape(-1, 1)
+    y = np.fft.fftfreq(data.shape[1]).reshape(1, -1)
+
+    sigma = 1 / (5 * filter_size)
+    gauss = np.exp(-(x**2 + y**2) / (2 * sigma**2))
+    gauss /= np.max(gauss)
+    b = a * gauss
+    bg = np.fft.ifft2(b)
+    return bg.real
+
+
+def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
+                        dist_border=10, verbose=False):
+    """Search objects in images
+
+    The wrapper `search_phase_objects` implements
+    a more robust (heuristic) way of finding objects.
+
+    Parameters
+    ----------
+    image: 2d ndarray
+        Input image
+    size: float
+        Approximate diameter of phase objects in pixels
+    var_size: float
+        Allowed variation in size (relative to `size`) for the detected
+        objects
+    max_ecc: float in interval [0,1)
+        Maximal eccentricity of the objects. The eccentricity of a
+        circle is zero. For an ellipse it is defined as
+        ..math::
+            e=\varepsilon=\sqrt{\frac{a^2-b^2}{a^2}}
+            =\sqrt{1-\left(\frac{b}{a}\right)^2}
+            =f/a
+    dist_border: float
+        Minimum distance of detected regions to the borders of the
+        image in pixels
+    verbose: bool
+        If `True`, print information about ignored regions
+
+    Returns
+    -------
+    rois: list of regionprops
+        Found regions
+
+    See Also
+    --------
+    skimage.filters.threshold_otsu: threshold for finding objects
+    skimage.segmentation.clear_border: remove regions at the border
+    skimage.morphology.label: identify regions in binary images
+    """
+    if np.allclose(image, 0):
+        # phase images are zero
+        # no regions can be found
+        return []
+    # prepare phase for thresholding
+    image = (image - np.min(image)) / (np.max(image) - np.min(image))
+    image[:, :] = (image[:, :] - .5) * 2
+    # threshold image
+    thresh = threshold_otsu(image)
+    bw = image > thresh
+    # label image regions
+    object_labels = label(bw)
+    # remove artifacts connected to image border
+    clear_border(object_labels, buffer_size=int(dist_border), in_place=True)
+    used_regions = []
+    # Filter/draw regions
+    ignored_regions = []
+    for region in regionprops(object_labels):
+        ds = size * var_size
+        if (region.eccentricity > max_ecc or
+            region.equivalent_diameter > size + ds or
+                region.equivalent_diameter < size - ds):
+            ignored_regions.append(region)
+            continue
+        used_regions.append(region)
+    if verbose and len(ignored_regions) > 0:
+        msg = "The following regions were ignored:\n"
+        regs = []
+        for reg in ignored_regions:
+            regs.append("size: {: 7.1f}px, eccentricity: {:.1f}".format(
+                reg.equivalent_diameter,
+                reg.eccentricity
+            )
+            )
+        msg += "     - ".join(regs)
+        print(msg)
+    return used_regions
+
+
 def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
                          dist_border=10, pad_border=20,
                          exclude_overlap=30, verbose=False):
@@ -103,115 +215,3 @@ def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
         y2 = min(qpi.shape[1], y2 + pad_border)
         slices.append((slice(x1, x2), slice(y1, y2)))
     return slices
-
-
-def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
-                        dist_border=10, verbose=False):
-    """Search objects in images
-
-    The wrapper `search_phase_objects` implements
-    a more robust (heuristic) way of finding objects.
-
-    Parameters
-    ----------
-    image: 2d ndarray
-        Input image
-    size: float
-        Approximate diameter of phase objects in pixels
-    var_size: float
-        Allowed variation in size (relative to `size`) for the detected
-        objects
-    max_ecc: float in interval [0,1)
-        Maximal eccentricity of the objects. The eccentricity of a
-        circle is zero. For an ellipse it is defined as
-        ..math::
-            e=\varepsilon=\sqrt{\frac{a^2-b^2}{a^2}}
-            =\sqrt{1-\left(\frac{b}{a}\right)^2}
-            =f/a
-    dist_border: float
-        Minimum distance of detected regions to the borders of the
-        image in pixels
-    verbose: bool
-        If `True`, print information about ignored regions
-
-    Returns
-    -------
-    rois: list of regionprops
-        Found regions
-
-    See Also
-    --------
-    skimage.filters.threshold_otsu: threshold for finding objects
-    skimage.segmentation.clear_border: remove regions at the border
-    skimage.morphology.label: identify regions in binary images
-    """
-    if np.allclose(image, 0):
-        # phase images are zero
-        # no regions can be found
-        return []
-    # prepare phase for thresholding
-    image = (image - np.min(image)) / (np.max(image) - np.min(image))
-    image[:, :] = (image[:, :] - .5) * 2
-    # threshold image
-    thresh = threshold_otsu(image)
-    bw = image > thresh
-    # label image regions
-    object_labels = label(bw)
-    # remove artifacts connected to image border
-    clear_border(object_labels, buffer_size=int(dist_border), in_place=True)
-    used_regions = []
-    # Filter/draw regions
-    ignored_regions = []
-    for region in regionprops(object_labels):
-        ds = size * var_size
-        if (region.eccentricity > max_ecc or
-            region.equivalent_diameter > size + ds or
-                region.equivalent_diameter < size - ds):
-            ignored_regions.append(region)
-            continue
-        used_regions.append(region)
-    if verbose and len(ignored_regions) > 0:
-        msg = "The following regions were ignored:\n"
-        regs = []
-        for reg in ignored_regions:
-            regs.append("size: {: 7.1f}px, eccentricity: {:.1f}".format(
-                reg.equivalent_diameter,
-                reg.eccentricity
-            )
-            )
-        msg += "     - ".join(regs)
-        print(msg)
-    return used_regions
-
-
-def approx_bg(data, filter_size=None):
-    """ Approximate the image background with Gaussian convolution
-
-    Parameters
-    ----------
-    data : 2d ndarray
-        Data from which to compute the background
-    size : float
-        Approximate size of the objects on the background. The size
-        of the Gaussian is heuristically determined with
-        ..math::
-            \sigma = 5 \cdot \texttt{size}
-
-
-    Returns
-    -------
-    Approximate background of `data`.
-    """
-    if filter_size is None:
-        filter_size = np.sum(data.shape) / 6
-
-    a = np.fft.fft2(data)
-    x = np.fft.fftfreq(data.shape[0]).reshape(-1, 1)
-    y = np.fft.fftfreq(data.shape[1]).reshape(1, -1)
-
-    sigma = 1 / (5 * filter_size)
-    gauss = np.exp(-(x**2 + y**2) / (2 * sigma**2))
-    gauss /= np.max(gauss)
-    b = a * gauss
-    bg = np.fft.ifft2(b)
-    return bg.real
