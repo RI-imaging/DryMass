@@ -8,15 +8,7 @@ from skimage.measure import regionprops
 def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
                          dist_border=10, pad_border=20,
                          exclude_overlap=30, verbose=False):
-    """ Find ROIs of phase objects, considers background data
-
-    Finds regions in a DHM intensity image that contain phase objects,
-    such as cells. Additionaly, objects are located in the background
-    image to eliminate ROIs containing objects in the background image.
-    Note that ROIs might not be excluded due to undetected overlaps.
-    This method also performes a Gaussian-filtering based background
-    correction which results in more robust phase object recognition.
-
+    """Search phase objects in quantitative phase images
 
     Parameters
     ----------
@@ -47,7 +39,22 @@ def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
 
     Returns
     -------
-    rois: list of slices
+    slices: list of slice
+
+    Notes
+    -----
+    Description of the heuristic search algorithm:
+    1. Search phase objects in `qpi.raw_pha` with a background
+       correction computed from the gaussian-filtered image
+    2. If no objects were found and `qpi.bg_pha` is nonzero,
+       search objects in `qpi.pha`.
+    3. Search objects in `qpi.bg_pha` and remove any overlaps
+       with the previously obtained regions.
+
+    See Also
+    --------
+    search_objects_base: underlying search algorithm
+    approx_bg: gaussian-filtered background estimation
     """
     kwfind = {"size": size_m / qpi["pixel size"],
               "var_size": var_size,
@@ -129,8 +136,14 @@ def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
 
     Returns
     -------
-    list of regions containing phase objects
+    rois: list of regionprops
+        Found regions
 
+    See Also
+    --------
+    skimage.filters.threshold_otsu: threshold for finding objects
+    skimage.segmentation.clear_border: remove regions at the border
+    skimage.morphology.label: identify regions in binary images
     """
     if np.allclose(image, 0):
         # phase images are zero
