@@ -119,7 +119,7 @@ def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
 
 def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
                          dist_border=10, pad_border=20,
-                         exclude_overlap=30, verbose=False):
+                         exclude_overlap=30., verbose=False):
     """Search phase objects in quantitative phase images
 
     Parameters
@@ -138,7 +138,7 @@ def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
             e=\varepsilon=\sqrt{\frac{a^2-b^2}{a^2}}
             =\sqrt{1-\left(\frac{b}{a}\right)^2}
             =f/a
-    dist_border: float
+    dist_border: int
         Minimum distance of detected regions to the borders of the
         image in pixels
     pad_border : int

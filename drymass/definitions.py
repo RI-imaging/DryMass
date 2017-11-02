@@ -1,0 +1,65 @@
+import numpy as np
+
+
+config = {
+    "bg": {
+        # see qpimage library: e.g. fit, gauss, mean, mode
+        "phase fit offset":
+            ("fit", str, "Phase background correction offset method"),
+        # see qpimage library: e.g. ramp, offset
+        "phase fit profile":
+            ("ramp", str, "Phase background correction profile method"),
+        "phase border perc":
+            (20, float, "Phase background border region to analyze [%]"),
+        "phase border px":
+            (5, int, "Phase background border region to analyze [px]"),
+        },
+    "roi": {
+        "dist border":
+            (10, int, "Minimum distance of objects to image border [px]"),
+        "eccentricity max":
+            (.7, float, "Allowed maximal eccentricity of the specimen"),
+        "exclude overlap":
+            (30., float, "Allowed distance between two objects [px]"),
+        "force":
+            ((), tuple, "Force ROI (tuple of slices)"),
+        "pad border":
+            (20, int, "Padding of object regions [px]"),
+        "size variation":
+            (.5, float, "Allowed variation relative to specimen size"),
+        },
+    "meta": {
+        "medium index":
+            (np.nan, float, "Refractive index of the surrounding medium"),
+        "pixel size":
+            (np.nan, float, "Detector pixel size [m]"),
+        "wavelength":
+            (np.nan, float, "Imaging wavelength [m]"),
+        },
+    "output": {
+        "tif":
+            (True, bool, "Output tif image series"),
+        "roi":
+            (False, bool, "Output roi lcation slices as txt files"),
+        },
+    "specimen": {
+        "size":
+            (10e-6, float, "Approximate diameter of the specimen [m]"),
+        },
+    "sphere": {
+        "method":
+            ("edge", str, "Method for determining sphere parameters"),
+        "model":
+            ("projection", str, "Physical sphere model"),
+        "edge coarse":
+            (.4, float, "Coarse edge detection filter size"),
+        "edge fine":
+            (.1, float, "Fine edge detection filter size"),
+        "edge clip radius min":
+            (.9, float, "Interior edge point filtering radius"),
+        "edge clip radius max":
+            (1.1, float, "Exterior edge point filtering radius"),
+        "edge iter":
+            (20, int, "Maximum number iterations for coarse edge detection"),
+        },
+    }
