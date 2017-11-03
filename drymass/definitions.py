@@ -1,19 +1,20 @@
 import numpy as np
 
+from .cfg_funcs import fbool, lcstr
 
 config = {
     "bg": {
         # see qpimage library: e.g. fit, gauss, mean, mode
         "phase fit offset":
-            ("fit", str, "Phase background correction offset method"),
+            ("fit", lcstr, "Phase background correction offset method"),
         # see qpimage library: e.g. ramp, offset
         "phase fit profile":
-            ("ramp", str, "Phase background correction profile method"),
+            ("ramp", lcstr, "Phase background correction profile method"),
         "phase border perc":
-            (20, float, "Phase background border region to analyze [%]"),
+            (10, float, "Phase background border region to analyze [%]"),
         "phase border px":
             (5, int, "Phase background border region to analyze [px]"),
-        },
+    },
     "roi": {
         "dist border":
             (10, int, "Minimum distance of objects to image border [px]"),
@@ -27,7 +28,7 @@ config = {
             (20, int, "Padding of object regions [px]"),
         "size variation":
             (.5, float, "Allowed variation relative to specimen size"),
-        },
+    },
     "meta": {
         "medium index":
             (np.nan, float, "Refractive index of the surrounding medium"),
@@ -35,22 +36,22 @@ config = {
             (np.nan, float, "Detector pixel size [m]"),
         "wavelength":
             (np.nan, float, "Imaging wavelength [m]"),
-        },
+    },
     "output": {
         "tif":
-            (True, bool, "Output tif image series"),
+            (True, fbool, "Output tif image series"),
         "roi":
-            (False, bool, "Output roi lcation slices as txt files"),
-        },
+            (False, fbool, "Output roi lcation slices as txt files"),
+    },
     "specimen": {
         "size":
             (10e-6, float, "Approximate diameter of the specimen [m]"),
-        },
+    },
     "sphere": {
         "method":
-            ("edge", str, "Method for determining sphere parameters"),
+            ("edge", lcstr, "Method for determining sphere parameters"),
         "model":
-            ("projection", str, "Physical sphere model"),
+            ("projection", lcstr, "Physical sphere model"),
         "edge coarse":
             (.4, float, "Coarse edge detection filter size"),
         "edge fine":
@@ -61,5 +62,5 @@ config = {
             (1.1, float, "Exterior edge point filtering radius"),
         "edge iter":
             (20, int, "Maximum number iterations for coarse edge detection"),
-        },
-    }
+    },
+}

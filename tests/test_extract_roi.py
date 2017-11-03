@@ -1,14 +1,10 @@
 import os
-from os.path import abspath, dirname
-import sys
 import tempfile
 
 import numpy as np
 import qpimage
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import drymass  # noqa: E402
+import drymass
 
 
 def test_basic():
@@ -25,12 +21,15 @@ def test_basic():
                           which_data="phase",
                           meta_data={"pixel size": pxsize})
     path = tempfile.mktemp(suffix=".h5", prefix="drymass_test")
-    qpi.copy(h5file=path)
-    qps = drymass.extract_objects(path, size_m=2*radius*pxsize)
-    assert len(qps) == 1
-    qpi2 = qps.get_qpimage(0)
-    assert qpi != qpi2
-    assert qpi.shape != qpi2.shape
+    with qpimage.QPSeries(h5file=path) as qps:
+        qps.add_qpimage(qpi, identifier="test")
+
+    with qpimage.QPSeries(h5file=path) as qps:
+        qps_roi = drymass.extract_roi(qps, size_m=2*radius*pxsize)
+        assert len(qps) == 1
+        qpi2 = qps_roi.get_qpimage(0)
+        assert qpi != qpi2
+        assert qpi.shape != qpi2.shape
 
     try:
         os.remove(path)
