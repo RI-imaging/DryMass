@@ -1,7 +1,9 @@
 import pathlib
 
+import numpy as np
 import qpformat
 import qpimage
+from skimage.external import tifffile
 
 
 FILE_SENSOR_DATA = "sensor_data.h5"
@@ -33,20 +35,27 @@ def convert(path_in, path_out, bg_path=None, meta_data={},
     else:
         create = True
 
-    if create:
+    if create or True:
         # Write data
         with qpimage.QPSeries(h5file=h5out,
                               h5mode="w",
-                              identifier=ds.identifier) as qps:
+                              identifier=ds.identifier) as qps, \
+             tifffile.TiffWriter(str(imout), imagej=True) as tf:
             for ii in range(len(ds)):
+                # Get data
                 if ds.is_series:
                     qpi = ds.get_qpimage(ii)
                 else:
                     qpi = ds.get_qpimage()
+                # Write QPImage
                 imid = "{}:{}".format(ds.identifier, ii)
                 qps.add_qpimage(qpi, identifier=imid)
-
-        # Write images
-        # TODO
+                # Write TIF
+                res = 1 / qpi["pixel size"] * 1e-6  # use µm
+                dshape = (1, qpi.shape[0], qpi.shape[1])
+                dataa = np.array(qpi.pha, dtype=np.float32).reshape(*dshape)
+                datap = np.array(qpi.amp, dtype=np.float32).reshape(*dshape)
+                data = np.vstack((dataa, datap))
+                tf.save(data=data, resolution=(res, res, None))
 
     return h5out

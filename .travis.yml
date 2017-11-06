@@ -28,5 +28,5 @@ script:
   else
        flake8 drymass;
        flake8 examples;
-       flake8 tests --ignore E402;
+       flake8 tests;
   fi;
