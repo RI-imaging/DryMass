@@ -35,7 +35,7 @@ def convert(path_in, path_out, bg_path=None, meta_data={},
     else:
         create = True
 
-    if create or True:
+    if create:
         # Write data
         with qpimage.QPSeries(h5file=h5out,
                               h5mode="w",
@@ -53,9 +53,9 @@ def convert(path_in, path_out, bg_path=None, meta_data={},
                 # Write TIF
                 res = 1 / qpi["pixel size"] * 1e-6  # use µm
                 dshape = (1, qpi.shape[0], qpi.shape[1])
-                dataa = np.array(qpi.pha, dtype=np.float32).reshape(*dshape)
-                datap = np.array(qpi.amp, dtype=np.float32).reshape(*dshape)
-                data = np.vstack((dataa, datap))
+                dataa = np.array(qpi.amp, dtype=np.float32).reshape(*dshape)
+                datap = np.array(qpi.pha, dtype=np.float32).reshape(*dshape)
+                data = np.vstack((datap, dataa))
                 tf.save(data=data, resolution=(res, res, None))
 
     return h5out
