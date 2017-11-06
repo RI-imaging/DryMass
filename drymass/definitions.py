@@ -38,10 +38,8 @@ config = {
             (np.nan, float, "Imaging wavelength [m]"),
     },
     "output": {
-        "tif":
-            (True, fbool, "Output tif image series"),
-        "roi":
-            (False, fbool, "Output roi lcation slices as txt files"),
+        "roi images":
+            (False, fbool, "Rendered phase images with ROI location"),
     },
     "specimen": {
         "size":

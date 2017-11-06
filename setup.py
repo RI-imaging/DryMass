@@ -25,7 +25,8 @@ setup(
     license="MIT",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["numpy",
+    install_requires=["matplotlib",
+                      "numpy",
                       "qpformat",
                       "qpimage",
                       "qpsphere",
@@ -34,8 +35,10 @@ setup(
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
     entry_points={
-       "console_scripts": ["dm_convert = drymass.__main__:cli_convert",
-                           ],
+       "console_scripts": [
+           "dm_convert = drymass.__main__:cli_convert",
+           "dm_extract_roi = drymass.__main__:cli_extract_roi",
+            ],
        },
     python_requires='>=3.5, <4',
     keywords=["digital holographic microscopy",

@@ -1,6 +1,7 @@
 import pathlib
 
 from . import definitions
+from ._version import version
 
 FILE_CONFIG = "drymass.cfg"
 
@@ -17,7 +18,14 @@ class ConfigFile(object):
         if section in datadict:
             return datadict[section]
         elif section in definitions.config:
-            return {}
+            # return default values
+            secd = {}
+            for kk in definitions.config[section]:
+                secd[kk] = definitions.config[section][kk][0]
+            # write result
+            datadict[section] = secd
+            self._write(datadict)
+            return secd
         else:
             raise ValueError("Unknown section title: {}".format(section))
 
@@ -70,8 +78,9 @@ class ConfigFile(object):
 
     def _write(self, datadict):
         keys = sorted(list(datadict.keys()))
-        lines = []
+        lines = ["# DryMass version {}".format(version)]
         for kk in keys:
+            lines.append("")
             lines.append("[{}]".format(kk))
             subkeys = sorted(list(datadict[kk].keys()))
             for sk in subkeys:

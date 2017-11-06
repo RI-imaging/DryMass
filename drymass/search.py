@@ -38,7 +38,7 @@ def approx_bg(data, filter_size=None):
     return bg.real
 
 
-def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
+def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
                         dist_border=10, verbose=False):
     """Search objects in images
 
@@ -51,7 +51,7 @@ def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
         Input image
     size: float
         Approximate diameter of phase objects in pixels
-    var_size: float
+    size_var: float
         Allowed variation in size (relative to `size`) for the detected
         objects
     max_ecc: float in interval [0,1)
@@ -78,7 +78,7 @@ def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
     skimage.segmentation.clear_border: remove regions at the border
     skimage.morphology.label: identify regions in binary images
     """
-    if np.allclose(image, 0):
+    if np.allclose(image, 0, atol=1e-14, rtol=0):
         # phase images are zero
         # no regions can be found
         return []
@@ -96,13 +96,13 @@ def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
     # Filter/draw regions
     ignored_regions = []
     for region in regionprops(object_labels):
-        ds = size * var_size
+        ds = size * size_var
         if (region.eccentricity > max_ecc or
             region.equivalent_diameter > size + ds or
                 region.equivalent_diameter < size - ds):
             ignored_regions.append(region)
-            continue
-        used_regions.append(region)
+        else:
+            used_regions.append(region)
     if verbose and len(ignored_regions) > 0:
         msg = "The following regions were ignored:\n"
         regs = []
@@ -117,7 +117,7 @@ def search_objects_base(image, size=110, var_size=.5, max_ecc=.7,
     return used_regions
 
 
-def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
+def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
                          dist_border=10, pad_border=20,
                          exclude_overlap=30., verbose=False):
     """Search phase objects in quantitative phase images
@@ -128,7 +128,7 @@ def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
         Quantitative phase data
     size_m: float
         Expected size of the phase objects
-    var_size: float
+    size_var: float
         Allowed variation in size (relative to `size`) for the detected
         objects
     max_ecc: float in interval [0,1)
@@ -169,7 +169,7 @@ def search_phase_objects(qpi, size_m, var_size=.5, max_ecc=.7,
     approx_bg: gaussian-filtered background estimation
     """
     kwfind = {"size": size_m / qpi["pixel size"],
-              "var_size": var_size,
+              "size_var": size_var,
               "max_ecc": max_ecc,
               "dist_border": dist_border,
               "verbose": verbose,

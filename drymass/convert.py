@@ -6,21 +6,17 @@ import qpimage
 from skimage.external import tifffile
 
 
-FILE_SENSOR_DATA = "sensor_data.h5"
-FILE_SENSOR_IMAGE = "sensor_images.tif"
+FILE_SENSOR_DATA_H5 = "sensor_data.h5"
+FILE_SENSOR_DATA_TIF = "sensor_data.tif"
 
 
-def convert(path_in, path_out, bg_path=None, meta_data={},
-            h5out=None, imout=None):
+def convert(path_in, dir_out, bg_path=None, meta_data={}):
 
     path = pathlib.Path(path_in).resolve()
-    pout = pathlib.Path(path_out).resolve()
+    dout = pathlib.Path(dir_out).resolve()
 
-    if not h5out:
-        h5out = pout / FILE_SENSOR_DATA
-
-    if not imout:
-        imout = pout / FILE_SENSOR_IMAGE
+    h5out = dout / FILE_SENSOR_DATA_H5
+    imout = dout / FILE_SENSOR_DATA_TIF
 
     ds = qpformat.load_data(path=path,
                             bg_path=bg_path,
@@ -40,7 +36,7 @@ def convert(path_in, path_out, bg_path=None, meta_data={},
         with qpimage.QPSeries(h5file=h5out,
                               h5mode="w",
                               identifier=ds.identifier) as qps, \
-             tifffile.TiffWriter(str(imout), imagej=True) as tf:
+                tifffile.TiffWriter(str(imout), imagej=True) as tf:
             for ii in range(len(ds)):
                 # Get data
                 if ds.is_series:
