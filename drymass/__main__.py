@@ -151,7 +151,7 @@ def setup_dirout(path_in):
 def user_complete_config_meta(path):
     cfg = config_file.ConfigFile(path)
     meta = cfg["meta"]
-    for key in definitions.config["meta"]:
+    for key in sorted(definitions.config["meta"].keys()):
         description = definitions.config["meta"][key][2]
         if key not in meta or np.isnan(meta[key]):
             val = input("Please enter '{}' ({}): ".format(key, description))
