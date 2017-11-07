@@ -5,10 +5,20 @@ from .cfg_funcs import fbool, lcstr
 config = {
     "bg": {
         # see qpimage library: e.g. fit, gauss, mean, mode
-        "phase fit offset":
-            ("fit", lcstr, "Phase background correction offset method"),
+        "amplitude offset":
+            ("mean", lcstr, "Amplitude background correction offset method"),
         # see qpimage library: e.g. ramp, offset
-        "phase fit profile":
+        "amplitude profile":
+            ("ramp", lcstr, "Amplitude background correction profile method"),
+        "amplitude border perc":
+            (10, float, "Amplitude background border region to analyze [%]"),
+        "amplitude border px":
+            (5, int, "Amplitude background border region to analyze [px]"),
+        # see qpimage library: e.g. fit, gauss, mean, mode
+        "phase offset":
+            ("mean", lcstr, "Phase background correction offset method"),
+        # see qpimage library: e.g. ramp, offset
+        "phase profile":
             ("ramp", lcstr, "Phase background correction profile method"),
         "phase border perc":
             (10, float, "Phase background border region to analyze [%]"),
@@ -25,25 +35,25 @@ config = {
         "force":
             ((), tuple, "Force ROI (tuple of slices)"),
         "pad border":
-            (20, int, "Padding of object regions [px]"),
+            (40, int, "Padding of object regions [px]"),
         "size variation":
             (.5, float, "Allowed variation relative to specimen size"),
     },
     "meta": {
         "medium index":
             (np.nan, float, "Refractive index of the surrounding medium"),
-        "pixel size":
-            (np.nan, float, "Detector pixel size [m]"),
-        "wavelength":
-            (np.nan, float, "Imaging wavelength [m]"),
+        "pixel size um":
+            (np.nan, float, "Detector pixel size [µm]"),
+        "wavelength nm":
+            (np.nan, float, "Imaging wavelength [nm]"),
     },
     "output": {
         "roi images":
             (False, fbool, "Rendered phase images with ROI location"),
     },
     "specimen": {
-        "size":
-            (10e-6, float, "Approximate diameter of the specimen [m]"),
+        "size um":
+            (10, float, "Approximate diameter of the specimen [µm]"),
     },
     "sphere": {
         "method":
@@ -60,5 +70,9 @@ config = {
             (1.1, float, "Exterior edge point filtering radius"),
         "edge iter":
             (20, int, "Maximum number iterations for coarse edge detection"),
+        "refraction increment":
+            (2e-4, float, "Refraction increment [m³/kg]"),
+        "radial inclusion factor":
+            (1.2, float, "Radial inclusion factor for dry mass computation"),
     },
 }

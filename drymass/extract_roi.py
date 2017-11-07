@@ -14,7 +14,11 @@ FILE_SLICES = "roi_slices.txt"
 
 
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
-                dist_border=10, pad_border=20, exclude_overlap=30,
+                dist_border=10, pad_border=40, exclude_overlap=30,
+                bg_amp_offset="average", bg_amp_profile="ramp",
+                bg_amp_border_px=5, bg_amp_border_perc=5,
+                bg_pha_offset="average", bg_pha_profile="ramp",
+                bg_pha_border_px=5, bg_pha_border_perc=5,
                 ret_roimgr=False):
 
     h5in = pathlib.Path(h5series)
@@ -42,6 +46,16 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
             for jj, sl in enumerate(slices):
                 # Write QPImage
                 qpisl = qpi.__getitem__(sl)
+                qpisl.compute_bg(which_data="amplitude",
+                                 fit_offset=bg_amp_offset,
+                                 fit_profile=bg_amp_profile,
+                                 border_perc=bg_amp_border_perc,
+                                 border_px=bg_amp_border_px)
+                qpisl.compute_bg(which_data="phase",
+                                 fit_offset=bg_pha_offset,
+                                 fit_profile=bg_pha_profile,
+                                 border_perc=bg_pha_border_perc,
+                                 border_px=bg_pha_border_px)
                 slident = "{}.{}".format(qpi["identifier"], jj)
                 qps_roi.add_qpimage(qpisl, identifier=slident)
                 rmgr.add(roislice=sl, image_index=ii,

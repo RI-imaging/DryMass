@@ -118,7 +118,7 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
 
 
 def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
-                         dist_border=10, pad_border=20,
+                         dist_border=10, pad_border=40,
                          exclude_overlap=30., verbose=False):
     """Search phase objects in quantitative phase images
 
