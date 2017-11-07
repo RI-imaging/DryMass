@@ -35,6 +35,7 @@ def cli_analyze_sphere(ret_data=False):
                    )
     print("Done.")
 
+
 def cli_convert(ret_data=False):
     print("DryMass version {}".format(version))
     parser = argparse.ArgumentParser(
@@ -47,7 +48,7 @@ def cli_convert(ret_data=False):
     path_out = setup_dirout(path_in)
     print("Output: {}".format(path_out))
     cfg = user_complete_config_meta(path_out)
-    print("Ascertain sensor data... ", end="", flush=True)
+    print("Converting input data... ", end="", flush=True)
     meta_data = {"pixel size": cfg["meta"]["pixel size um"] * 1e-6,
                  "wavelength": cfg["meta"]["wavelength nm"] * 1e-9,
                  "medium index": cfg["meta"]["medium index"],
@@ -62,7 +63,7 @@ def cli_convert(ret_data=False):
 
 def cli_extract_roi(ret_data=False):
     path_out, h5series, cfg = cli_convert(ret_data=True)
-    print("Ascertain ROI data... ", end="", flush=True)
+    print("Extracting ROIs... ", end="", flush=True)
     h5roi, rmgr = extract_roi(
         h5series=h5series,
         dir_out=path_out,
