@@ -49,7 +49,9 @@ config = {
     },
     "output": {
         "roi images":
-            (False, fbool, "Rendered phase images with ROI location"),
+            (True, fbool, "Rendered phase images with ROI location"),
+        "sphere images":
+            (True, fbool, "Phase/Intensity images for sphere analysis"),
     },
     "specimen": {
         "size um":

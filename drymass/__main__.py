@@ -19,21 +19,54 @@ from ._version import version
 
 OUTPUT_SUFFIX = "_dm"
 FILE_SENSOR_WITH_ROI_IMAGE = "sensor_roi_images.tif"
+FILE_SPHERE_ANALYSIS_IMAGE = "sphere_{}_{}_images.tif"
 
 
 def cli_analyze_sphere(ret_data=False):
     h5roi, path_out, rmgr, cfg = cli_extract_roi(ret_data=True)
     print("Sphere analysis... ", end="", flush=True)
-    analyze_sphere(h5roiseries=h5roi,
-                   dir_out=path_out,
-                   n0=1.37,
-                   r0=cfg["specimen"]["size um"] / 2 * 1e-6,
-                   method=cfg["sphere"]["method"],
-                   model=cfg["sphere"]["model"],
-                   alpha=cfg["sphere"]["refraction increment"],
-                   rad_fact=cfg["sphere"]["radial inclusion factor"],
-                   )
+    # canny edge detection parameters
+    edgekw = {
+        "clip_rmin": cfg["sphere"]["edge clip radius min"],
+        "clip_rmax": cfg["sphere"]["edge clip radius max"],
+        "mult_coarse": cfg["sphere"]["edge coarse"],
+        "mult_fine": cfg["sphere"]["edge fine"],
+        "maxiter": cfg["sphere"]["edge iter"],
+    }
+    h5sim = analyze_sphere(h5roiseries=h5roi,
+                           dir_out=path_out,
+                           r0=cfg["specimen"]["size um"] / 2 * 1e-6,
+                           method=cfg["sphere"]["method"],
+                           model=cfg["sphere"]["model"],
+                           alpha=cfg["sphere"]["refraction increment"],
+                           rad_fact=cfg["sphere"]["radial inclusion factor"],
+                           edgekw=edgekw,
+                           )
     print("Done.")
+
+    if cfg["output"]["sphere images"]:
+        print("Plotting sphere images... ", end="", flush=True)
+        tifout = path_out / FILE_SPHERE_ANALYSIS_IMAGE.format(
+            cfg["sphere"]["method"],
+            cfg["sphere"]["model"]
+        )
+        # plot h5series and rmgr with matplotlib
+        with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_roi, \
+                qpimage.QPSeries(h5file=h5sim, h5mode="r") as qps_sim, \
+                tifffile.TiffWriter(str(tifout), imagej=True) as tf:
+            for ii in range(len(qps_roi)):
+                qpi_real = qps_roi[ii]
+                qpi_sim = qps_sim[ii]
+                assert qpi_real["identifier"] == qpi_sim["identifier"]
+                imio = io.BytesIO()
+                plot.plot_qpi_sphere(qpi_real=qpi_real,
+                                     qpi_sim=qpi_sim,
+                                     path=imio,
+                                     simtype=cfg["sphere"]["model"])
+                imio.seek(0)
+                imdat = np.array(Image.open(imio))
+                tf.save(imdat)
+        print("Done")
 
 
 def cli_convert(ret_data=False):

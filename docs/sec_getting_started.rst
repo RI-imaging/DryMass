@@ -6,5 +6,5 @@ Getting started
   :maxdepth: 2
 
   installation
-  userapi
+  command
   examples
