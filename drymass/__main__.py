@@ -23,6 +23,7 @@ FILE_SENSOR_WITH_ROI_IMAGE = "sensor_roi_images.tif"
 
 def cli_analyze_sphere(ret_data=False):
     h5roi, path_out, rmgr, cfg = cli_extract_roi(ret_data=True)
+    print("Sphere analysis... ", end="", flush=True)
     analyze_sphere(h5roiseries=h5roi,
                    dir_out=path_out,
                    n0=1.37,
@@ -32,7 +33,7 @@ def cli_analyze_sphere(ret_data=False):
                    alpha=cfg["sphere"]["refraction increment"],
                    rad_fact=cfg["sphere"]["radial inclusion factor"],
                    )
-
+    print("Done.")
 
 def cli_convert(ret_data=False):
     print("DryMass version {}".format(version))
@@ -46,7 +47,7 @@ def cli_convert(ret_data=False):
     path_out = setup_dirout(path_in)
     print("Output: {}".format(path_out))
     cfg = user_complete_config_meta(path_out)
-    print("Ascertain sensor data: ", end="", flush=True)
+    print("Ascertain sensor data... ", end="", flush=True)
     meta_data = {"pixel size": cfg["meta"]["pixel size um"] * 1e-6,
                  "wavelength": cfg["meta"]["wavelength nm"] * 1e-9,
                  "medium index": cfg["meta"]["medium index"],
@@ -54,14 +55,14 @@ def cli_convert(ret_data=False):
     h5series = convert(path_in=args.path,
                        dir_out=path_out,
                        meta_data=meta_data)
-    print("Done")
+    print("Done.")
     if ret_data:
         return path_out, h5series, cfg
 
 
 def cli_extract_roi(ret_data=False):
     path_out, h5series, cfg = cli_convert(ret_data=True)
-    print("Ascertain ROI data: ", end="", flush=True)
+    print("Ascertain ROI data... ", end="", flush=True)
     h5roi, rmgr = extract_roi(
         h5series=h5series,
         dir_out=path_out,
@@ -81,9 +82,9 @@ def cli_extract_roi(ret_data=False):
         bg_pha_border_perc=cfg["bg"]["phase border px"],
         ret_roimgr=True,
     )
-    print("Done")
+    print("Done.")
     if cfg["output"]["roi images"]:
-        print("Plot detected ROIs: ", end="", flush=True)
+        print("Plot detected ROIs... ", end="", flush=True)
         tifout = path_out / FILE_SENSOR_WITH_ROI_IMAGE
         # plot h5series and rmgr with matplotlib
         with qpimage.QPSeries(h5file=h5series, h5mode="r") as qps, \
@@ -119,6 +120,6 @@ def user_complete_config_meta(path):
     for key in definitions.config["meta"]:
         description = definitions.config["meta"][key][2]
         if key not in meta or np.isnan(meta[key]):
-            val = input("Please enter '{}' ({}):".format(key, description))
+            val = input("Please enter '{}' ({}): ".format(key, description))
             cfg.set_value("meta", key, val)
     return cfg
