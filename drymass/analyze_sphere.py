@@ -42,7 +42,7 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
             data = {"object": qpi["identifier"],
                     "index": n,
                     "radius_um": r * 1e6,
-                    "rel_dry_mass_pg": compute_dry_mass(
+                    "rel_dry_mass_pg": compute_relative_dry_mass(
                                             qpi=qpi,
                                             radius=r,
                                             center=c,
@@ -67,7 +67,12 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
     return h5out
 
 
-def compute_dry_mass(qpi, radius, center, alpha=.2, rad_fact=1.2):
+def compute_sphere_dry_mass(radius, center, index, alpha=.2):
+    dm_sphere = 4/3 * np.pi * radius**3 * (index - 1.333) / alpha
+    return dm_sphere
+    
+
+def compute_relative_dry_mass(qpi, radius, center, alpha=.2, rad_fact=1.2):
     """Compute dry mass of a circular area in QPI
 
     The dry mass is computed with
@@ -90,11 +95,17 @@ def compute_dry_mass(qpi, radius, center, alpha=.2, rad_fact=1.2):
         The wavelength of the light [m]
     alpha: float
         Refraction increment [mL/g]
-
+    rad_fact: float
+        Inclusion factor that scales `radius` to increase
+        the area used for phase summation; if the backgound
+        phase exhibits a noise phase signal, positive and
+        negative contributions cancel out and `rad_fact`
+        does not have an effect after a critical value
+    
     Returns
     -------
     dry_mass: float
-        The dry mass of the object [g]
+        The relative dry mass of the object [g]
     """
     image = qpi.pha
     rincl = radius / qpi["pixel size"] * rad_fact
@@ -110,5 +121,5 @@ def compute_dry_mass(qpi, radius, center, alpha=.2, rad_fact=1.2):
     # convert alpha mL/g to m³/g
     fact = 1e-6
     # [kg]
-    m = wavelength / (2 * np.pi * alpha * fact) * phi_tot * pxarea
-    return m
+    dm = wavelength / (2 * np.pi * alpha * fact) * phi_tot * pxarea
+    return dm
