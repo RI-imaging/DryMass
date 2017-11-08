@@ -73,7 +73,7 @@ config = {
         "edge iter":
             (20, int, "Maximum number iterations for coarse edge detection"),
         "refraction increment":
-            (2e-4, float, "Refraction increment [m³/kg]"),
+            (.2, float, "Refraction increment [mL/g]"),
         "radial inclusion factor":
             (1.2, float, "Radial inclusion factor for dry mass computation"),
     },

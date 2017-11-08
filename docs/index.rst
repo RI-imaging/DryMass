@@ -12,7 +12,7 @@ This is the documentaion of DryMass version |release|.
    sec_introduction
    sec_getting_started
    sec_code_reference
-   sec_bibliography
+   z_bib
 
 
 Indices and tables

@@ -46,7 +46,7 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
                                                     radius=r,
                                                     center=c,
                                                     alpha=alpha,
-                                                    rad_fact=rad_fact),
+                                                    rad_fact=rad_fact) * 1e12,
                     "time": qpi["time"],
                     "medium": qpi["medium index"]
                     }
@@ -65,39 +65,34 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
     return h5out
 
 
-def compute_dry_mass(qpi, radius, center, alpha=2e-4, rad_fact=1.2):
+def compute_dry_mass(qpi, radius, center, alpha=.2, rad_fact=1.2):
     """Compute dry mass of a circular area in QPI
 
-    The dry mass is given by
+    The dry mass is computed with
 
-    m = lambda / (2*PI*alpha) * iint phi(x,y) dx dy
-      = lambda / (2*PI*alpha) * phi_tot * deltaA
+    m = lambda / (2*PI*alpha) * phi_tot * deltaA
 
-    with
-    - alpha: refraction increment [m³/kg]
-    - lambda: wavelength [m]
-    - deltaA: Area element of total area A [m²]
-    - phi_tot: summed phase retardation in A [rad]
-
+    with the vacuum wavelength `lambda`, the total phase
+    retardation in the area of interest `phi_tot`, and the pixel
+    area `deltaA`.
 
     Parameters
     ----------
     qpi: qpimage.QPImage
         QPI data
     center: tuble (x,y)
-        Center of the disk region [px]
+        Center of the area of interest [px]
     radius: float
-        Radius of the disk region [m]
+        Radius of the area of interest [m]
     wavelength: float
-        The wavelength of the light in pixels
+        The wavelength of the light [m]
     alpha: float
-        Refraction increment [m³/kg]
-
+        Refraction increment [mL/g]
 
     Returns
     -------
     dry_mass: float
-        The dry mass of the object [pg]
+        The dry mass of the object [g]
     """
     image = qpi.pha
     rincl = radius / qpi["pixel size"] * rad_fact
@@ -110,8 +105,8 @@ def compute_dry_mass(qpi, radius, center, alpha=2e-4, rad_fact=1.2):
     phi_tot = np.sum(image[area])
     # compute dry mass
     pxarea = qpi["pixel size"]**2
+    # convert alpha mL/g to m³/g
+    fact = 1e-6
     # [kg]
-    m = wavelength / (2 * np.pi * alpha) * phi_tot * pxarea
-    # [kg] -> [pg]
-    m_pg = m * 1e15
-    return m_pg
+    m = wavelength / (2 * np.pi * alpha * fact) * phi_tot * pxarea
+    return m
