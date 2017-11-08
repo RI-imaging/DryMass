@@ -24,7 +24,7 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
         header = ["object",
                   "index",
                   "radius_um",
-                  "dry_mass_pg",
+                  "rel_dry_mass_pg",
                   "time",
                   "medium",
                   ]
@@ -42,11 +42,13 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
             data = {"object": qpi["identifier"],
                     "index": n,
                     "radius_um": r * 1e6,
-                    "dry_mass_pg": compute_dry_mass(qpi=qpi,
-                                                    radius=r,
-                                                    center=c,
-                                                    alpha=alpha,
-                                                    rad_fact=rad_fact) * 1e12,
+                    "rel_dry_mass_pg": compute_dry_mass(
+                                            qpi=qpi,
+                                            radius=r,
+                                            center=c,
+                                            alpha=alpha,
+                                            rad_fact=rad_fact
+                                            ) * 1e12,
                     "time": qpi["time"],
                     "medium": qpi["medium index"]
                     }
