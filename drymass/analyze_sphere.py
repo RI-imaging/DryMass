@@ -25,6 +25,7 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
                   "index",
                   "radius_um",
                   "rel_dry_mass_pg",
+                  "abs_dry_mass_pg",
                   "time",
                   "medium",
                   ]
@@ -42,16 +43,23 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
             data = {"object": qpi["identifier"],
                     "index": n,
                     "radius_um": r * 1e6,
-                    "rel_dry_mass_pg": compute_relative_dry_mass(
-                                            qpi=qpi,
-                                            radius=r,
-                                            center=c,
-                                            alpha=alpha,
-                                            rad_fact=rad_fact
-                                            ) * 1e12,
-                    "time": qpi["time"],
-                    "medium": qpi["medium index"]
-                    }
+                    "abs_dry_mass_pg": absolute_dry_mass_sphere(
+                qpi=qpi,
+                radius=r,
+                center=c,
+                alpha=alpha,
+                rad_fact=rad_fact
+            ) * 1e12,
+                "rel_dry_mass_pg": relative_dry_mass(
+                qpi=qpi,
+                radius=r,
+                center=c,
+                alpha=alpha,
+                rad_fact=rad_fact
+            ) * 1e12,
+                "time": qpi["time"],
+                "medium": qpi["medium index"]
+            }
             fd.write("\t".join([str(data[k]) for k in header]) + "\r\n")
             # save simulation data
             qpi_model = qpsphere.simulate(radius=r,
@@ -67,21 +75,72 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
     return h5out
 
 
-def compute_sphere_dry_mass(radius, center, index, alpha=.2):
-    dm_sphere = 4/3 * np.pi * radius**3 * (index - 1.333) / alpha
-    return dm_sphere
-    
+def absolute_dry_mass_sphere(qpi, radius, center, alpha=.18, rad_fact=1.2):
+    """Compute absolute dry mass of a spherical phase object
 
-def compute_relative_dry_mass(qpi, radius, center, alpha=.2, rad_fact=1.2):
-    """Compute dry mass of a circular area in QPI
+    The absolute dry mass is computed with
+
+    m_abs = m_rel + m_sup
+    m_rel = lambda / (2*PI*alpha) * phi_tot * deltaA
+    m_sup = 4*PI / (3*alpha) * radius^3 (n_med - n_water)
+
+    with the vacuum wavelength `lambda`, the total phase
+    retardation in the area of interest `phi_tot`, the pixel
+    area `deltaA`, the refractive index of the medium `n_med`
+    (stored in `qpi.meta`), and the refractive index of water
+    `n_water`=1.333.
+
+    This is the *absolute* dry mass, because it takes into account
+    the offset caused by the suppressed density in the phase data.
+
+    Parameters
+    ----------
+    qpi: qpimage.QPImage
+        QPI data
+    center: tuble (x,y)
+        Center of the sphere [px]
+    radius: float
+        Radius of the sphere [m]
+    wavelength: float
+        The wavelength of the light [m]
+    alpha: float
+        Refraction increment [mL/g]
+    rad_fact: float
+        Inclusion factor that scales `radius` to increase
+        the area used for phase summation; if the backgound
+        phase exhibits a noise phase signal, positive and
+        negative contributions cancel out and `rad_fact`
+        does not have an effect above a certain critical value.
+
+    Returns
+    -------
+    dry_mass: float
+        The absolute dry mass of the sphere [g]
+    """
+    dm_rel = relative_dry_mass(qpi=qpi,
+                               radius=radius,
+                               center=center,
+                               alpha=alpha,
+                               rad_fact=rad_fact)
+    medium_index = qpi["medium index"]
+    dm_sup = 4 / 3 * np.pi / (alpha * 1e-6) * \
+        radius**3 * (medium_index - 1.333)
+    return dm_rel + dm_sup
+
+
+def relative_dry_mass(qpi, radius, center, alpha=.18, rad_fact=1.2):
+    """Compute relative dry mass of a circular area in QPI
 
     The dry mass is computed with
 
-    m = lambda / (2*PI*alpha) * phi_tot * deltaA
+    m_rel = lambda / (2*PI*alpha) * phi_tot * deltaA
 
     with the vacuum wavelength `lambda`, the total phase
     retardation in the area of interest `phi_tot`, and the pixel
     area `deltaA`.
+
+    This is the *relative* dry mass, because it is computed relative
+    to the surrounding medium (phi_tot) and not relative to water.
 
     Parameters
     ----------
@@ -100,8 +159,8 @@ def compute_relative_dry_mass(qpi, radius, center, alpha=.2, rad_fact=1.2):
         the area used for phase summation; if the backgound
         phase exhibits a noise phase signal, positive and
         negative contributions cancel out and `rad_fact`
-        does not have an effect after a critical value
-    
+        does not have an effect above a certain critical value.
+
     Returns
     -------
     dry_mass: float

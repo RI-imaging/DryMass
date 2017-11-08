@@ -110,6 +110,6 @@ The refraction increment can be manually set using the configuration key
 Please note that the above considerations are not always valid;
 The refraction increment is little dependent on pH and temperature, but may be
 strongly dependent on wavelength (e.g. serum albumin
-:math:`\alpha_\text{SA_366nm}` = 0.198 mL/g and
-:math:`\alpha_\text{SA_656nm}` = 0.179 mL/g) :cite:`Barer_1954`.
+:math:`\alpha_\text{SA@366nm}` = 0.198 mL/g and
+:math:`\alpha_\text{SA@656nm}` = 0.179 mL/g) :cite:`Barer_1954`.
 
