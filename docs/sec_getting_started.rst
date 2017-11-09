@@ -6,4 +6,5 @@ Getting started
   :maxdepth: 2
 
   installation
-  command
+  command_line_interface
+  configuration_file
