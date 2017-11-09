@@ -65,7 +65,7 @@ qpi_sum = qpimage.QPImage(data=phase_data,
 # compute dry mass in dependence of radius
 mass_evolution = []
 mass_radii = []
-for rad_fact in np.linspace(0, 2.0, 30):
+for rad_fact in np.linspace(0, 2.0, 100):
     dm = relative_dry_mass(qpi=qpi_sum,
                            radius=radii[0] * 1e-6,
                            center=centers[0],
@@ -75,7 +75,7 @@ for rad_fact in np.linspace(0, 2.0, 30):
     mass_radii.append(rad_fact)
 
 # plot results
-fig = plt.figure(figsize=(8, 4))
+fig = plt.figure(figsize=(8, 3.8))
 matplotlib.rcParams["image.interpolation"] = "bicubic"
 # phase image
 ax1 = plt.subplot(121, title="phase image [rad]")

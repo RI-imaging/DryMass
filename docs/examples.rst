@@ -6,4 +6,4 @@ Examples
   :maxdepth: 2
 
 
-.. fancy_include:: sphere_inclusion_factor.py
+.. fancy_include:: mass_radial_inclusion_factor.py
