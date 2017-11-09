@@ -7,4 +7,3 @@ Getting started
 
   installation
   command
-  examples
