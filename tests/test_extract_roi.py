@@ -1,5 +1,6 @@
 import os
 import tempfile
+import shutil
 
 import numpy as np
 import qpimage
@@ -20,14 +21,17 @@ def test_basic():
     qpi = qpimage.QPImage(data=image,
                           which_data="phase",
                           meta_data={"pixel size": pxsize})
-    path = tempfile.mktemp(suffix=".h5", prefix="drymass_test")
+    path = tempfile.mktemp(suffix=".h5", prefix="drymass_test_roi")
+    dout = tempfile.mkdtemp(prefix="drymass_test_roi_")
     with qpimage.QPSeries(h5file=path) as qps:
         qps.add_qpimage(qpi, identifier="test")
 
-    with qpimage.QPSeries(h5file=path) as qps:
-        qps_roi = drymass.extract_roi(qps, size_m=2 * radius * pxsize)
-        assert len(qps) == 1
-        qpi2 = qps_roi.get_qpimage(0)
+    path_out = drymass.extract_roi(path,
+                                   dir_out=dout,
+                                   size_m=2 * radius * pxsize)
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qpso:
+        assert len(qpso) == 1
+        qpi2 = qpso.get_qpimage(0)
         assert qpi != qpi2
         assert qpi.shape != qpi2.shape
 
@@ -35,6 +39,7 @@ def test_basic():
         os.remove(path)
     except OSError:
         pass
+    shutil.rmtree(dout, ignore_errors=True)
 
 
 if __name__ == "__main__":

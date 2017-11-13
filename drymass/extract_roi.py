@@ -15,9 +15,9 @@ FILE_SLICES = "roi_slices.txt"
 
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dist_border=10, pad_border=40, exclude_overlap=30,
-                bg_amp_offset="average", bg_amp_profile="ramp",
+                bg_amp_offset="mean", bg_amp_profile="ramp",
                 bg_amp_border_px=5, bg_amp_border_perc=5,
-                bg_pha_offset="average", bg_pha_profile="ramp",
+                bg_pha_offset="mean", bg_pha_profile="ramp",
                 bg_pha_border_px=5, bg_pha_border_perc=5,
                 ret_roimgr=False):
 
