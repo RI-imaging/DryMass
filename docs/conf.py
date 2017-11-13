@@ -33,7 +33,9 @@ sys.path.append(op.abspath('extensions'))
 
 # Mock all dependencies
 install_requires = ["h5py", "lmfit", "numpy", "scipy", "skimage",
-                    "skimage.restoration"]
+                    "skimage.restoration", "skimage.external",
+                    "skimage.filters", "skimage.segmentation",
+                    "skimage.morphology", "skimage.measure"]
 
 for mod_name in install_requires:
     sys.modules[mod_name] = mock.Mock()

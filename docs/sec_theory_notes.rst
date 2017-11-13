@@ -2,6 +2,9 @@
 Theory Notes
 ============
 
+.. toctree::
+  :maxdepth: 2
+
 
 Computation of cell dry mass
 ----------------------------
