@@ -25,7 +25,7 @@ The experimental data files are loaded with the
 supports several quantitative phase imaging file formats. If a specific
 format is not supported, please create an issue at the `qpimage issue
 page <https://github.com/RI-imaging/qpformat/issues>`_. A typical use
-case of dm_convert is
+case of dm_convert on Windows is
 
 .. code-block:: bat
 
@@ -77,8 +77,10 @@ The command dm_extract_roi automatically runs dm_convert if it has not been
 run before. If ROI detection fails, the search parameters have to manually
 be updated in the :doc:`drymass configuration file <configuration_file>`. The most
 important parameter is the diameter of the specimen in microns ("*size um*"
-in the "*specimen*" section); all other parameters are defined in the "*roi*"
-section. Note that the default parameters for e.g. the "*roi*" and "*bg*" sections
+in the :ref:`specimen <config_specimen>` section);
+all other parameters are defined in the :ref:`roi <config_roi>`
+section. Note that the default parameters for e.g. the
+:ref:`roi <config_roi>` and :ref:`bg <config_bg>` sections
 are not written to the configuration file until dm_extract_roi is run.
 The following files are created by dm_extract_roi:
 
@@ -98,7 +100,7 @@ The following files are created by dm_extract_roi:
 *sensor_roi_images.tif*
   rendered sensor phase images with labeled ROIs;
   only created if "*roi images*" is set to "*True*"
-  in the "*output*" section of the
+  in the :ref:`output <config_output>` section of the
   :doc:`drymass configuration file <configuration_file>`
 
 
@@ -113,7 +115,7 @@ radius and refractive index from a single phase image (as opposed to
 tomographic approaches that require an acquisition of multiple phase
 images from different directions). The parameters for the sphere analysis,
 such as analysis method and scattering model
-are located in the "*sphere*" section of the 
+are defined in the :ref:`sphere <config_sphere>` section of the 
 :doc:`drymass configuration file <configuration_file>`.
 The following files are created by dm_analyze_sphere (
 `METHOD` is the analysis method and `MODEL` is the
@@ -133,5 +135,5 @@ scattering model defined in *drymass.cfg*):
   importable in `Fiji/ImageJ <https://fiji.sc/>`_
 
 *sphere_METHOD_MODEL_statistics.txt*
-  the analysis results, including refractive index, radius, and :doc:`relative and
-  absolute dry mass <sec_theory_notes>`.
+  the analysis results, including refractive index, radius, and :ref:`relative and
+  absolute dry mass <section_theory_dry_mass>` as a txt file.

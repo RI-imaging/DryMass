@@ -6,6 +6,8 @@ Theory Notes
   :maxdepth: 2
 
 
+.. _section_theory_dry_mass:
+
 Computation of cell dry mass
 ----------------------------
 The concept of cell dry mass computation was first introduced by Barer

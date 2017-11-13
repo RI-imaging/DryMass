@@ -5,6 +5,7 @@ The DryMass configuration file *drymass.cfg* is located in the
 root of the output folder ("*_dm*" appended to the data path).
 The configuration file is divided into sections.
 
+.. _config_bg:
 
 Background correction ("bg")
 ----------------------------
@@ -15,6 +16,8 @@ Background correction ("bg")
    :dedent: 8
 
 
+.. _config_roi:
+
 Extraction of regions of interest ("roi")
 -----------------------------------------
 .. literalinclude:: ../drymass/definitions.py
@@ -23,6 +26,8 @@ Extraction of regions of interest ("roi")
    :end-before: }
    :dedent: 8
 
+
+.. _config_meta:
 
 Image meta data ("meta")
 ------------------------
@@ -33,6 +38,8 @@ Image meta data ("meta")
    :dedent: 8
 
 
+.. _config_output:
+
 User data output ("output")
 ---------------------------
 .. literalinclude:: ../drymass/definitions.py
@@ -42,6 +49,8 @@ User data output ("output")
    :dedent: 8
 
 
+.. _config_specimen:
+
 Specimen parameters ("specimen")
 --------------------------------
 .. literalinclude:: ../drymass/definitions.py
@@ -50,6 +59,8 @@ Specimen parameters ("specimen")
    :end-before: }
    :dedent: 8
 
+
+.. _config_sphere:
 
 Sphere-based image analysis ("sphere")
 --------------------------------------
