@@ -25,7 +25,7 @@ def test_basic():
         qps.add_qpimage(qpi, identifier="test")
 
     with qpimage.QPSeries(h5file=path) as qps:
-        qps_roi = drymass.extract_roi(qps, size_m=2*radius*pxsize)
+        qps_roi = drymass.extract_roi(qps, size_m=2 * radius * pxsize)
         assert len(qps) == 1
         qpi2 = qps_roi.get_qpimage(0)
         assert qpi != qpi2

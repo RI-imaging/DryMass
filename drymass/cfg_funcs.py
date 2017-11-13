@@ -18,7 +18,7 @@ def fbool(value):
 def fintlist(alist):
     """A list of integers"""
     outlist = []
-    if not isinstance(alist, (list, tuple)):
+    if isinstance(alist, str):
         # we have a string (comma-separated integers)
         alist = alist.strip().strip("[] ").split(",")
     for it in alist:
@@ -32,5 +32,30 @@ def lcstr(astr):
     return astr.lower()
 
 
+def tupletupleint(items):
+    """A tuple containing x- and y- slice tuples"""
+    if isinstance(items, str):
+        for s in " ()[]":
+            items = items.replace(s, "")
+        if items.strip():
+            # we have a string representation of the slices
+            x1, x2, y1, y2 = items.split(",")
+            out = ((int(x1), int(x2)),
+                   (int(y1), int(y2)))
+        else:
+            out = ()
+    else:
+        if items:
+            (x1, x2), (y1, y2) = items
+            out = ((int(x1), int(x2)),
+                   (int(y1), int(y2)))
+        else:
+            out = ()
+    return out
+
+
 func_types = {fbool: bool,
-              fintlist: list}
+              fintlist: list,
+              lcstr: str,
+              tupletupleint: tuple,
+              }

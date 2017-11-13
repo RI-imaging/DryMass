@@ -1,6 +1,6 @@
 import numpy as np
 
-from .cfg_funcs import fbool, lcstr
+from .cfg_funcs import fbool, lcstr, tupletupleint
 
 config = {
     "bg": {
@@ -33,7 +33,7 @@ config = {
         "exclude overlap":
             (30., float, "Allowed distance between two objects [px]"),
         "force":
-            ((), tuple, "Force ROI (tuple of slices)"),
+            ((), tupletupleint, "Force ROI coordinates (x1,x2,y1,y2) [px]"),
         "pad border":
             (40, int, "Padding of object regions [px]"),
         "size variation":

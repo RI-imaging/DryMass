@@ -7,8 +7,8 @@ The configuration file is divided into sections.
 
 .. _config_bg:
 
-Background correction ("bg")
-----------------------------
+[bg] Background correction
+--------------------------
 .. literalinclude:: ../drymass/definitions.py
    :language: python
    :start-after: "bg"
@@ -16,21 +16,10 @@ Background correction ("bg")
    :dedent: 8
 
 
-.. _config_roi:
-
-Extraction of regions of interest ("roi")
------------------------------------------
-.. literalinclude:: ../drymass/definitions.py
-   :language: python
-   :start-after: "roi"
-   :end-before: }
-   :dedent: 8
-
-
 .. _config_meta:
 
-Image meta data ("meta")
-------------------------
+[meta] Image meta data
+----------------------
 .. literalinclude:: ../drymass/definitions.py
    :language: python
    :start-after: "meta"
@@ -38,10 +27,21 @@ Image meta data ("meta")
    :dedent: 8
 
 
+.. _config_roi:
+
+[roi] Extraction of regions of interest
+---------------------------------------
+.. literalinclude:: ../drymass/definitions.py
+   :language: python
+   :start-after: "roi"
+   :end-before: }
+   :dedent: 8
+
+
 .. _config_output:
 
-User data output ("output")
----------------------------
+[output] Supplemental data output
+---------------------------------
 .. literalinclude:: ../drymass/definitions.py
    :language: python
    :start-after: "output"
@@ -51,8 +51,8 @@ User data output ("output")
 
 .. _config_specimen:
 
-Specimen parameters ("specimen")
---------------------------------
+[specimen] Specimen parameters
+------------------------------
 .. literalinclude:: ../drymass/definitions.py
    :language: python
    :start-after: "specimen"
@@ -62,8 +62,8 @@ Specimen parameters ("specimen")
 
 .. _config_sphere:
 
-Sphere-based image analysis ("sphere")
---------------------------------------
+[sphere] Sphere-based image analysis
+------------------------------------
 .. literalinclude:: ../drymass/definitions.py
    :language: python
    :start-after: "sphere"

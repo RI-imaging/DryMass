@@ -78,7 +78,11 @@ class ConfigFile(object):
 
     def _write(self, datadict):
         keys = sorted(list(datadict.keys()))
-        lines = ["# DryMass version {}".format(version)]
+        lines = ["# DryMass version {}".format(version),
+                 "# Configuration file documented at: ",
+                 "# https://drymass.readthedocs.io/en/stable/configuration"
+                 + "_file.html",
+                 ]
         for kk in keys:
             lines.append("")
             lines.append("[{}]".format(kk))
