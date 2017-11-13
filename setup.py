@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from os.path import dirname, realpath, exists
-from setuptools import setup
+from setuptools import setup, find_packages
 import sys
 
 
@@ -20,7 +20,7 @@ setup(
     author_email='dev@craban.de',
     url='https://github.com/RI-imaging/DryMass',
     version=version,
-    packages=[name],
+    packages=find_packages(),
     package_dir={name: name},
     license="MIT",
     description=description,
