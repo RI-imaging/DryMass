@@ -14,7 +14,7 @@ install:
 - travis_retry pip install git+git://github.com/RI-Imaging/qpimage.git
 - travis_retry pip install git+git://github.com/RI-Imaging/qpsphere.git
 # everything else
-- travis_retry pip install .
+- travis_retry pip install --no-deps .
 # coverage packages
 - travis_retry pip install flake8
 - travis_retry pip install codecov coverage
