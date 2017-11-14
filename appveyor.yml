@@ -1,4 +1,5 @@
 clone_depth: 256
+build: off
 notifications:
   - provider: Email
     on_build_success: false
@@ -26,8 +27,8 @@ install:
   - "python --version"
 
   # Install dependencies
-  - appveyor-retry pip install git+git://github.com/RI-Imaging/qpformat.git
   - appveyor-retry pip install git+git://github.com/RI-Imaging/qpimage.git
+  - appveyor-retry pip install git+git://github.com/RI-Imaging/qpformat.git
   - appveyor-retry pip install git+git://github.com/RI-Imaging/qpsphere.git
   - appveyor-retry pip install --no-deps .
 
