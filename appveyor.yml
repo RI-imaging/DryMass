@@ -24,7 +24,7 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
-  - "python --version"
+  - python --version
 
   # Install dependencies
   - appveyor-retry pip install git+git://github.com/RI-Imaging/qpimage.git
@@ -37,10 +37,10 @@ install:
   - appveyor-retry pip install codecov coverage
 
   # Show the installed packages
-  - "pip freeze"
+  - pip freeze
 
 test_script:
-  - coverage run --source=drymass ./setup.py test;
+  - coverage run --source=drymass ./setup.py test
   - coverage report -m
   - codecov
 
