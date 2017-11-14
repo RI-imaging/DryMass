@@ -16,7 +16,7 @@ this inclusion factor must be increased or decreased depending on
 whether additional information (the smaller sphere) should be included
 in the dry mass computation or not.
 """
-from drymass.analyze_sphere import relative_dry_mass
+from drymass.anasphere import relative_dry_mass
 import matplotlib
 import matplotlib.pylab as plt
 import numpy as np
