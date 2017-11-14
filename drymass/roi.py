@@ -7,6 +7,9 @@ class ROIManager(object):
         self.identifier = identifier
         self.rois = []
 
+    def __len__(self):
+        return self.rois.__len__()
+
     def add(self, roislice, image_index, roi_index, identifier):
         # verify identifier
         if self.identifier and self.identifier not in identifier:

@@ -3,14 +3,15 @@ import io
 import os
 import pathlib
 from PIL import Image
+import sys
 
 import numpy as np
 import qpimage
 from skimage.external import tifffile
 
-from .__init__ import analyze_sphere
-from .__init__ import convert
-from .__init__ import extract_roi
+from .anasphere import analyze_sphere
+from .converter import convert
+from .extractroi import extract_roi
 from . import config_file
 from . import definitions
 from . import plot
@@ -117,6 +118,22 @@ def cli_extract_roi(ret_data=False):
         ret_roimgr=True,
     )
     print("Done.")
+    if len(rmgr) == 0:
+        print("No ROIs could be found!\n"
+              + "Please try editing '{}':\n".format(cfg.path)
+              + "- correct specimen size "
+              + "({})\n".format(strpar(cfg, "specimen", "size um"))
+              + "- increase allowed size variation "
+              + "({})\n".format(strpar(cfg, "roi", "size variation"))
+              + "- increase maximum allowed eccentricity "
+              + "({})\n".format(strpar(cfg, "roi", "eccentricity max"))
+              + "- reduce minimum distance to image border in pixels "
+              + "({})\n".format(strpar(cfg, "roi", "dist border"))
+              + "- reduce minimum distance inbetween ROIs "
+              + "({})".format(strpar(cfg, "roi", "exclude overlap"))
+              )
+        sys.exit(1)
+
     if cfg["output"]["roi images"]:
         print("Plot detected ROIs... ", end="", flush=True)
         tifout = path_out / FILE_SENSOR_WITH_ROI_IMAGE
@@ -146,6 +163,10 @@ def setup_dirout(path_in):
     if not path_out.exists():
         os.mkdir(str(path_out))
     return path_out
+
+
+def strpar(cfg, section, key):
+    return "[{}] {} = {}".format(section, key, cfg[section][key])
 
 
 def user_complete_config_meta(path):

@@ -61,19 +61,20 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 rmgr.add(roislice=sl, image_index=ii,
                          roi_index=jj, identifier=slident)
 
-        # Write TIF
-        # determine largest image
-        sxmax = np.max([qq.shape[0] for qq in qps_roi])
-        symax = np.max([qq.shape[1] for qq in qps_roi])
-        dummy = np.zeros((2, sxmax, symax), dtype=np.float32)
-        for qpir in qps_roi:
-            dummy[0, :, :] = 0
-            dummy[1, :, :] = 1
-            res = 1 / qpir["pixel size"] * 1e-6  # use µm
-            sx, sy = qpir.shape
-            dummy[0, :sx, :sy] = qpir.pha
-            dummy[1, :sx, :sy] = qpir.amp
-            tf.save(data=dummy, resolution=(res, res, None))
+        if len(qps_roi):
+            # Write TIF
+            # determine largest image
+            sxmax = np.max([qq.shape[0] for qq in qps_roi])
+            symax = np.max([qq.shape[1] for qq in qps_roi])
+            dummy = np.zeros((2, sxmax, symax), dtype=np.float32)
+            for qpir in qps_roi:
+                dummy[0, :, :] = 0
+                dummy[1, :, :] = 1
+                res = 1 / qpir["pixel size"] * 1e-6  # use µm
+                sx, sy = qpir.shape
+                dummy[0, :sx, :sy] = qpir.pha
+                dummy[1, :sx, :sy] = qpir.amp
+                tf.save(data=dummy, resolution=(res, res, None))
 
     rmgr.save(slout)
     ret = h5out
