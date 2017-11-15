@@ -148,7 +148,7 @@ class ConfigFile(object):
                 typefunc = definitions.config[kk][sk][1]
                 lines.append("{} = {}".format(sk, typefunc(value)))
         for ii in range(len(lines)):
-            lines[ii] += "\r\n"
+            lines[ii] += "\n"
         with self.path.open("w") as fd:
             fd.writelines(lines)
 

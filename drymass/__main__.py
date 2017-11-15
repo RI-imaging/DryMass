@@ -25,7 +25,7 @@ FILE_SPHERE_ANALYSIS_IMAGE = "sphere_{}_{}_images.tif"
 
 def cli_analyze_sphere(ret_data=False):
     h5roi, path_out, rmgr, cfg = cli_extract_roi(ret_data=True)
-    print("Sphere analysis... ", end="", flush=True)
+    print("Performing sphere analysis... ", end="", flush=True)
     # canny edge detection parameters
     edgekw = {
         "clip_rmin": cfg["sphere"]["edge clip radius min"],
@@ -135,7 +135,7 @@ def cli_extract_roi(ret_data=False):
         sys.exit(1)
 
     if cfg["output"]["roi images"]:
-        print("Plot detected ROIs... ", end="", flush=True)
+        print("Plotting detected ROIs... ", end="", flush=True)
         tifout = path_out / FILE_SENSOR_WITH_ROI_IMAGE
         # plot h5series and rmgr with matplotlib
         with qpimage.QPSeries(h5file=h5series, h5mode="r") as qps, \
