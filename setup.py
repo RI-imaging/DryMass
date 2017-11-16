@@ -3,6 +3,7 @@
 from os.path import dirname, realpath, exists
 from setuptools import setup, find_packages
 import sys
+from aptdaemon.lock import release
 
 
 author = u"Paul Müller"
@@ -13,6 +14,14 @@ year = "2017"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
 from _version import version
+
+if sys.argv.count("test"):
+    release_deps = []
+else:
+    release_deps = ["qpformat==0.1.1",
+                    "qpimage==0.1.3",
+                    "qpsphere==0.1.1",
+                    ]
 
 setup(
     name=name,
@@ -27,11 +36,8 @@ setup(
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["matplotlib",
                       "numpy",
-                      "qpformat==0.1.1",
-                      "qpimage==0.1.3",
-                      "qpsphere==0.1.1",
                       "scikit-image>=0.13.1",
-                      ],
+                      ] + release_deps,
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
     entry_points={
