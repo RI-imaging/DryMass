@@ -2,7 +2,7 @@
 
 This examples illustrates the usage of the "radial inclusion factor"
 which is defined in the configuration section "sphere" and used in
-:py:func:`drymass.analyze_sphere.relative_dry_mass` with the
+:py:func:`drymass.anasphere.relative_dry_mass` with the
 keyword argument `rad_fact`.
 
 The phase image is computed from two spheres whose dry masses

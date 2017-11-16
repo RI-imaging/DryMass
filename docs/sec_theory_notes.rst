@@ -76,6 +76,9 @@ spherical mass.
   m_\text{abs} &= \frac{1}{\alpha} \cdot \iiint (n(x,y,z) - n_\text{med} + n_\text{med} - n_\text{water}) \, dx dy dz \\
                &= m_\text{rel} + \frac{4\pi}{3\alpha} R^3 (n_\text{med} - n_\text{water})
 
+For a visualization of the deviation of the relative dry mass from the actual dry mass
+for spherical objects, please have a look at the
+:ref:`relative vs. absolute dry mass example <example_mass_relative_vs_absolute>`. 
 
 In DryMass, the default refraction increment is :math:`\alpha` = 0.18 mL/g, as
 suggested for cells based on the refraction increment of cellular
