@@ -34,7 +34,7 @@ install:
 
   # coverage packages
   - appveyor-retry pip install flake8
-  - appveyor-retry pip install codecov coverage
+  - appveyor-retry pip install pytest codecov coverage
 
   # Show the installed packages
   - pip freeze
