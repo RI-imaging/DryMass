@@ -22,7 +22,7 @@ install:
 script:
 - set -ev
 - if [ "${TEST}" == "PYTEST" ]; then
-       coverage run --source=drymass -m setup.py test;
+       coverage run --source=drymass setup.py test;
        coverage report -m;
        codecov;
   else
