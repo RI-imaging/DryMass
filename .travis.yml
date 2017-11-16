@@ -10,11 +10,11 @@ env:
   - TEST="FLAKE8"
 install:
 # development versions
-- travis_retry pip install -e git+git://github.com/RI-Imaging/qpimage.git#egg=qpimage
-- travis_retry pip install -e git+git://github.com/RI-Imaging/qpformat.git#egg=qpformat
-- travis_retry pip install -e git+git://github.com/RI-Imaging/qpsphere.git#egg=qpsphere
+- travis_retry pip install git+git://github.com/RI-Imaging/qpimage.git
+- travis_retry pip install git+git://github.com/RI-Imaging/qpformat.git
+- travis_retry pip install git+git://github.com/RI-Imaging/qpsphere.git
 # everything else
-- travis_retry pip install --no-deps -e .
+- travis_retry pip install --no-deps .
 # coverage packages
 - travis_retry pip install flake8
 - travis_retry pip install codecov coverage
