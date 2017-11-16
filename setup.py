@@ -3,7 +3,6 @@
 from os.path import dirname, realpath, exists
 from setuptools import setup, find_packages
 import sys
-from aptdaemon.lock import release
 
 
 author = u"Paul Müller"
