@@ -1,2 +1,4 @@
+0.1.1
+ - allow to disable background correction with "[bg] enabled = False"
 0.1.0
  - initial release

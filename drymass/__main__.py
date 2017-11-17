@@ -98,6 +98,20 @@ def cli_convert(ret_data=False):
 def cli_extract_roi(ret_data=False):
     path_out, h5series, cfg = cli_convert(ret_data=True)
     print("Extracting ROIs... ", end="", flush=True)
+    if cfg["bg"]["enabled"]:
+        bg_amp_kw = {"fit_offset": cfg["bg"]["amplitude offset"],
+                     "fit_profile": cfg["bg"]["amplitude profile"],
+                     "border_perc": cfg["bg"]["amplitude border perc"],
+                     "border_px": cfg["bg"]["amplitude border px"],
+                     }
+        bg_pha_kw = {"fit_offset": cfg["bg"]["phase offset"],
+                     "fit_profile": cfg["bg"]["phase profile"],
+                     "border_perc": cfg["bg"]["phase border perc"],
+                     "border_px": cfg["bg"]["phase border px"],
+                     }
+    else:
+        bg_amp_kw = None
+        bg_pha_kw = None
     h5roi, rmgr = extract_roi(
         h5series=h5series,
         dir_out=path_out,
@@ -107,14 +121,8 @@ def cli_extract_roi(ret_data=False):
         dist_border=cfg["roi"]["dist border"],
         pad_border=cfg["roi"]["pad border"],
         exclude_overlap=cfg["roi"]["exclude overlap"],
-        bg_amp_offset=cfg["bg"]["amplitude offset"],
-        bg_amp_profile=cfg["bg"]["amplitude profile"],
-        bg_amp_border_px=cfg["bg"]["amplitude border perc"],
-        bg_amp_border_perc=cfg["bg"]["amplitude border px"],
-        bg_pha_offset=cfg["bg"]["phase offset"],
-        bg_pha_profile=cfg["bg"]["phase profile"],
-        bg_pha_border_px=cfg["bg"]["phase border perc"],
-        bg_pha_border_perc=cfg["bg"]["phase border px"],
+        bg_amp_kw=bg_amp_kw,
+        bg_pha_kw=bg_pha_kw,
         ret_roimgr=True,
     )
     print("Done.")

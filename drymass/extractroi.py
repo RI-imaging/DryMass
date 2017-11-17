@@ -8,19 +8,53 @@ from . import search
 from .roi import ROIManager
 
 
+# default background correction kwargs
+BG_DEFAULT_KW = {"fit_offset": "mean",
+                 "fit_profile": "ramp",
+                 "border_perc": 5,
+                 "border_px": 5,
+                 }
+# file names
 FILE_ROI_DATA_H5 = "roi_data.h5"
 FILE_ROI_DATA_TIF = "roi_data.tif"
 FILE_SLICES = "roi_slices.txt"
 
 
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
-                dist_border=10, pad_border=40, exclude_overlap=30,
-                bg_amp_offset="mean", bg_amp_profile="ramp",
-                bg_amp_border_px=5, bg_amp_border_perc=5,
-                bg_pha_offset="mean", bg_pha_profile="ramp",
-                bg_pha_border_px=5, bg_pha_border_perc=5,
+                dist_border=10, pad_border=40, exclude_overlap=30.,
+                bg_amp_kw=BG_DEFAULT_KW, bg_pha_kw=BG_DEFAULT_KW,
                 ret_roimgr=False):
+    """Extract ROIs from a qpimage.QPSeries hdf5 file
 
+    Parameters
+    ----------
+    h5series: str
+        Path of qpimage.QPSeries hdf5 file
+    dir_out: str
+        Path to output directory
+    size_m: float
+        Approximate diameter of the specimen [m]
+    size_var: float
+        Allowed variation relative to specimen size
+    max_ecc: float
+        Allowed maximal eccentricity of the specimen
+    dist_border: int
+        Minimum distance of objects to image border [px]
+    pad_border: int
+        Padding of object regions [px]
+    exclude_overlap: float
+        Allowed distance between two objects [px]
+    bg_amp_kw: dict or None
+        Amplitude image background correction keyword arguments
+        (see :py:func:`qpimage.QPImage.compute_bg`), defaults
+        to `BG_DEFAULT_KW`, set to `None` to disable correction
+    bg_pha_kw: dict or None
+        Phase image background correction keyword arguments
+        (see :py:func:`qpimage.QPImage.compute_bg`), defaults
+        to `BG_DEFAULT_KW`, set to `None` to disable correction
+    ret_roimgr: bool
+        Return the ROIManager instance of the found ROIs
+    """
     h5in = pathlib.Path(h5series)
     dout = pathlib.Path(dir_out)
 
@@ -46,16 +80,12 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
             for jj, sl in enumerate(slices):
                 # Write QPImage
                 qpisl = qpi.__getitem__(sl)
-                qpisl.compute_bg(which_data="amplitude",
-                                 fit_offset=bg_amp_offset,
-                                 fit_profile=bg_amp_profile,
-                                 border_perc=bg_amp_border_perc,
-                                 border_px=bg_amp_border_px)
-                qpisl.compute_bg(which_data="phase",
-                                 fit_offset=bg_pha_offset,
-                                 fit_profile=bg_pha_profile,
-                                 border_perc=bg_pha_border_perc,
-                                 border_px=bg_pha_border_px)
+                if bg_amp_kw:
+                    qpisl.compute_bg(which_data="amplitude",
+                                     **bg_amp_kw)
+                if bg_pha_kw:
+                    qpisl.compute_bg(which_data="phase",
+                                     **bg_pha_kw)
                 slident = "{}.{}".format(qpi["identifier"], jj)
                 qps_roi.add_qpimage(qpisl, identifier=slident)
                 rmgr.add(roislice=sl, image_index=ii,

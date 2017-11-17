@@ -14,6 +14,8 @@ config = {
             (10, float, "Amplitude background border region to analyze [%]"),
         "amplitude border px":
             (5, int, "Amplitude background border region to analyze [px]"),
+        "enabled":
+            (True, fbool, "Enable background correction globally"),
         # see qpimage library: e.g. fit, gauss, mean, mode
         "phase offset":
             ("mean", lcstr, "Phase background correction offset method"),

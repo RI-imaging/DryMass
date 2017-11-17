@@ -96,6 +96,12 @@ class ConfigFile(object):
         -------
         datadict: dict of dicts
             Full configuration
+
+        Notes
+        -----
+        If a configuration section in self.path is incomplete,
+        then the defaults are be inserted and self.path is
+        overridden.
         """
         if not self.path.exists():
             return {}
@@ -117,6 +123,16 @@ class ConfigFile(object):
                 key_func = definitions.config[sec][key][1]
                 val = key_func(val)
                 outdict[sec][key] = val
+        # Insert default variables where missing
+        must_write = False
+        for sec in outdict:
+            for key in definitions.config[sec]:
+                if key not in outdict[sec]:
+                    outdict[sec][key] = definitions.config[sec][key][0]
+                    must_write = True
+        if must_write:
+            # Update the configuration file
+            self._write(outdict)
         return outdict
 
     def _write(self, datadict):
