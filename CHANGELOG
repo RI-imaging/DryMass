@@ -1,4 +1,5 @@
 0.1.1
+ - binary-based background correction (manual or automated threshold)
  - allow to disable background correction with "[bg] enabled = False"
  - ask for missing meta data keys in CLI only when they are required
 0.1.0

@@ -1,6 +1,7 @@
 import numpy as np
 
-from .cfg_funcs import fbool, lcstr, tupletupleint
+from .cfg_funcs import fbool, float_or_str, lcstr, tupletupleint
+
 
 config = {
     "bg": {
@@ -10,6 +11,9 @@ config = {
         # see qpimage library: e.g. ramp, offset
         "amplitude profile":
             ("ramp", lcstr, "Amplitude background correction profile method"),
+        # see skimage.filters.threshold_*
+        "amplitude binary threshold":
+            (np.nan, float_or_str, "Binary image threshold value or method"),
         "amplitude border perc":
             (10, float, "Amplitude background border region to analyze [%]"),
         "amplitude border px":
@@ -22,6 +26,9 @@ config = {
         # see qpimage library: e.g. ramp, offset
         "phase profile":
             ("ramp", lcstr, "Phase background correction profile method"),
+        # see skimage.filters.threshold_*
+        "phase binary threshold":
+            (np.nan, float_or_str, "Binary image threshold value or method"),
         "phase border perc":
             (10, float, "Phase background border region to analyze [%]"),
         "phase border px":

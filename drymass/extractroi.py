@@ -3,6 +3,7 @@ import pathlib
 import numpy as np
 import qpimage
 from skimage.external import tifffile
+import skimage.filters
 
 from . import search
 from .roi import ROIManager
@@ -22,7 +23,8 @@ FILE_SLICES = "roi_slices.txt"
 
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dist_border=10, pad_border=40, exclude_overlap=30.,
-                bg_amp_kw=BG_DEFAULT_KW, bg_pha_kw=BG_DEFAULT_KW,
+                bg_amp_kw=BG_DEFAULT_KW, bg_amp_bin=np.nan,
+                bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=np.nan,
                 ret_roimgr=False):
     """Extract ROIs from a qpimage.QPSeries hdf5 file
 
@@ -48,10 +50,18 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         Amplitude image background correction keyword arguments
         (see :py:func:`qpimage.QPImage.compute_bg`), defaults
         to `BG_DEFAULT_KW`, set to `None` to disable correction
+    bg_amp_bin: float or str
+        The amplitude binary threshold value or the method for binary
+        threshold determination; see :py:mod:`skimage.filters`
+        `threshold_*` methods
     bg_pha_kw: dict or None
         Phase image background correction keyword arguments
         (see :py:func:`qpimage.QPImage.compute_bg`), defaults
         to `BG_DEFAULT_KW`, set to `None` to disable correction
+    bg_pha_bin: float or str
+        The phase binary threshold value or the method for binary
+        threshold determination; see :py:mod:`skimage.filters`
+        `threshold_*` methods
     ret_roimgr: bool
         Return the ROIManager instance of the found ROIs
     """
@@ -81,10 +91,16 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 # Write QPImage
                 qpisl = qpi.__getitem__(sl)
                 if bg_amp_kw:
+                    amp_mask = get_binary(
+                        qpisl.amp, value_or_method=bg_amp_bin)
                     qpisl.compute_bg(which_data="amplitude",
+                                     from_binary=amp_mask,
                                      **bg_amp_kw)
                 if bg_pha_kw:
+                    pha_mask = get_binary(
+                        qpisl.pha, value_or_method=bg_pha_bin)
                     qpisl.compute_bg(which_data="phase",
+                                     from_binary=pha_mask,
                                      **bg_pha_kw)
                 slident = "{}.{}".format(qpi["identifier"], jj)
                 qps_roi.add_qpimage(qpisl, identifier=slident)
@@ -111,3 +127,13 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
     if ret_roimgr:
         ret = ret, rmgr
     return ret
+
+
+def get_binary(image, value_or_method):
+    if isinstance(value_or_method, str):
+        method = getattr(skimage.filters, value_or_method)
+        return image < method(image)
+    elif np.isnan(value_or_method):
+        return None
+    else:
+        return image < value_or_method

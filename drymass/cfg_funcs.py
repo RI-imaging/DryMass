@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def fbool(value):
     """boolean"""
     if isinstance(value, str):
@@ -25,6 +28,23 @@ def fintlist(alist):
         if it:
             outlist.append(int(it))
     return outlist
+
+
+def float_or_str(flt_or_str):
+    """Either a float or an alphanumeric string"""
+    if isinstance(flt_or_str, str):
+        flt_or_str = flt_or_str.strip()
+        if flt_or_str == "nan":
+            return np.nan
+        else:
+            try:
+                value = float(flt_or_str)
+            except ValueError:
+                return flt_or_str
+            else:
+                return value
+    else:
+        return float(flt_or_str)
 
 
 def lcstr(astr):

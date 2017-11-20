@@ -125,7 +125,9 @@ def cli_extract_roi(ret_data=False):
         pad_border=cfg["roi"]["pad border"],
         exclude_overlap=cfg["roi"]["exclude overlap"],
         bg_amp_kw=bg_amp_kw,
+        bg_amp_bin=cfg["bg"]["amplitude binary threshold"],
         bg_pha_kw=bg_pha_kw,
+        bg_pha_bin=cfg["bg"]["phase binary threshold"],
         ret_roimgr=True,
     )
     print("Done.")
