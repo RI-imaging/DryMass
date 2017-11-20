@@ -1,4 +1,5 @@
 0.1.1
  - allow to disable background correction with "[bg] enabled = False"
+ - ask for missing meta data keys in CLI only when they are required
 0.1.0
  - initial release

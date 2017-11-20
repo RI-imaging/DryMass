@@ -1,4 +1,5 @@
 import argparse
+import functools
 import io
 import os
 import pathlib
@@ -24,7 +25,12 @@ FILE_SPHERE_ANALYSIS_IMAGE = "sphere_{}_{}_images.tif"
 
 
 def cli_analyze_sphere(ret_data=False):
-    h5roi, path_out, rmgr, cfg = cli_extract_roi(ret_data=True)
+    path_out = setup_analysis()[1]
+    cfg = user_complete_config_meta(path_out,
+                                    meta_keys=["medium index",
+                                               "pixel size um",
+                                               "wavelength nm"])
+    h5roi = cli_extract_roi(ret_data=True)
     print("Performing sphere analysis... ", end="", flush=True)
     # canny edge detection parameters
     edgekw = {
@@ -71,32 +77,29 @@ def cli_analyze_sphere(ret_data=False):
 
 
 def cli_convert(ret_data=False):
-    print("DryMass version {}".format(version))
-    parser = argparse.ArgumentParser(
-        description='DryMass raw data conversion.')
-    parser.add_argument('path', metavar='path', type=str,
-                        help='Data path')
-    args = parser.parse_args()
-    path_in = pathlib.Path(args.path).resolve()
-    print("Input:  {}".format(path_in))
-    path_out = setup_dirout(path_in)
-    print("Output: {}".format(path_out))
-    cfg = user_complete_config_meta(path_out)
+    path_in, path_out = setup_analysis()
+    cfg = user_complete_config_meta(path_out,
+                                    meta_keys=["pixel size um",
+                                               "wavelength nm"])
     print("Converting input data... ", end="", flush=True)
     meta_data = {"pixel size": cfg["meta"]["pixel size um"] * 1e-6,
                  "wavelength": cfg["meta"]["wavelength nm"] * 1e-9,
                  "medium index": cfg["meta"]["medium index"],
                  }
-    h5series = convert(path_in=args.path,
+    h5series = convert(path_in=path_in,
                        dir_out=path_out,
                        meta_data=meta_data)
     print("Done.")
     if ret_data:
-        return path_out, h5series, cfg
+        return h5series
 
 
 def cli_extract_roi(ret_data=False):
-    path_out, h5series, cfg = cli_convert(ret_data=True)
+    path_out = setup_analysis()[1]
+    # cli_convert will ask for the required meta data
+    h5series = cli_convert(ret_data=True)
+    # get the configuration after cli_convert was run
+    cfg = config_file.ConfigFile(path_out)
     print("Extracting ROIs... ", end="", flush=True)
     if cfg["bg"]["enabled"]:
         bg_amp_kw = {"fit_offset": cfg["bg"]["amplitude offset"],
@@ -160,27 +163,35 @@ def cli_extract_roi(ret_data=False):
         print("Done")
 
     if ret_data:
-        return h5roi, path_out, rmgr, cfg
+        return h5roi
 
 
-def setup_dirout(path_in):
-    path_in = pathlib.Path(path_in).resolve()
+@functools.lru_cache(maxsize=4)
+def setup_analysis():
+    print("DryMass version {}".format(version))
+    parser = argparse.ArgumentParser(description='DryMass QPI analysis.')
+    parser.add_argument('path', metavar='path', type=str,
+                        help='Data path')
+    args = parser.parse_args()
+    path_in = pathlib.Path(args.path).resolve()
     if not path_in.exists():
         raise ValueError("Path '{}' does not exist!".format(path_in))
     path_out = pathlib.Path(str(path_in) + OUTPUT_SUFFIX)
     if not path_out.exists():
         os.mkdir(str(path_out))
-    return path_out
+    print("Input:  {}".format(path_in))
+    print("Output: {}".format(path_out))
+    return path_in, path_out
 
 
 def strpar(cfg, section, key):
     return "[{}] {} = {}".format(section, key, cfg[section][key])
 
 
-def user_complete_config_meta(path):
+def user_complete_config_meta(path, meta_keys):
     cfg = config_file.ConfigFile(path)
     meta = cfg["meta"]
-    for key in sorted(definitions.config["meta"].keys()):
+    for key in sorted(meta_keys):
         description = definitions.config["meta"][key][2]
         if key not in meta or np.isnan(meta[key]):
             val = input("Please enter '{}' ({}): ".format(key, description))
