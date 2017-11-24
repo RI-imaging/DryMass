@@ -41,9 +41,9 @@ setup(
     tests_require=["pytest"],
     entry_points={
        "console_scripts": [
-           "dm_analyze_sphere = drymass.__main__:cli_analyze_sphere",
-           "dm_convert = drymass.__main__:cli_convert",
-           "dm_extract_roi = drymass.__main__:cli_extract_roi",
+           "dm_analyze_sphere = drymass.cli:cli_analyze_sphere",
+           "dm_convert = drymass.cli:cli_convert",
+           "dm_extract_roi = drymass.cli:cli_extract_roi",
             ],
        },
     python_requires='>=3.5, <4',

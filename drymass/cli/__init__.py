@@ -10,13 +10,13 @@ import numpy as np
 import qpimage
 from skimage.external import tifffile
 
-from .anasphere import analyze_sphere
-from .converter import convert
-from .extractroi import extract_roi
-from . import config_file
-from . import definitions
-from . import plot
-from ._version import version
+from ..anasphere import analyze_sphere
+from ..converter import convert
+from ..extractroi import extract_roi
+from .. import config_file
+from .. import definitions
+from .. import plot
+from .._version import version
 
 
 OUTPUT_SUFFIX = "_dm"
