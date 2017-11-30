@@ -22,6 +22,18 @@ To install DryMass, use one of the following methods
     ``python setup.py install``
 
 
+Upgrade
+-------
+If you have installed on older version of DryMass and wish to upgrade
+to the latest version, use
+
+``pip install drymass --upgrade``
+
+If you wish to install a specific version of DryMass (e.g. 0.1.0), use
+
+``pip install 'drymass==0.1.0'``
+
+
 Known issues
 ------------
  - If you try to install from PyPI and get an error message similar to
