@@ -29,9 +29,7 @@ Known issues
    `"Could not find a version that satisfies the requirement drymass (from versions: )
    No matching distribution found for drymass"`,
    
-   please check that you are using Python version 3.5 or higher with ``python --version``.
+   please make sure that you are using Python version 3.5 or higher with ``python --version``.
    If that is already the case, please run ``pip -vvv install drymass`` and create an
    `issue <https://github.com/RI-imaging/DryMass/issues>`_ with the error
    messages (e.g. as a screenshot) that you get.
-
-   
