@@ -48,19 +48,19 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         Allowed distance between two objects [px]
     bg_amp_kw: dict or None
         Amplitude image background correction keyword arguments
-        (see :py:func:`qpimage.QPImage.compute_bg`), defaults
+        (see :func:`qpimage.QPImage.compute_bg`), defaults
         to `BG_DEFAULT_KW`, set to `None` to disable correction
     bg_amp_bin: float or str
         The amplitude binary threshold value or the method for binary
-        threshold determination; see :py:mod:`skimage.filters`
+        threshold determination; see :mod:`skimage.filters`
         `threshold_*` methods
     bg_pha_kw: dict or None
         Phase image background correction keyword arguments
-        (see :py:func:`qpimage.QPImage.compute_bg`), defaults
+        (see :func:`qpimage.QPImage.compute_bg`), defaults
         to `BG_DEFAULT_KW`, set to `None` to disable correction
     bg_pha_bin: float or str
         The phase binary threshold value or the method for binary
-        threshold determination; see :py:mod:`skimage.filters`
+        threshold determination; see :mod:`skimage.filters`
         `threshold_*` methods
     ret_roimgr: bool
         Return the ROIManager instance of the found ROIs

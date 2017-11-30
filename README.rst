@@ -10,7 +10,8 @@ DryMass
 Documentation
 -------------
 
-The documentation, including the reference and examples, is available on `readthedocs.io <https://DryMass.readthedocs.io/en/stable/>`__.
+The documentation, including the code reference and examples, is available on
+`readthedocs.io <https://DryMass.readthedocs.io/en/stable/>`__.
 
 
 Installation

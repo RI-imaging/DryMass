@@ -168,7 +168,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
                 }
     # real phase
     ax1 = plt.subplot(
-        231, title="phase data {}".format(qpi_real["identifier"]))
+        231, title="phase {}".format(qpi_real["identifier"]))
     plot_image(data=real_phase, ax=ax1, **kw_phase)
 
     # simulated phase
