@@ -17,7 +17,7 @@ from _version import version
 if sys.argv.count("test"):
     release_deps = []
 else:
-    release_deps = ["qpformat==0.1.1",
+    release_deps = ["qpformat==0.1.2",
                     "qpimage==0.1.4",
                     "qpsphere==0.1.1",
                     ]
