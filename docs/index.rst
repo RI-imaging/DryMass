@@ -13,6 +13,7 @@ This is the documentaion of DryMass version |release|.
    sec_theory_notes
    sec_getting_started
    sec_code_reference
+   sec_changelog
    z_bib
 
 
