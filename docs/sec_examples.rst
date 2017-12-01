@@ -1,6 +1,6 @@
-========
-Examples
-========
+=============
+Code examples
+=============
 
 .. toctree::
   :maxdepth: 2
