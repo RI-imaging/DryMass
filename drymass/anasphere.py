@@ -21,7 +21,7 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
             qpimage.QPSeries(h5file=h5out, h5mode="w") as qps_out, \
             statout.open(mode="w") as fd:
 
-        header = ["object",
+        header = ["identifier",
                   "index",
                   "radius_um",
                   "rel_dry_mass_pg",
@@ -40,7 +40,7 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
                                        ret_center=True,
                                        edgekw=edgekw)
             # save in txt file
-            data = {"object": qpi["identifier"],
+            data = {"identifier": qpi["identifier"],
                     "index": n,
                     "radius_um": r * 1e6,
                     "abs_dry_mass_pg": absolute_dry_mass_sphere(
@@ -70,7 +70,8 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
                                           model=model,
                                           grid_size=qpi.shape,
                                           center=c)
-            qps_out.add_qpimage(qpi=qpi_model, identifier=qpi["identifier"])
+            simident = "{}:{}:{}".format(qpi["identifier"], "sim", model)
+            qps_out.add_qpimage(qpi=qpi_model, identifier=simident)
 
     return h5out
 

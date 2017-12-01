@@ -1,4 +1,6 @@
 0.1.1
+ - add file name to image identifier and update plotting (#4)
+ - renamed "object" to "identifier" in statistics output
  - binary-based background correction (manual or automated threshold)
  - allow to disable background correction with "[bg] enabled = False"
  - ask for missing meta data keys in CLI only when they are required

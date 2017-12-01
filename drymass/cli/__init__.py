@@ -64,7 +64,7 @@ def cli_analyze_sphere(ret_data=False):
             for ii in range(len(qps_roi)):
                 qpi_real = qps_roi[ii]
                 qpi_sim = qps_sim[ii]
-                assert qpi_real["identifier"] == qpi_sim["identifier"]
+                assert qpi_real["identifier"] in qpi_sim["identifier"]
                 imio = io.BytesIO()
                 plot.plot_qpi_sphere(qpi_real=qpi_real,
                                      qpi_sim=qpi_sim,

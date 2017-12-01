@@ -32,26 +32,24 @@ def convert(path_in, dir_out, bg_path=None, meta_data={}):
         create = True
 
     if create:
-        # Write data
-        with qpimage.QPSeries(h5file=h5out,
-                              h5mode="w",
-                              identifier=ds.identifier) as qps, \
-                tifffile.TiffWriter(str(imout), imagej=True) as tf:
-            for ii in range(len(ds)):
-                # Get data
-                if ds.is_series:
-                    qpi = ds.get_qpimage(ii)
-                else:
-                    qpi = ds.get_qpimage()
-                # Write QPImage
-                imid = "{}:{}".format(ds.identifier, ii)
-                qps.add_qpimage(qpi, identifier=imid)
-                # Write TIF
-                res = 1 / qpi["pixel size"] * 1e-6  # use µm
-                dshape = (1, qpi.shape[0], qpi.shape[1])
-                dataa = np.array(qpi.amp, dtype=np.float32).reshape(*dshape)
-                datap = np.array(qpi.pha, dtype=np.float32).reshape(*dshape)
-                data = np.vstack((datap, dataa))
-                tf.save(data=data, resolution=(res, res, None))
+        # Write h5 data
+        ds.saveh5(h5out)
+
+    if create or not imout.exists():
+        # Also write tif data
+        h5series2tif(h5in=h5out, tifout=imout)
 
     return h5out
+
+
+def h5series2tif(h5in, tifout):
+    with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps, \
+            tifffile.TiffWriter(str(tifout), imagej=True) as tf:
+        for ii in range(len(qps)):
+            qpi = qps[ii]
+            res = 1 / qpi["pixel size"] * 1e-6  # use µm
+            dshape = (1, qpi.shape[0], qpi.shape[1])
+            dataa = np.array(qpi.amp, dtype=np.float32).reshape(*dshape)
+            datap = np.array(qpi.pha, dtype=np.float32).reshape(*dshape)
+            data = np.vstack((datap, dataa))
+            tf.save(data=data, resolution=(res, res, None))

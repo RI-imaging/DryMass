@@ -145,7 +145,7 @@ def plot_qpi_phase(qpi, rois=None, path=None):
 
 
 def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
-    fig = plt.figure(figsize=(9, 4.5))
+    fig = plt.figure(figsize=(9, 5))
     px_um = qpi_real["pixel size"] * 1e6
     radius_um = qpi_sim["sim radius"] * 1e6
     center = qpi_sim["sim center"]
@@ -168,7 +168,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
                 }
     # real phase
     ax1 = plt.subplot(
-        231, title="phase {}".format(qpi_real["identifier"]))
+        231, title="phase")
     plot_image(data=real_phase, ax=ax1, **kw_phase)
 
     # simulated phase
@@ -191,7 +191,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
                px_um=px_um)
 
     # real intensity
-    ax4 = plt.subplot(234, title="intensity {}".format(qpi_real["identifier"]))
+    ax4 = plt.subplot(234, title="intensity")
     plot_image(data=real_inten, ax=ax4, **kw_inten)
 
     # computed intensity
@@ -218,7 +218,14 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
     ax6.set_xlabel("[µm]")
     ax6.legend(loc="center right")
 
-    plt.tight_layout()
+    plt.tight_layout(rect=(0, 0, 1, .95))
+
+    # add identifier
+    fig.text(x=.5, y=.99, s=qpi_real["identifier"],
+             verticalalignment="top",
+             horizontalalignment="center",
+             fontsize=14)
+
     if path:
         fig.savefig(path)
         plt.close()
