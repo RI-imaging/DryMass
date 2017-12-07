@@ -12,6 +12,7 @@ This is the documentaion of DryMass version |release|.
    sec_introduction
    sec_theory_notes
    sec_getting_started
+   sec_tutorials
    sec_code_reference
    sec_examples
    sec_changelog

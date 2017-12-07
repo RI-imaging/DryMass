@@ -1,3 +1,5 @@
+.. _section_install:
+
 Installing DryMass
 ===================
 

@@ -1,3 +1,5 @@
+.. _section_command_line_interface:
+
 ======================
 Command line interface
 ======================
@@ -103,6 +105,8 @@ The following files are created by dm_extract_roi:
   in the :ref:`output <config_output>` section of the
   :doc:`drymass configuration file <configuration_file>`
 
+
+.. _section_dm_analyze_sphere:
 
 dm_analyze_sphere
 -----------------
