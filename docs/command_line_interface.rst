@@ -65,6 +65,8 @@ dm_convert command (or any other of the commands below) with these updated
 parameters.
 
 
+.. _section_dm_extract_roi:
+
 dm_extract_roi
 --------------
 This command automatically finds and extracts regions of interest (ROIs)
