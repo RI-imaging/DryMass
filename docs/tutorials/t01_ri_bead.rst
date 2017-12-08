@@ -1,6 +1,6 @@
-======================================
-T1: Refractive index of microgel beads
-======================================
+=================================================
+T1: Bead analysis with the command line interface
+=================================================
 
 Introduction
 ------------
@@ -20,8 +20,8 @@ For this tutorial, you need:
 - `Fiji <https://fiji.sc/>`_ (optional, for data visualization)
 - Experimental data set: `QLSR_PAA_beads.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads.zip>`_
 
-Executing dm_analyze_sphere
----------------------------
+Execute dm_analyze_sphere
+-------------------------
 DryMass comes with a :ref:`section_command_line_interface` (CLI)
 which is made available after the installation.
 We will use the DryMass command  :ref:`section_dm_analyze_sphere`
@@ -54,8 +54,8 @@ files
 - **sphere_edge_projection_images.tif**: visualization of the sphere analysis of the ROIs as a tif file
 - **sphere_edge_projection_statistics.txt**:  sphere analysis results as a text file
 
-Examining the results
----------------------
+Examine the results
+-------------------
 Let's have a look at *sensor_roi_images.tif* (using Fiji or the built-in Windows
 image viewer). This is the first image stored in the tif file:
 
