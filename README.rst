@@ -11,7 +11,7 @@ Documentation
 -------------
 
 The documentation, including the code reference and examples, is available on
-`readthedocs.io <https://DryMass.readthedocs.io/en/stable/>`__.
+`drymass.readthedocs.io <https://DryMass.readthedocs.io/en/stable/>`__.
 
 
 Installation

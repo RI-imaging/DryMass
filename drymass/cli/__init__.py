@@ -3,10 +3,10 @@ import functools
 import io
 import os
 import pathlib
-from PIL import Image
 import sys
 
 import numpy as np
+from PIL import Image
 import qpimage
 from skimage.external import tifffile
 
@@ -86,9 +86,22 @@ def cli_convert(ret_data=False):
                  "wavelength": cfg["meta"]["wavelength nm"] * 1e-9,
                  "medium index": cfg["meta"]["medium index"],
                  }
+
+    bg_data_amp = cfg["bg"]["amplitude data"]
+    bg_data_pha = cfg["bg"]["phase data"]
+
+    if bg_data_amp == "none":
+        bg_data_amp = None
+
+    if bg_data_pha == "none":
+        bg_data_pha = None
+
     h5series = convert(path_in=path_in,
                        dir_out=path_out,
-                       meta_data=meta_data)
+                       meta_data=meta_data,
+                       bg_data_amp=bg_data_amp,
+                       bg_data_pha=bg_data_pha,
+                       )
     print("Done.")
     if ret_data:
         return h5series

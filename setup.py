@@ -19,7 +19,7 @@ if version.count("dev"):
                     "qpimage",
                     "qpsphere"]
 else:
-    release_deps = ["qpformat==0.1.2",
+    release_deps = ["qpformat==0.1.3",
                     "qpimage==0.1.4",
                     "qpsphere==0.1.1",
                     ]

@@ -47,6 +47,19 @@ def float_or_str(flt_or_str):
         return float(flt_or_str)
 
 
+def int_or_str(int_or_str):
+    """Either an int or an alphanumeric string"""
+    if isinstance(int_or_str, str):
+        flt_or_str = int_or_str.strip()
+        if flt_or_str.isdigit():
+            value = int(flt_or_str)
+        else:
+            value = flt_or_str
+    else:
+        value = int(flt_or_str)
+    return value
+
+
 def lcstr(astr):
     """lower-case string"""
     return astr.lower()

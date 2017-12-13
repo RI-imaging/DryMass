@@ -1,38 +1,44 @@
 import numpy as np
 
-from .cfg_funcs import fbool, float_or_str, lcstr, tupletupleint
+from .cfg_funcs import fbool, float_or_str, int_or_str, lcstr, tupletupleint
 
 
 config = {
     "bg": {
+        # indexing starts at 1
+        "amplitude data":
+            ("none", int_or_str, "Amplitude bg correction file or index"),
         # see qpimage library: e.g. fit, gauss, mean, mode
         "amplitude offset":
-            ("mean", lcstr, "Amplitude background correction offset method"),
+            ("mean", lcstr, "Amplitude bg correction offset method"),
         # see qpimage library: e.g. ramp, offset
         "amplitude profile":
-            ("ramp", lcstr, "Amplitude background correction profile method"),
+            ("ramp", lcstr, "Amplitude bg correction profile method"),
         # see skimage.filters.threshold_*
         "amplitude binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
         "amplitude border perc":
-            (10, float, "Amplitude background border region to analyze [%]"),
+            (10, float, "Amplitude bg border region to analyze [%]"),
         "amplitude border px":
-            (5, int, "Amplitude background border region to analyze [px]"),
+            (5, int, "Amplitude bg border region to analyze [px]"),
         "enabled":
-            (True, fbool, "Enable background correction globally"),
+            (True, fbool, "Enable bg correction globally"),
+        # indexing starts at 1
+        "phase data":
+            ("none", int_or_str, "Phase bg correction file or index"),
         # see qpimage library: e.g. fit, gauss, mean, mode
         "phase offset":
-            ("mean", lcstr, "Phase background correction offset method"),
+            ("mean", lcstr, "Phase bg correction offset method"),
         # see qpimage library: e.g. ramp, offset
         "phase profile":
-            ("ramp", lcstr, "Phase background correction profile method"),
+            ("ramp", lcstr, "Phase bg correction profile method"),
         # see skimage.filters.threshold_*
         "phase binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
         "phase border perc":
-            (10, float, "Phase background border region to analyze [%]"),
+            (10, float, "Phase bg border region to analyze [%]"),
         "phase border px":
-            (5, int, "Phase background border region to analyze [px]"),
+            (5, int, "Phase bg border region to analyze [px]"),
     },
     "roi": {
         "dist border":
