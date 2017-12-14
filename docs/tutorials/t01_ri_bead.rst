@@ -56,8 +56,8 @@ files
 
 Examine the results
 -------------------
-Let's have a look at *sensor_roi_images.tif* (using Fiji or the built-in Windows
-image viewer). This is the first image stored in the tif file:
+Let's have a look at *sensor_roi_images.tif* (using Fiji or Windows
+Photo Viewer). This is the first image stored in the tif file:
 
 .. figure:: t01_sensor_roi_image.jpg
 
