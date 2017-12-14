@@ -83,13 +83,13 @@ def absolute_dry_mass_sphere(qpi, radius, center, alpha=.18, rad_fact=1.2):
 
     m_abs = m_rel + m_sup
     m_rel = lambda / (2*PI*alpha) * phi_tot * deltaA
-    m_sup = 4*PI / (3*alpha) * radius^3 (n_med - n_water)
+    m_sup = 4*PI / (3*alpha) * radius^3 (n_med - n_PBS)
 
     with the vacuum wavelength `lambda`, the total phase
     retardation in the area of interest `phi_tot`, the pixel
     area `deltaA`, the refractive index of the medium `n_med`
-    (stored in `qpi.meta`), and the refractive index of water
-    `n_water`=1.333.
+    (stored in `qpi.meta`), and the refractive index of phosphate
+    buffered saline (PBS) `n_PBS`=1.335.
 
     This is the *absolute* dry mass, because it takes into account
     the offset caused by the suppressed density in the phase data.
@@ -125,7 +125,7 @@ def absolute_dry_mass_sphere(qpi, radius, center, alpha=.18, rad_fact=1.2):
                                rad_fact=rad_fact)
     medium_index = qpi["medium index"]
     dm_sup = 4 / 3 * np.pi / (alpha * 1e-6) * \
-        radius**3 * (medium_index - 1.333)
+        radius**3 * (medium_index - 1.335)
     return dm_rel + dm_sup
 
 

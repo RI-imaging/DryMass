@@ -2,7 +2,8 @@
 
 Relative dry mass is the dry mass computed relative to the
 surrounding medium. If the refractive index of the surrounding
-medium is not water (1.333), then the relative dry mass underestimates
+does not match that of the intracellular fluid (approximately 1.335),
+then the relative dry mass underestimates
 the actual dry mass. For a spherical cell, the absolute (corrected)
 dry mass can be computed as described in the theory section on
 :ref:`dry mass computation <section_theory_dry_mass>`.
@@ -41,9 +42,9 @@ radius = 10  # [µm]
 center = (100, 100)  # [px]
 
 dry_masses = [50, 250]  # [pg]
-medium_indices = np.linspace(1.333, 1.34, 5)
+medium_indices = np.linspace(1.335, 1.34, 5)
 
-qpi_water = {}
+qpi_pbs = {}
 m_abs = {}
 m_rel = {}
 phase_data = np.zeros(grid_size, dtype=float)
@@ -55,7 +56,7 @@ for m in dry_masses:
     r_m = radius * 1e-6
     alpha_m3g = alpha * 1e-6
     m_g = m * 1e-12
-    n = 1.333 + 3 * alpha_m3g * m_g / (4 * np.pi * (r_m**3))
+    n = 1.335 + 3 * alpha_m3g * m_g / (4 * np.pi * (r_m**3))
     for medium_index in medium_indices:
         # generate example dataset
         qpi = qpsphere.simulate(radius=r_m,
@@ -80,25 +81,25 @@ for m in dry_masses:
                                alpha=alpha,
                                rad_fact=1.2)
         m_rel[m].append(mr * 1e12)
-        if medium_index == 1.333:
-            qpi_water[m] = qpi
+        if medium_index == 1.335:
+            qpi_pbs[m] = qpi
 
 # plot results
 fig = plt.figure(figsize=(8, 4.5))
 matplotlib.rcParams["image.interpolation"] = "bicubic"
 # phase images
-kw = {"vmax": qpi_water[dry_masses[1]].pha.max(),
-      "vmin": qpi_water[dry_masses[1]].pha.min()}
+kw = {"vmax": qpi_pbs[dry_masses[1]].pha.max(),
+      "vmin": qpi_pbs[dry_masses[1]].pha.min()}
 
 ax1 = plt.subplot2grid((2, 3), (0, 2))
-ax1.set_title("{}pg (in water)".format(dry_masses[0]))
+ax1.set_title("{}pg (in PBS)".format(dry_masses[0]))
 ax1.axis("off")
-map1 = ax1.imshow(qpi_water[dry_masses[0]].pha, **kw)
+map1 = ax1.imshow(qpi_pbs[dry_masses[0]].pha, **kw)
 
 ax2 = plt.subplot2grid((2, 3), (1, 2))
-ax2.set_title("{}pg (in water)".format(dry_masses[1]))
+ax2.set_title("{}pg (in PBS)".format(dry_masses[1]))
 ax2.axis("off")
-ax2.imshow(qpi_water[dry_masses[1]].pha, **kw)
+ax2.imshow(qpi_pbs[dry_masses[1]].pha, **kw)
 
 # overview plot
 ax3 = plt.subplot2grid((2, 3), (0, 0), colspan=2, rowspan=2)
