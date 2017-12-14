@@ -66,7 +66,7 @@ indicates the ROI that was found by DryMass, labeled with the identifier
 *85449:0.0*. The file *sensor_roi_images.tif* allows you to check that
 DryMass has correctly found the objects that you are interested in. If the
 beads were not detected correctly, we would probably have to adjust the
-size parameter of the :ref:`section_configuration_file` (see also 
+size parameter in the :ref:`section_configuration_file` (see also 
 :ref:`section_dm_extract_roi`).
 
 It appears that DryMass has correctly found all beads with the default
@@ -79,7 +79,7 @@ the phase images.
 
 .. figure:: t01_sphere_edge_projection_image.jpg
 
-Note that the modeled intensity image is one everywhere, because the projection
+Note that the modeled intensity image is all-one, because the projection
 model only models the optical thickness and thus only affects the phase data.
 Also, note that the phase-difference image between data and model only has
 small deviations in the background phase. If there were large ramp-like
