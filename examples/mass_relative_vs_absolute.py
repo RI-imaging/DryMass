@@ -14,11 +14,12 @@ absolute dry mass corrected for a spherical phase object
 (:py:func:`drymass.ansphere.absolute_dry_mass_sphere`).
 From simulated phase images (projection approach, wavelength 550nm)
 of two cell-like spheres with a radius of 10µm and dry masses of
-50pg (n≈1.335) and 250pg (n≈1.344), the absolute and relative dry
+50pg (n≈1.337) and 250pg (n≈1.346), the absolute and relative dry
 masses are computed with varying refractive index of the medium.
 
-At the refractive index of water, absolute and relative dry mass
-are equivalent. As the refractive index of the medium increases,
+At the refractive index of phosphate buffered saline (PBS),
+absolute and relative dry mass are equivalent.
+As the refractive index of the medium increases,
 the relative drymass decreases linearly, underestimating the
 actual dry mass.
 """

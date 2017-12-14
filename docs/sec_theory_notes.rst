@@ -14,8 +14,9 @@ Definition
 ----------
 The concept of cell dry mass computation was first introduced by Barer
 :cite:`Barer_1952`. The dry mass :math:`m` of a biological cell is defined
-by its non-aqueous fraction :math:`f(x,y,z)`, i.e. the number of grams of
-dry proteins and DNA within the cell volume (excluding salts).
+by its non-aqueous fraction :math:`f(x,y,z)` (concentration in g/L),
+i.e. the number of grams of protein and DNA within the cell volume
+(excluding salts).
 
 .. math::
 
@@ -72,8 +73,19 @@ which causes an underestimation of the dry mass if
 :math:`n_\text{med} > n_\text{intra}`. For instance, a cell could
 be immersed in a protein solution or embedded in a hydrogel with a refractive
 index of :math:`n_\text{med}` = :math:`n_\text{intra}` + 0.002.
-The resulting error in dry mass made for a spherical cell with a constant
-RI of 1.37 is 5\%. This mass is called "relative dry mass" :math:`m_\text{rel}`.
+For a spherical cell with a radius of 10µm, the resulting dry mass is
+underestimated by 46pg. Therefore, it is called "relative dry mass" :math:`m_\text{rel}`.
+
+.. python code for example
+   m = 350e-12
+   r = 10e-6
+   alpha = .18e-6
+   n = 1.35
+   m1 = (n - 1.335)/(3 * alpha) * 4 * np.pi * (r**3)
+   m2 = (n - 1.337)/(3 * alpha) * 4 * np.pi * (r**3)
+   msuppressed1 = m2 - m1
+   # or
+   msuppressed2 = (1.337 - 1.335)/(3 * alpha) * 4 * np.pi * (r**3)
 
 .. math::
 
@@ -83,7 +95,7 @@ For a discrete image, this formula simplifies to
 
 .. math::
   :label: drymass
-  
+
   m_\text{rel} = \frac{\lambda}{2 \pi \alpha} \cdot \Delta A \cdot \sum_{i,j} \phi(x_i,y_j)
  
 with the pixel area :math:`\Delta A` and a pixel-wise summation of the phase data.
@@ -116,12 +128,36 @@ Notes and gotchas
   thus the above considerations are not always valid.
   The refraction increment is little dependent on pH and temperature, but may be
   strongly dependent on wavelength (e.g. serum albumin
-  :math:`\alpha_\text{SA@366nm}` = 0.198 mL/g and
-  :math:`\alpha_\text{SA@656nm}` = 0.179 mL/g) :cite:`Barer_1954`.
-
+  :math:`\alpha_\text{SA@366nm}` = 0.198mL/g and
+  :math:`\alpha_\text{SA@656nm}` = 0.179mL/g) :cite:`Barer_1954`.
 
 - **The refractive index of the intracellular fluid** in DryMass is assumed to be
   :math:`n_\text{intra}` = 1.335, an educated guess based on the refractive index
   of phosphate buffered saline (PBS), whose osmolarity and ion concentrations
   match those of the human body.
 
+- **Dry mass and actual mass** of a cell differ by the weight of the intracellular
+  fluid. This weight difference is defined by the volume of the cell minus the
+  volume of the protein and DNA content. While it seems to be difficult to define
+  a partial specific volume (PSV) for DNA, there appears to be a consensus
+  regarding the PSV of proteins, yielding approximately 0.73 mL/g
+  (see e.g. reference :cite:`Barer_1957` as well as :cite:`Harpaz_1994` and
+  `question 843 of the O-manual <http://msg.ucsf.edu/local/programs/ono/manuals/ofaq//Q.843.html>`_
+  referring to it). For example, the protein and DNA of a cell with a radius of 10µm
+  and a dry mass of 350pg (cell volume 4.19pL, average refractive index 1.35) occupy
+  approximately 0.73mL/g · 350pg = 0.256pL (assuming the PSV of protein and DNA are similar).
+  Thus, the actual volume of the intracellular fluid is 3.93pL (94% of the cell volume)
+  which is equivalent to a mass of 3.93ng resulting in a total (actual) cell mass of 4.28ng.
+  Thus, the dry mass of this cell makes up approximately 10% of its actual mass.
+
+.. python code for example:
+   m_g = 350e-12
+   r_m = 10 * 1e-6
+   alpha = .18
+   alpha_m3g = alpha * 1e-6
+   n = 1.335 + 3 * alpha_m3g * m_g / (4 * np.pi * (r_m**3))
+   # 1.3500401421221842
+   volume = 4/3.*np.pi*r_m**3
+   # 4.188790204786389e-15 m^3
+   # = 4.188790204786389e-12 L
+   m_water = 3.934e-12 * 1 * 1000
