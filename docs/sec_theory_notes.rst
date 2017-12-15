@@ -146,9 +146,10 @@ Notes and gotchas
   referring to it). For example, the protein and DNA of a cell with a radius of 10µm
   and a dry mass of 350pg (cell volume 4.19pL, average refractive index 1.35) occupy
   approximately 0.73mL/g · 350pg = 0.256pL (assuming the PSV of protein and DNA are similar).
-  Thus, the actual volume of the intracellular fluid is 3.93pL (94% of the cell volume)
+  Therefore, the actual volume of the intracellular fluid is 3.93pL (94% of the cell volume)
   which is equivalent to a mass of 3.93ng resulting in a total (actual) cell mass of 4.28ng.
-  Thus, the dry mass of this cell makes up approximately 10% of its actual mass.
+  Thus, the dry mass of this cell makes up approximately 10% of its actual mass which leads to
+  a total mass that is about 2% heavier than the equivalent volume of pure water (4.19ng).
 
 .. python code for example:
    m_g = 350e-12
