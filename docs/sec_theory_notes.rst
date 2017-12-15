@@ -140,7 +140,7 @@ Notes and gotchas
   fluid. This weight difference is defined by the volume of the cell minus the
   volume of the protein and DNA content. While it seems to be difficult to define
   a partial specific volume (PSV) for DNA, there appears to be a consensus
-  regarding the PSV of proteins, yielding approximately 0.73 mL/g
+  regarding the PSV of proteins, yielding approximately 0.73mL/g
   (see e.g. reference :cite:`Barer_1957` as well as :cite:`Harpaz_1994` and
   `question 843 of the O-manual <http://msg.ucsf.edu/local/programs/ono/manuals/ofaq//Q.843.html>`_
   referring to it). For example, the protein and DNA of a cell with a radius of 10µm
