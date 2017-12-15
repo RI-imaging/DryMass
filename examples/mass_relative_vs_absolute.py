@@ -20,8 +20,8 @@ masses are computed with varying refractive index of the medium.
 At the refractive index of phosphate buffered saline (PBS),
 absolute and relative dry mass are equivalent.
 As the refractive index of the medium increases,
-the relative drymass decreases linearly, underestimating the
-actual dry mass.
+the relative drymass decreases linearly (independent of dry mass),
+underestimating the actual dry mass.
 """
 from drymass.anasphere import absolute_dry_mass_sphere, relative_dry_mass
 import matplotlib
