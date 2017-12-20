@@ -14,7 +14,7 @@ Definition
 ----------
 The concept of cell dry mass computation was first introduced by Barer
 :cite:`Barer_1952`. The dry mass :math:`m` of a biological cell is defined
-by its non-aqueous fraction :math:`f(x,y,z)` (concentration in g/L),
+by its non-aqueous fraction :math:`f(x,y,z)` (concentration/density in g/L),
 i.e. the number of grams of protein and DNA within the cell volume
 (excluding salts).
 
@@ -64,6 +64,16 @@ then equations :eq:`intmass` and :eq:`phiri` can be combined to
 
   m_\text{med=intra} = \frac{\lambda}{2 \pi \alpha} \cdot \iint \phi(x,y) \, dx dy.
 
+
+For a discrete image, this formula simplifies to
+
+.. math::
+  :label: drymass
+
+  m_\text{med=intra} = \frac{\lambda}{2 \pi \alpha} \cdot \Delta A \cdot \sum_{i,j} \phi(x_i,y_j)
+ 
+with the pixel area :math:`\Delta A` and a pixel-wise summation of the phase data.
+
 Relative and absolute dry mass
 ------------------------------
 If however the medium surrounding the cell has a different refractive index
@@ -91,15 +101,6 @@ underestimated by 46pg. Therefore, it is called "relative dry mass" :math:`m_\te
 
   m_\text{rel} = \frac{\lambda}{2 \pi \alpha} \cdot \iint \phi(x,y) \, dx dy,
  
-For a discrete image, this formula simplifies to
-
-.. math::
-  :label: drymass
-
-  m_\text{rel} = \frac{\lambda}{2 \pi \alpha} \cdot \Delta A \cdot \sum_{i,j} \phi(x_i,y_j)
- 
-with the pixel area :math:`\Delta A` and a pixel-wise summation of the phase data.
-
 If the imaged phase object is spherical with the radius :math:`R`,
 then the "absolute dry mass" :math:`m_\text{abs}`
 can be computed by splitting equation :eq:`intmass` into relative mass and suppressed 
