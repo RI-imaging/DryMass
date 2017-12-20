@@ -101,6 +101,7 @@ def cli_convert(ret_data=False):
                        meta_data=meta_data,
                        bg_data_amp=bg_data_amp,
                        bg_data_pha=bg_data_pha,
+                       write_tif=cfg["output"]["sensor tif data"],
                        )
     print("Done.")
     if ret_data:

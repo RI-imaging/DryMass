@@ -12,7 +12,8 @@ FILE_SENSOR_DATA_TIF = "sensor_data.tif"
 
 
 def convert(path_in, dir_out, meta_data={},
-            bg_data_amp=None, bg_data_pha=None):
+            bg_data_amp=None, bg_data_pha=None,
+            write_tif=False):
     """Convert experimental data to `qpimage.QPSeries` on disk
 
     Parameters
@@ -38,48 +39,52 @@ def convert(path_in, dir_out, meta_data={},
 
     ds = qpformat.load_data(path=path, meta_data=meta_data)
 
-    if bg_data_amp is None:
-        bgamp = np.ones(ds.get_qpimage(0).shape)
-    elif isinstance(bg_data_amp, numbers.Integral):
-        if bg_data_amp <= 0 or bg_data_amp > len(ds):
-            msg = "Amplitude background index must be between 1 and " \
-                  + "{}".format(len(ds))
-            raise ValueError(msg)
-        # indexing in configuration file starts at 1
-        bgamp = ds.get_qpimage(bg_data_amp - 1).amp
-    elif isinstance(bg_data_amp, (str, pathlib.Path)):
-        bgamppath = path_in.parent / bg_data_amp
-        dsbgamp = qpformat.load_data(path=bgamppath, meta_data=meta_data)
-        if len(dsbgamp) != 1:
-            msg = "Background correction with series data not implemented!"
-            raise NotImplementedError(msg)
+    if not (bg_data_amp is None and bg_data_pha is None):
+        # Only set background of data set if there is
+        # a background defined.
+        if bg_data_amp is None:
+            bgamp = np.ones(ds.get_qpimage(0).shape)
+        elif isinstance(bg_data_amp, numbers.Integral):
+            if bg_data_amp <= 0 or bg_data_amp > len(ds):
+                msg = "Amplitude background index must be between 1 and " \
+                      + "{}".format(len(ds))
+                raise ValueError(msg)
+            # indexing in configuration file starts at 1
+            bgamp = ds.get_qpimage(bg_data_amp - 1).amp
+        elif isinstance(bg_data_amp, (str, pathlib.Path)):
+            bgamppath = path_in.parent / bg_data_amp
+            dsbgamp = qpformat.load_data(path=bgamppath, meta_data=meta_data)
+            if len(dsbgamp) != 1:
+                msg = "Background correction with series data not implemented!"
+                raise NotImplementedError(msg)
+            else:
+                bgamp = dsbgamp.get_qpimage(0).amp
         else:
-            bgamp = dsbgamp.get_qpimage(0).amp
-    else:
-        raise ValueError("Undefined bg_data_amp: {}".format(bg_data_amp))
+            raise ValueError("Undefined bg_data_amp: {}".format(bg_data_amp))
 
-    if bg_data_pha is None:
-        bgpha = np.zeros(ds.get_qpimage(0).shape)
-    elif isinstance(bg_data_amp, numbers.Integral):
-        if bg_data_pha <= 0 or bg_data_pha > len(ds):
-            msg = "Phase data index must be between 1 and {}".format(len(ds))
-            raise ValueError(msg)
-        # indexing in configuration file starts at 1
-        bgpha = ds.get_qpimage(bg_data_pha - 1).pha
-    elif isinstance(bg_data_pha, (str, pathlib.Path)):
-        bgphapath = path_in.parent / bg_data_amp
-        dsbgpha = qpformat.load_data(path=bgphapath, meta_data=meta_data)
-        if len(dsbgpha) != 1:
-            msg = "Background correction with series data not implemented!"
-            raise NotImplementedError(msg)
+        if bg_data_pha is None:
+            bgpha = np.zeros(ds.get_qpimage(0).shape)
+        elif isinstance(bg_data_amp, numbers.Integral):
+            if bg_data_pha <= 0 or bg_data_pha > len(ds):
+                msg = "Phase data index must be between 1 and {}".format(
+                    len(ds))
+                raise ValueError(msg)
+            # indexing in configuration file starts at 1
+            bgpha = ds.get_qpimage(bg_data_pha - 1).pha
+        elif isinstance(bg_data_pha, (str, pathlib.Path)):
+            bgphapath = path_in.parent / bg_data_amp
+            dsbgpha = qpformat.load_data(path=bgphapath, meta_data=meta_data)
+            if len(dsbgpha) != 1:
+                msg = "Background correction with series data not implemented!"
+                raise NotImplementedError(msg)
+            else:
+                bgpha = dsbgpha.get_qpimage(0).pha
         else:
-            bgpha = dsbgpha.get_qpimage(0).pha
-    else:
-        raise ValueError("Undefined bg_data_pha: {}".format(bg_data_pha))
+            raise ValueError("Undefined bg_data_pha: {}".format(bg_data_pha))
 
-    bg_data = qpimage.QPImage(data=(bgpha, bgamp),
-                              which_data=("phase", "amplitude"))
-    ds.set_bg(bg_data)
+        bg_data = qpimage.QPImage(data=(bgpha, bgamp),
+                                  which_data=("phase", "amplitude"))
+        ds.set_bg(bg_data)
 
     if h5out.exists():
         with qpimage.QPSeries(h5file=h5out, h5mode="r") as qpsr:
@@ -94,7 +99,7 @@ def convert(path_in, dir_out, meta_data={},
         # Write h5 data
         ds.saveh5(h5out)
 
-    if create or not imout.exists():
+    if write_tif and (create or not imout.exists()):
         # Also write tif data
         h5series2tif(h5in=h5out, tifout=imout)
 

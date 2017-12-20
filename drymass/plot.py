@@ -172,7 +172,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
     plot_image(data=real_phase, ax=ax1, **kw_phase)
 
     # simulated phase
-    ax2 = plt.subplot(232, title=simtype+" (phase)")
+    ax2 = plt.subplot(232, title=simtype + " (phase)")
     plot_image(data=qpi_sim.pha, ax=ax2, **kw_phase)
     ax2.text(0.01, .99,
              "index: {:.5f}\n".format(index)
@@ -195,7 +195,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
     plot_image(data=real_inten, ax=ax4, **kw_inten)
 
     # computed intensity
-    ax5 = plt.subplot(235, title=simtype+" (intensity)")
+    ax5 = plt.subplot(235, title=simtype + " (intensity)")
     plot_image(data=qpi_sim.amp**2, ax=ax5, **kw_inten)
 
     # plot detected radius

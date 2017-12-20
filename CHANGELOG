@@ -1,4 +1,6 @@
 0.1.2
+ - allow to disable sensor image tif export
+ - support input QPI data with different shapes
  - fixed wrong assumption about definition of dry mass in cells
    (water vs. intracellular salt solution)
  - allow to use separate file or series index for background correction

@@ -67,6 +67,8 @@ config = {
             (True, fbool, "Rendered phase images with ROI location"),
         "sphere images":
             (True, fbool, "Phase/Intensity images for sphere analysis"),
+        "sensor tif data":
+            (True, fbool, "Phase/Amplitude sensor tif data"),
     },
     "specimen": {
         "size um":
