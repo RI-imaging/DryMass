@@ -14,7 +14,10 @@ year = "2017"
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
 from _version import version
 
-if version.count("dev"):
+if version.count("dev") or sys.argv.count("test"):
+    # specific versions are not desired for
+    # - development version
+    # - running pytest
     release_deps = ["qpformat",
                     "qpimage",
                     "qpsphere"]
