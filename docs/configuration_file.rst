@@ -42,8 +42,8 @@ The configuration file is divided into sections.
 
 .. _config_output:
 
-[output] Supplemental data output
----------------------------------
+[output] Supplementary data output
+----------------------------------
 .. literalinclude:: ../drymass/definitions.py
    :language: python
    :start-after: "output"

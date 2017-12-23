@@ -14,7 +14,7 @@ Definition
 ----------
 The concept of cell dry mass computation was first introduced by Barer
 :cite:`Barer_1952`. The dry mass :math:`m` of a biological cell is defined
-by its non-aqueous fraction :math:`f(x,y,z)` (concentration/density in g/L),
+by its non-aqueous fraction :math:`f(x,y,z)` (concentration or density in g/L),
 i.e. the number of grams of protein and DNA within the cell volume
 (excluding salts).
 
@@ -119,10 +119,11 @@ for spherical objects, please have a look at the
 Notes and gotchas
 -----------------
 - **The default refraction increment in DryMass** is
-  :math:`\alpha` = 0.18 mL/g, as
+  :math:`\alpha` = 0.18mL/g, as
   suggested for cells based on the refraction increment of cellular
   constituents by references :cite:`Barer_1954` and :cite:`Barer_1953`.
-  The refraction increment can be manually set using the configuration key
+  The refraction increment can be manually set using the
+  :ref:`configuration <section_configuration_file>` key
   "refraction increment" in the "sphere" section.
 
 - **Variations in the refraction increment** may occur and

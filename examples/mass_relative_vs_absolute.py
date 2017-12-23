@@ -2,8 +2,8 @@
 
 Relative dry mass is the dry mass computed relative to the
 surrounding medium. If the refractive index of the surrounding
-does not match that of the intracellular fluid (approximately 1.335),
-then the relative dry mass underestimates
+medium does not match that of the intracellular fluid
+(approximately 1.335), then the relative dry mass underestimates
 the actual dry mass. For a spherical cell, the absolute (corrected)
 dry mass can be computed as described in the theory section on
 :ref:`dry mass computation <section_theory_dry_mass>`.

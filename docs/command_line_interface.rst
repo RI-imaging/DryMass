@@ -42,8 +42,7 @@ which is equivalent to
   dm_convert experiment
 
 If this command is run initially for an experimental data set, the user
-is asked to enter or confirm imaging wavelength, detector pixel size,
-and refractive index of the medium.
+is asked to enter or confirm imaging wavelength and detector pixel size.
 Then, a new directory ``d:\\data\path\to\experiment_dm`` is created
 with the following files:
 
@@ -83,8 +82,8 @@ be updated in the :doc:`drymass configuration file <configuration_file>`. The mo
 important parameter is the diameter of the specimen in microns ("*size um*"
 in the :ref:`specimen <config_specimen>` section);
 all other parameters are defined in the :ref:`roi <config_roi>`
-section. Note that the default parameters for e.g. the
-:ref:`roi <config_roi>` and :ref:`bg <config_bg>` sections
+section. Note that the default parameters for the
+:ref:`roi <config_roi>` section
 are not written to the configuration file until dm_extract_roi is run.
 The following files are created by dm_extract_roi:
 

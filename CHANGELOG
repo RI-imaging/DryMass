@@ -5,6 +5,7 @@
    (water vs. intracellular salt solution)
  - allow to use separate file or series index for background correction
    with experimental data (#6)
+ - small visualization improvements
 0.1.1
  - add file name to image identifier and update plotting (#4)
  - renamed "object" to "identifier" in statistics output

@@ -9,7 +9,7 @@ The phase image is computed from two spheres whose dry masses
 add up to 100pg with the larger sphere having a dry mass of 83pg.
 The larger sphere is located at the center of the image which is also
 used as the origin for dry mass computation. The radius of the larger
-sphere (10µm) is known. Thus, the corresponding radius (inner circle)
+sphere is known (10µm). Thus, the corresponding radius (inner circle)
 corresponds to a radial inclusion factor of 1. In DryMass, the
 default radial inclusion factor is set to 1.2 (red). In some cases,
 this inclusion factor must be increased or decreased depending on
