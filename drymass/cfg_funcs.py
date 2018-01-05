@@ -26,7 +26,7 @@ def fintlist(alist):
         alist = alist.strip().strip("[] ").split(",")
     for it in alist:
         if it:
-            outlist.append(int(it))
+            outlist.append(int(float(it)))
     return outlist
 
 
@@ -47,16 +47,16 @@ def float_or_str(flt_or_str):
         return float(flt_or_str)
 
 
-def int_or_str(int_or_str):
+def int_or_str(it_or_str):
     """Either an int or an alphanumeric string"""
-    if isinstance(int_or_str, str):
-        flt_or_str = int_or_str.strip()
-        if flt_or_str.isdigit():
-            value = int(flt_or_str)
+    if isinstance(it_or_str, str):
+        it_or_str = it_or_str.strip()
+        if it_or_str.replace(".", "").isdigit():
+            value = int(float(it_or_str))
         else:
-            value = flt_or_str
+            value = it_or_str
     else:
-        value = int(flt_or_str)
+        value = int(float(it_or_str))
     return value
 
 
@@ -73,15 +73,15 @@ def tupletupleint(items):
         if items.strip():
             # we have a string representation of the slices
             x1, x2, y1, y2 = items.split(",")
-            out = ((int(x1), int(x2)),
-                   (int(y1), int(y2)))
+            out = ((int(float(x1)), int(float(x2))),
+                   (int(float(y1)), int(float(y2))))
         else:
             out = ()
     else:
         if items:
             (x1, x2), (y1, y2) = items
-            out = ((int(x1), int(x2)),
-                   (int(y1), int(y2)))
+            out = ((int(float(x1)), int(float(x2))),
+                   (int(float(y1)), int(float(y2))))
         else:
             out = ()
     return out
