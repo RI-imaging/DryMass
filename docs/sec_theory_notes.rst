@@ -20,7 +20,7 @@ i.e. the number of grams of protein and DNA within the cell volume
 
 .. math::
 
-  m = \iiint f(x,y,z) \, dx dy dz \\
+  m = \iiint f(x,y,z) \, dx dy dz
 
 The assumption of dry mass computation in QPI is that :math:`f(x,y,z)`
 is proportional to the RI of the cell :math:`n(x,y,z)` with a proportionality
