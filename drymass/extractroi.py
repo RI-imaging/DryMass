@@ -11,7 +11,7 @@ from .roi import ROIManager
 
 # default background correction kwargs
 BG_DEFAULT_KW = {"fit_offset": "mean",
-                 "fit_profile": "ramp",
+                 "fit_profile": "tilt",
                  "border_perc": 5,
                  "border_px": 5,
                  }

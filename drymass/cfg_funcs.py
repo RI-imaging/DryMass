@@ -1,3 +1,5 @@
+import numbers
+
 import numpy as np
 
 
@@ -45,6 +47,27 @@ def float_or_str(flt_or_str):
                 return value
     else:
         return float(flt_or_str)
+
+
+def floattuple_or_one(fti):
+    """Either a tuple of floats or +/-1"""
+    msg = "Expected +1, -1 or (float, float), got '{}'".format(fti)
+    if isinstance(fti, numbers.Number):
+        fti = int(fti)
+        if fti in [+1, -1]:
+            pass
+        else:
+            raise ValueError(msg)
+    else:
+        fti = list(fti)
+        if len(fti) == 2:
+            try:
+                fti = (float(fti[0]), float(fti[1]))
+            except ValueError:
+                raise ValueError(msg)
+        else:
+            raise ValueError(msg)
+    return fti
 
 
 def int_or_str(it_or_str):

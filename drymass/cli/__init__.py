@@ -40,6 +40,18 @@ def cli_analyze_sphere(ret_data=False):
         "mult_fine": cfg["sphere"]["edge fine"],
         "maxiter": cfg["sphere"]["edge iter"],
     }
+    # image fitting parameters
+    imagekw = {
+        "crel": cfg["sphere"]["image fit range position"],
+        "rrel": cfg["sphere"]["image fit range radius"],
+        "nrel": cfg["sphere"]["image fit range refractive index"],
+        "fix_pha_offset": cfg["sphere"]["image fix phase offset"],
+        "max_iter": cfg["sphere"]["image iter"],
+        "stop_dc": cfg["sphere"]["image stop delta position"],
+        "stop_dr": cfg["sphere"]["image stop delta radius"],
+        "stop_dn": cfg["sphere"]["image stop delta refractive index"],
+        "verbose": cfg["sphere"]["image verbosity"],
+    }
     h5sim = analyze_sphere(h5roiseries=h5roi,
                            dir_out=path_out,
                            r0=cfg["specimen"]["size um"] / 2 * 1e-6,
@@ -48,6 +60,7 @@ def cli_analyze_sphere(ret_data=False):
                            alpha=cfg["sphere"]["refraction increment"],
                            rad_fact=cfg["sphere"]["radial inclusion factor"],
                            edgekw=edgekw,
+                           imagekw=imagekw,
                            )
     print("Done.")
 

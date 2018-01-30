@@ -1,4 +1,6 @@
 0.1.3
+ - added hologram analysis parameter tuning (qpimage 0.1.6)
+ - added 2D model fitting to sphere analysis (qpsphere 0.1.4)
  - fixed `cfg_funcs.int_or_str`
 0.1.2
  - allow to disable sensor image tif export

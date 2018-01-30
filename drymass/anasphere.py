@@ -10,7 +10,8 @@ FILE_SPHERE_STAT = "sphere_{}_{}_statistics.txt"
 
 
 def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
-                   model="projection", edgekw={}, alpha=2e-4, rad_fact=1.2):
+                   model="projection", edgekw={}, imagekw={},
+                   alpha=.18, rad_fact=1.2):
 
     dir_out = pathlib.Path(dir_out).resolve()
 
@@ -33,45 +34,43 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
 
         for qpi in qps_in:
             # determine parameters
-            n, r, c = qpsphere.analyze(qpi,
-                                       r0=r0,
-                                       method=method,
-                                       model=model,
-                                       ret_center=True,
-                                       edgekw=edgekw)
+            n, r, c, qpi_sim = qpsphere.analyze(qpi,
+                                                r0=r0,
+                                                method=method,
+                                                model=model,
+                                                edgekw=edgekw,
+                                                imagekw=imagekw,
+                                                ret_center=True,
+                                                ret_qpi=True)
+            if "time" in qpi:
+                qptime = qpi["time"]
+            else:
+                qptime = 0
             # save in txt file
-            data = {"identifier": qpi["identifier"],
-                    "index": n,
-                    "radius_um": r * 1e6,
-                    "abs_dry_mass_pg": absolute_dry_mass_sphere(
-                qpi=qpi,
-                radius=r,
-                center=c,
-                alpha=alpha,
-                rad_fact=rad_fact
-            ) * 1e12,
+            data = {
+                "identifier": qpi["identifier"],
+                "index": n,
+                "radius_um": r * 1e6,
+                "abs_dry_mass_pg": absolute_dry_mass_sphere(
+                    qpi=qpi,
+                    radius=r,
+                    center=c,
+                    alpha=alpha,
+                    rad_fact=rad_fact
+                ) * 1e12,
                 "rel_dry_mass_pg": relative_dry_mass(
-                qpi=qpi,
-                radius=r,
-                center=c,
-                alpha=alpha,
-                rad_fact=rad_fact
-            ) * 1e12,
-                "time": qpi["time"],
+                    qpi=qpi,
+                    radius=r,
+                    center=c,
+                    alpha=alpha,
+                    rad_fact=rad_fact
+                ) * 1e12,
+                "time": qptime,
                 "medium": qpi["medium index"]
             }
             fd.write("\t".join([str(data[k]) for k in header]) + "\r\n")
-            # save simulation data
-            qpi_model = qpsphere.simulate(radius=r,
-                                          sphere_index=n,
-                                          medium_index=qpi["medium index"],
-                                          wavelength=qpi["wavelength"],
-                                          pixel_size=qpi["pixel size"],
-                                          model=model,
-                                          grid_size=qpi.shape,
-                                          center=c)
             simident = "{}:{}:{}".format(qpi["identifier"], "sim", model)
-            qps_out.add_qpimage(qpi=qpi_model, identifier=simident)
+            qps_out.add_qpimage(qpi=qpi_sim, identifier=simident)
 
     return h5out
 

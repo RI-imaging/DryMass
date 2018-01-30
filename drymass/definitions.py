@@ -1,6 +1,7 @@
 import numpy as np
 
-from .cfg_funcs import fbool, float_or_str, int_or_str, lcstr, tupletupleint
+from .cfg_funcs import fbool, float_or_str, int_or_str, lcstr, \
+    floattuple_or_one, tupletupleint
 
 
 config = {
@@ -11,9 +12,9 @@ config = {
         # see qpimage library: e.g. fit, gauss, mean, mode
         "amplitude offset":
             ("mean", lcstr, "Amplitude bg correction offset method"),
-        # see qpimage library: e.g. ramp, offset
+        # see qpimage library: e.g. tilt, offset
         "amplitude profile":
-            ("ramp", lcstr, "Amplitude bg correction profile method"),
+            ("tilt", lcstr, "Amplitude bg correction profile method"),
         # see skimage.filters.threshold_*
         "amplitude binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
@@ -29,9 +30,9 @@ config = {
         # see qpimage library: e.g. fit, gauss, mean, mode
         "phase offset":
             ("mean", lcstr, "Phase bg correction offset method"),
-        # see qpimage library: e.g. ramp, offset
+        # see qpimage library: e.g. tilt, offset
         "phase profile":
-            ("ramp", lcstr, "Phase bg correction profile method"),
+            ("tilt", lcstr, "Phase bg correction profile method"),
         # see skimage.filters.threshold_*
         "phase binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
@@ -40,19 +41,14 @@ config = {
         "phase border px":
             (5, int, "Phase bg border region to analyze [px]"),
     },
-    "roi": {
-        "dist border":
-            (10, int, "Minimum distance of objects to image border [px]"),
-        "eccentricity max":
-            (.7, float, "Allowed maximal eccentricity of the specimen"),
-        "exclude overlap":
-            (30., float, "Allowed distance between two objects [px]"),
-        "force":
-            ((), tupletupleint, "Force ROI coordinates (x1,x2,y1,y2) [px]"),
-        "pad border":
-            (40, int, "Padding of object regions [px]"),
-        "size variation":
-            (.5, float, "Allowed variation relative to specimen size"),
+    "holo": {
+        # see qpimage.holo.get_field
+        "filter name":
+            ("disk", str, "Filter name for sideband isolation"),
+        "filter size":
+            (1 / 3, float, "Filter size (fraction of the sideband frequency)"),
+        "sideband":
+            (1, floattuple_or_one, "Sideband +/-1, or frequency coordinates"),
     },
     "meta": {
         "medium index":
@@ -70,15 +66,27 @@ config = {
         "sensor tif data":
             (True, fbool, "Phase/Amplitude sensor tif data"),
     },
+    "roi": {
+        "dist border":
+            (10, int, "Minimum distance of objects to image border [px]"),
+        "eccentricity max":
+            (.7, float, "Allowed maximal eccentricity of the specimen"),
+        "exclude overlap":
+            (30., float, "Allowed distance between two objects [px]"),
+        "force":
+            ((), tupletupleint, "Force ROI coordinates (x1,x2,y1,y2) [px]"),
+        "pad border":
+            (40, int, "Padding of object regions [px]"),
+        "size variation":
+            (.5, float, "Allowed variation relative to specimen size"),
+    },
     "specimen": {
+        # this is used as the initial value for the sphere analysis
         "size um":
             (10, float, "Approximate diameter of the specimen [µm]"),
     },
     "sphere": {
-        "method":
-            ("edge", lcstr, "Method for determining sphere parameters"),
-        "model":
-            ("projection", lcstr, "Physical sphere model"),
+        # see qpsphere.edgefit.contour_canny
         "edge coarse":
             (.4, float, "Coarse edge detection filter size"),
         "edge fine":
@@ -89,6 +97,31 @@ config = {
             (1.1, float, "Exterior edge point filtering radius"),
         "edge iter":
             (20, int, "Maximum number iterations for coarse edge detection"),
+        # see qpsphere.imagefit.alg.match_phase
+        "image fit range position":  # crel
+            (.05, float, "Fit interpolation range for radius"),
+        "image fit range radius":  # rrel
+            (.05, float, "Fit interpolation range for radius"),
+        "image fit range refractive index":  # nrel
+            (.10, float, "Fit interpolation range for refractive index"),
+        "image fix phase offset":  # fix_pha_offset
+            (False, fbool, "Fix the simulation background phase to zero"),
+        "image iter":  # max_iter
+            (100, int, "Maximum number of iterations for image fitting"),
+        "image stop delta position":  # stop_dc
+            (1, float, "Stopping criterion for position"),
+        "image stop delta radius":  # stop_dr
+            (.0010, float, "Stopping criterion for radius"),
+        "image stop delta refractive index":  # stop_dn
+            (.0005, float, "Stopping criterion for refractive index"),
+        "image verbosity":  # verbose
+            (1, int, "Verbosity level of image fitting algorithm"),
+        # see qpsphere.analyze
+        "method":
+            ("edge", lcstr, "Method for determining sphere parameters"),
+        # see qpsphere.models
+        "model":
+            ("projection", lcstr, "Physical sphere model"),
         "refraction increment":
             (.18, float, "Refraction increment [mL/g]"),
         "radial inclusion factor":
