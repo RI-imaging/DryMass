@@ -107,12 +107,12 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
         msg = "The following regions were ignored:\n"
         regs = []
         for reg in ignored_regions:
-            regs.append("size: {: 7.1f}px, eccentricity: {:.1f}".format(
+            regs.append(" - size: {: 7.1f}px, eccentricity: {:.1f}".format(
                 reg.equivalent_diameter,
                 reg.eccentricity
             )
             )
-        msg += "     - ".join(regs)
+        msg += "\n".join(regs)
         print(msg)
     return used_regions
 

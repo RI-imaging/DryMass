@@ -1,4 +1,5 @@
 import pathlib
+import warnings
 
 import numpy as np
 import qpimage
@@ -25,7 +26,7 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dist_border=10, pad_border=40, exclude_overlap=30.,
                 bg_amp_kw=BG_DEFAULT_KW, bg_amp_bin=np.nan,
                 bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=np.nan,
-                ret_roimgr=False):
+                search_enabled=True, ret_roimgr=False):
     """Extract ROIs from a qpimage.QPSeries hdf5 file
 
     Parameters
@@ -62,6 +63,11 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         The phase binary threshold value or the method for binary
         threshold determination; see :mod:`skimage.filters`
         `threshold_*` methods
+    search_enabled: bool
+        If True, perform automated search for ROIs using the
+        parameters above. If False, extract the ROIs from `FILE_SLICES`
+        and only perform background correction using the `bg_*`
+        parameters.
     ret_roimgr: bool
         Return the ROIManager instance of the found ROIs
     """
@@ -72,30 +78,49 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
     imout = dout / FILE_ROI_DATA_TIF
     slout = dout / FILE_SLICES
 
+    # Determine ROI location
+    with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps:
+        rmgr = ROIManager(qps.identifier)
+        if search_enabled:
+            for ii in range(len(qps)):
+                qpi = qps[ii]
+                # find objects
+                slices = search.search_phase_objects(
+                    qpi=qpi,
+                    size_m=size_m,
+                    size_var=size_var,
+                    max_ecc=max_ecc,
+                    dist_border=dist_border,
+                    pad_border=pad_border,
+                    exclude_overlap=exclude_overlap)
+                for jj, sl in enumerate(slices):
+                    slident = "{}.{}".format(qpi["identifier"], jj)
+                    rmgr.add(roislice=sl, image_index=ii,
+                             roi_index=jj, identifier=slident)
+            rmgr.save(slout)
+        else:
+            rmgr.load(slout)
+
+    # Extract ROI images
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps, \
             qpimage.QPSeries(h5file=h5out, h5mode="w") as qps_roi, \
             tifffile.TiffWriter(str(imout), imagej=True) as tf:
-        rmgr = ROIManager(qps.identifier)
         for ii in range(len(qps)):
+            # image to analyze
             qpi = qps[ii]
-            # find objects
-            slices = search.search_phase_objects(
-                qpi=qpi,
-                size_m=size_m,
-                size_var=size_var,
-                max_ecc=max_ecc,
-                dist_border=dist_border,
-                pad_border=pad_border,
-                exclude_overlap=exclude_overlap)
-            for jj, sl in enumerate(slices):
-                # Write QPImage
+            # available ROIs
+            rois = rmgr.get_from_image_index(ii)
+            for jj, (rid, sl) in enumerate(rois):
+                # Extract the ROI
                 qpisl = qpi.__getitem__(sl)
+                # amplitude bg correction
                 if bg_amp_kw:
                     amp_mask = get_binary(
                         qpisl.amp, value_or_method=bg_amp_bin)
                     qpisl.compute_bg(which_data="amplitude",
                                      from_binary=amp_mask,
                                      **bg_amp_kw)
+                # phase bg correction
                 if bg_pha_kw:
                     pha_mask = get_binary(
                         qpisl.pha, value_or_method=bg_pha_bin)
@@ -103,9 +128,15 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                                      from_binary=pha_mask,
                                      **bg_pha_kw)
                 slident = "{}.{}".format(qpi["identifier"], jj)
+                if rid != slident:
+                    # This might happen if the user does not know the
+                    # image identifier and builds his own `FILE_SLICES`.
+                    msg = "Mismatch of slice and QPImage identifiers: " \
+                          + "{} vs {}!".format(rid, slident)
+                    warnings.warn(msg)
+                    # override `slident` with user identifier
+                    slident = rid
                 qps_roi.add_qpimage(qpisl, identifier=slident)
-                rmgr.add(roislice=sl, image_index=ii,
-                         roi_index=jj, identifier=slident)
 
         if len(qps_roi):
             # Write TIF
@@ -122,7 +153,6 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dummy[1, :sx, :sy] = qpir.amp
                 tf.save(data=dummy, resolution=(res, res, None))
 
-    rmgr.save(slout)
     ret = h5out
     if ret_roimgr:
         ret = ret, rmgr

@@ -11,7 +11,7 @@ FILE_SENSOR_DATA_H5 = "sensor_data.h5"
 FILE_SENSOR_DATA_TIF = "sensor_data.tif"
 
 
-def convert(path_in, dir_out, meta_data={},
+def convert(path_in, dir_out, meta_data={}, holo_kw={},
             bg_data_amp=None, bg_data_pha=None,
             write_tif=False):
     """Convert experimental data to `qpimage.QPSeries` on disk
@@ -37,7 +37,7 @@ def convert(path_in, dir_out, meta_data={},
     h5out = dout / FILE_SENSOR_DATA_H5
     imout = dout / FILE_SENSOR_DATA_TIF
 
-    ds = qpformat.load_data(path=path, meta_data=meta_data)
+    ds = qpformat.load_data(path=path, meta_data=meta_data, holo_kw={})
 
     if not (bg_data_amp is None and bg_data_pha is None):
         # Only set background of data set if there is

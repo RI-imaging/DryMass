@@ -21,6 +21,23 @@ class ROIManager(object):
         rois = [[r[0], r[3]] for r in self.rois if r[1] == image_index]
         return rois
 
+    def load(self, path):
+        path = pathlib.Path(path)
+        with path.open(mode="r") as fd:
+            lines = fd.readlines()
+        for ll in lines:
+            ll = ll.strip().split("\t")
+            sldata = "".join([c for c in ll[3] if c in ",0123456789"])
+            sldata = sldata.replace(",,", ",").split(",")
+            sldata = [int(s) for s in sldata if s]
+            slice1 = slice(sldata[0], sldata[1])
+            slice2 = slice(sldata[2], sldata[3])
+            self.add(identifier=ll[0],
+                     image_index=int(ll[1]),
+                     roi_index=int(ll[2]),
+                     roislice=(slice1, slice2)
+                     )
+
     def save(self, path):
         path = pathlib.Path(path)
         with path.open(mode="w") as fd:

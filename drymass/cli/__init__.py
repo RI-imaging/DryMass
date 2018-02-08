@@ -68,7 +68,7 @@ def cli_analyze_sphere(ret_data=False):
         print("Plotting sphere images... ", end="", flush=True)
         tifout = path_out / FILE_SPHERE_ANALYSIS_IMAGE.format(
             cfg["sphere"]["method"],
-            cfg["sphere"]["model"]
+            cfg["sphere"]["model"].replace(" ", "-")
         )
         # plot h5series and rmgr with matplotlib
         with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_roi, \
@@ -100,6 +100,11 @@ def cli_convert(ret_data=False):
                  "medium index": cfg["meta"]["medium index"],
                  }
 
+    holo_kw = {"filter_name": cfg["holo"]["filter name"],
+               "filter_size": cfg["holo"]["filter size"],
+               "sideband": cfg["holo"]["sideband"],
+               }
+
     bg_data_amp = cfg["bg"]["amplitude data"]
     bg_data_pha = cfg["bg"]["phase data"]
 
@@ -112,6 +117,7 @@ def cli_convert(ret_data=False):
     h5series = convert(path_in=path_in,
                        dir_out=path_out,
                        meta_data=meta_data,
+                       holo_kw=holo_kw,
                        bg_data_amp=bg_data_amp,
                        bg_data_pha=bg_data_pha,
                        write_tif=cfg["output"]["sensor tif data"],
@@ -139,9 +145,16 @@ def cli_extract_roi(ret_data=False):
                      "border_perc": cfg["bg"]["phase border perc"],
                      "border_px": cfg["bg"]["phase border px"],
                      }
+        # compatibility for drymass.cfg files created with
+        # drymass < 0.1.3 (API changed in qpimage 0.1.6).
+        if bg_amp_kw["fit_profile"] == "ramp":
+            bg_amp_kw["fit_profile"] = "tilt"
+        if bg_pha_kw["fit_profile"] == "ramp":
+            bg_pha_kw["fit_profile"] = "tilt"
     else:
         bg_amp_kw = None
         bg_pha_kw = None
+
     h5roi, rmgr = extract_roi(
         h5series=h5series,
         dir_out=path_out,
@@ -155,6 +168,7 @@ def cli_extract_roi(ret_data=False):
         bg_amp_bin=cfg["bg"]["amplitude binary threshold"],
         bg_pha_kw=bg_pha_kw,
         bg_pha_bin=cfg["bg"]["phase binary threshold"],
+        search_enabled=cfg["roi"]["enabled"],
         ret_roimgr=True,
     )
     print("Done.")

@@ -43,10 +43,13 @@ config = {
     },
     "holo": {
         # see qpimage.holo.get_field
+        # filter_name
         "filter name":
             ("disk", str, "Filter name for sideband isolation"),
+        # filter_size
         "filter size":
             (1 / 3, float, "Filter size (fraction of the sideband frequency)"),
+        # sideband
         "sideband":
             (1, floattuple_or_one, "Sideband +/-1, or frequency coordinates"),
     },
@@ -71,6 +74,9 @@ config = {
             (10, int, "Minimum distance of objects to image border [px]"),
         "eccentricity max":
             (.7, float, "Allowed maximal eccentricity of the specimen"),
+        # If set to false, the file "roi_slices.txt" must contain ROIs
+        "enabled":
+            (True, fbool, "Perform automated search for ROIs"),
         "exclude overlap":
             (30., float, "Allowed distance between two objects [px]"),
         "force":

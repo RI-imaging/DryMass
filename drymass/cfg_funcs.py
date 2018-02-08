@@ -52,6 +52,11 @@ def float_or_str(flt_or_str):
 def floattuple_or_one(fti):
     """Either a tuple of floats or +/-1"""
     msg = "Expected +1, -1 or (float, float), got '{}'".format(fti)
+    if isinstance(fti, str):
+        try:
+            fti = int(float(fti))
+        except ValueError:
+            raise ValueError(msg)
     if isinstance(fti, numbers.Number):
         fti = int(fti)
         if fti in [+1, -1]:
