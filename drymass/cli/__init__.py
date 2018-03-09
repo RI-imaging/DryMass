@@ -68,7 +68,7 @@ def cli_analyze_sphere(ret_data=False):
         print("Plotting sphere images... ", end="", flush=True)
         tifout = path_out / FILE_SPHERE_ANALYSIS_IMAGE.format(
             cfg["sphere"]["method"],
-            cfg["sphere"]["model"].replace(" ", "-")
+            cfg["sphere"]["model"]
         )
         # plot h5series and rmgr with matplotlib
         with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_roi, \
@@ -114,14 +114,18 @@ def cli_convert(ret_data=False):
     if bg_data_pha == "none":
         bg_data_pha = None
 
-    h5series = convert(path_in=path_in,
-                       dir_out=path_out,
-                       meta_data=meta_data,
-                       holo_kw=holo_kw,
-                       bg_data_amp=bg_data_amp,
-                       bg_data_pha=bg_data_pha,
-                       write_tif=cfg["output"]["sensor tif data"],
-                       )
+    h5series, ds = convert(path_in=path_in,
+                           dir_out=path_out,
+                           meta_data=meta_data,
+                           holo_kw=holo_kw,
+                           bg_data_amp=bg_data_amp,
+                           bg_data_pha=bg_data_pha,
+                           write_tif=cfg["output"]["sensor tif data"],
+                           ret_dataset=True,
+                           )
+    if "hologram" not in ds.storage_type:
+        # remove "holo" section from configuration
+        cfg.remove_section("holo")
     print("Done.")
     if ret_data:
         return h5series

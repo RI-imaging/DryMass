@@ -168,6 +168,12 @@ class ConfigFile(object):
         with self.path.open("w") as fd:
             fd.writelines(lines)
 
+    def remove_section(self, section):
+        """Remove a section from the configuration file"""
+        datadict = self._parse()
+        datadict.pop(section)
+        self._write(datadict)
+
     def set_value(self, section, key, value):
         """Set a configuration key value
 
