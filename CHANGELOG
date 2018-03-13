@@ -1,4 +1,5 @@
 0.1.3
+ - automatically fix inverted ranges when loading "roi_slices.txt"
  - remove "holo" section from drymass.cfg if not relevant
  - allow user-defined ROI selection via "[roi] enabled = False"
  - added hologram analysis parameter tuning (qpimage 0.1.6)

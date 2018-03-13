@@ -30,8 +30,10 @@ class ROIManager(object):
             sldata = "".join([c for c in ll[3] if c in ",0123456789"])
             sldata = sldata.replace(",,", ",").split(",")
             sldata = [int(s) for s in sldata if s]
-            slice1 = slice(sldata[0], sldata[1])
-            slice2 = slice(sldata[2], sldata[3])
+            slice1 = slice(min(sldata[0], sldata[1]),
+                           max(sldata[0], sldata[1]))
+            slice2 = slice(min(sldata[2], sldata[3]),
+                           max(sldata[2], sldata[3]))
             self.add(identifier=ll[0],
                      image_index=int(ll[1]),
                      roi_index=int(ll[2]),
