@@ -25,6 +25,8 @@ class ROIManager(object):
         path = pathlib.Path(path)
         with path.open(mode="r") as fd:
             lines = fd.readlines()
+        # remove empty lines
+        lines = [ll for ll in lines if ll.strip()]
         for ll in lines:
             ll = ll.strip().split("\t")
             sldata = "".join([c for c in ll[3] if c in ",0123456789"])
