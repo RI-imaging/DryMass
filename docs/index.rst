@@ -1,7 +1,7 @@
+.. _index:
+
 DryMass documentation
 ======================
-
-.. _index:
 
 DryMass is a user-friendly quantitative phase imaging
 analysis software.
