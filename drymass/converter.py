@@ -88,7 +88,9 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
 
     if h5out.exists():
         with qpimage.QPSeries(h5file=h5out, h5mode="r") as qpsr:
-            if ds.identifier == qpsr.identifier:
+            if (ds.identifier == qpsr.identifier and
+                    len(ds) == len(qpsr)):
+                # file has same identifier and same number of qpimages
                 create = False
             else:
                 create = True

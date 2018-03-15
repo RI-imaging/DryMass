@@ -1,3 +1,5 @@
+0.1.4
+ - fix: check number of qpimages in sensor_data.h5 during dm_convert
 0.1.3
  - automatically fix inverted ranges when loading "roi_slices.txt"
  - remove "holo" section from drymass.cfg if not relevant
