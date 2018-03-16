@@ -43,8 +43,8 @@ parameters are not set correctly. This is image 27:
 .. figure:: t02_roi_search1.jpg
 
 We want to exclude small ROIs and ROIs with a large overlap. Furthermore,
-we want to include the large cells (image 39). Thus, we change the following
-configuration keys in *drymass.cfg*:
+we want to include all large cells (see e.g. image 39). Thus, we change the
+following configuration keys in *drymass.cfg*:
 
 .. code-block:: none
 
@@ -67,7 +67,7 @@ in *drymass.cfg*
   enabled = False        # use existing roi_slices.txt
 
 and remove the undesired ROIs from *roi_slices.txt*, which are
-*7.3, 14.1, 17.1,* and *17.2*. There should now be a total of 88 ROIs.
+*7.3, 14.1, 17.1, 17.2* and *34.1*. There should now be a total of 87 ROIs.
 
 
 Set 2nd order polynomial background correction
@@ -99,7 +99,7 @@ this step:
 
 .. note::
 
-    Warnings about *slice and QPImage identifiers* can be safely ignored.
+    Warnings about *slice and QPImage identifiers* can safely be ignored.
     Setting the RI of the medium changes the internal ROI identifiers.
     Since we have fixed the ROIs, the identifiers do not match anymore,
     but the enumeration is still correct.
@@ -120,12 +120,13 @@ The explanation is that the radius of the cell is determined with an
 edge-detection algorithm applied to the phase image. Since the
 edge-detection algorithm determines the edge on the slope of the phase
 profile (not where the phase profile starts to deviate from the background),
-it underestimates the radius. The solution is to take into account the
-full phase image when determining RI and radius :cite:`Kemper2007`
+it underestimates the radius. The solution to this problem is to take into
+account the full phase image when determining RI and radius :cite:`Kemper2007`
 :cite:`Mueller2018`.
 
-In figure 5d of reference :cite:`Mueller2018`, several sphere models are
-applied to obtain RI values for the same cell population. To compute these
+This can be achieved by modifying the ``[sphere]`` section of *drymass.cfg*.
+In figure 5d of reference :cite:`Mueller2018`, multiple RI-retrieval methods are
+applied and compared for the same cell population. To repdroduce these
 data, we run ``dm_analyze_sphere DHM_HL60_cells.zip`` three more times
 with a modified ``[sphere]`` section (note that this may take a while).
 
@@ -172,6 +173,14 @@ with a modified ``[sphere]`` section (note that this may take a while).
   - *sphere_image_rytov-sc_images.tif*
   - *sphere_image_rytov-sc_statistics.txt*
 
+
+.. note::
+
+  We omitted the case ``model = mie-avg`` which is part of figure 5d
+  in reference :cite:`Mueller2018`, because of the long fitting
+  time.
+
+
 To verify that the full-phase-image-based approaches indeed yield lower
 residuals than the edge-detection approach, let's have a look at ROI 23.0
 of *sphere_image_rytov-sc_images.tif*.
@@ -191,40 +200,73 @@ To plot the results, we use the following Python program.
     import matplotlib.pylab as plt
     import numpy as np
     
+    
     def dot_boxplot(ax, data, colors, labels, **kwargs):
-        """Boxplot with all data points"""
+        """Combined box and scatter plot"""
         box_list = []
     
         for ii in range(len(data)):
-            # Set random state
+            # set same random state for every scatter plot
             rs = np.random.RandomState(42).get_state()
             np.random.set_state(rs)
             y = data[ii]
-            x = np.random.normal(ii+1, 0.1, len(y))
+            x = np.random.normal(ii+1, 0.15, len(y))
             plt.plot(x, y, 'o', alpha=0.5, color=colors[ii])
             box_list.append(y)
     
         ax.boxplot(box_list,
                    sym="",
-                   medianprops={"color":"black", "linestyle":"solid"},
+                   medianprops={"color": "black", "linestyle": "solid"},
                    widths=0.3,
                    labels=labels,
                    **kwargs)
         plt.grid(axis="y")
 
-        ri_data = [
-            np.loadtxt("sphere_image_rytov-sc_statistics.txt", usecols=(1,)),
-            np.loadtxt("sphere_image_rytov_statistics.txt", usecols=(1,)),
-            np.loadtxt("sphere_image_projection_statistics.txt", usecols=(1,)),
-            np.loadtxt("sphere_edge_projection_statistics.txt", usecols=(1,)),
-            ]
-        colors = ["#E48620", "#DE2400", "#6e559d", "#048E00"]
-        labels = ["Ryt-SC", "Rytov", "OPD-pj", "OPD-ed"]    
-    
-        plt.figure(figsize=(8,8))
-        ax = plt.subplot(111)
-        dot_boxplot(ax=ax, data=ri_data, colors=colors, labels=labels)
-        plt.tight_layout()
-        plt.show()
+    ri_data = [
+        np.loadtxt("sphere_image_rytov-sc_statistics.txt", usecols=(1,)),
+        np.loadtxt("sphere_image_rytov_statistics.txt", usecols=(1,)),
+        np.loadtxt("sphere_image_projection_statistics.txt", usecols=(1,)),
+        np.loadtxt("sphere_edge_projection_statistics.txt", usecols=(1,)),
+        ]
+    colors = ["#E48620", "#DE2400", "#6e559d", "#048E00"]
+    labels = ["image rytov-sc", "image rytov",
+              "image projection", "edge projection"]
+
+    plt.figure(figsize=(8, 5))
+    ax = plt.subplot(111, title="HL60 (DHM)")
+    ax.set_ylabel("refractive index")
+    dot_boxplot(ax=ax, data=ri_data, colors=colors, labels=labels)
+    plt.tight_layout()
+    plt.show()
+
 
 .. figure:: t02_reproduced_5d.jpg
+
+
+Discussion
+----------
+The above figure correctly reproduces the message conveyed with figure 5d of
+reference :cite:`Mueller2018`. There are only minor differences that can
+be explained by a slightly different analysis pipeline:
+
+- In :cite:`Mueller2018`, 84 cells were analyzed as opposed to the 87 cells
+  shown here. This can be attributed to the improved object detection
+  pipeline introduced in DryMass 0.1.4.
+
+- In :cite:`Mueller2018`, the phase data were background-corrected with
+  background data (not included in *DHM_HL60_cells.zip*) and a linear model
+  (``phase profile = tilt``) as opposed to a second order
+  polynomial model (which was introduced in DryMass 0.1.3). However, this
+  does not seem to have any significant effect on the results, which
+  indicates that the methods presented here are robust.
+
+- There is a prominent outlier in the *edge projection* results set. The
+  reason for this outlier is a falsely detected contour (see ROI 1.0).
+  This ROI was not included in the analysis of :cite:`Mueller2018`.
+
+- Other minor differences might originate from the fact that the hologram
+  data is processed differently (``[holo]`` section of *drymass.cfg*).
+  In :cite:`Mueller2018`, a gaussian filter is used whereas DryMass defaults
+  to a disk filter. For more information on this topic, see e.g.
+  :ref:`qpimage:example_hologram_filters`.
+
