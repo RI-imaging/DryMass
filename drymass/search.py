@@ -1,5 +1,5 @@
 import numpy as np
-from skimage.filters import threshold_otsu
+from skimage.filters import threshold_li, threshold_local
 from skimage.segmentation import clear_border
 from skimage.morphology import label
 from skimage.measure import regionprops
@@ -82,14 +82,17 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
         # phase images are zero
         # no regions can be found
         return []
-    # prepare phase for thresholding
-    image = (image - np.min(image)) / (np.max(image) - np.min(image))
-    image[:, :] = (image[:, :] - .5) * 2
+
+    # apply local threshold
+    locthr = threshold_local(image, block_size=3*size)
+    image = image - locthr
+
     # threshold image
-    thresh = threshold_otsu(image)
+    thresh = threshold_li(image)
     bw = image > thresh
     # label image regions
     object_labels = label(bw)
+
     # remove artifacts connected to image border
     clear_border(object_labels, buffer_size=int(dist_border), in_place=True)
     used_regions = []
@@ -197,6 +200,20 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
     delregs = []
     for rr in regs:
         for bb in bgregs:
+            dst = np.sqrt((rr.centroid[0] - bb.centroid[0])**2 +
+                          (rr.centroid[1] - bb.centroid[1])**2
+                          )
+            olap = (rr.equivalent_diameter + bb.equivalent_diameter) / 2 - dst
+            if olap + exclude_overlap > 0:
+                delregs.append(rr)
+    for dd in delregs:
+        regs.remove(dd)
+    # Filter regions that overlap with regions in the image
+    delregs = []
+    for rr in regs:
+        for bb in regs:
+            if rr == bb:
+                continue
             dst = np.sqrt((rr.centroid[0] - bb.centroid[0])**2 +
                           (rr.centroid[1] - bb.centroid[1])**2
                           )

@@ -1,6 +1,8 @@
-=================================================
-T1: Bead analysis with the command line interface
-=================================================
+.. _tutorial01:
+
+=======================
+T1: Bead analysis (CLI)
+=======================
 
 Introduction
 ------------
@@ -17,7 +19,7 @@ Prerequisites
 For this tutorial, you need:
 
 - Python 3.5 or above and DryMass version 0.1.1 or above (see :ref:`section_install`)
-- `Fiji <https://fiji.sc/>`_ (optional, for data visualization)
+- `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
 - Experimental data set: `QLSR_PAA_beads.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads.zip>`_
 
 Execute dm_analyze_sphere
