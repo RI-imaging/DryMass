@@ -258,7 +258,7 @@ be explained by a slightly different analysis pipeline:
   (``phase profile = tilt``) as opposed to a second order
   polynomial model (which was introduced in DryMass 0.1.3). However, this
   does not seem to have any significant effect on the results, which
-  indicates that the methods presented here are robust.
+  indicates that the analysis methods are robust.
 
 - There is a prominent outlier in the *edge projection* results set. The
   reason for this outlier is a falsely detected contour (see ROI 1.0).
