@@ -38,7 +38,7 @@ which can be found in the *readme.txt* file inside the zip archive.
 
 This command imports the raw data and searches for cells in the phase
 data. Opening the file *sensor_roi_images.tif*, we realize that the search
-parameters are not set correctly. This is image 27:
+parameters are not set optimally. This is image 27:
 
 .. figure:: t02_roi_search1.jpg
 
@@ -119,7 +119,7 @@ by the edge-projection model.
 The explanation is that the radius of the cell is determined with an
 edge-detection algorithm applied to the phase image. Since the
 edge-detection algorithm determines the edge on the slope of the phase
-profile (not where the phase profile starts to deviate from the background),
+profile and not where the phase profile starts to deviate from the background,
 it underestimates the radius. The solution to this problem is to take into
 account the full phase image when determining RI and radius :cite:`Kemper2007`
 :cite:`Mueller2018`.
