@@ -1,4 +1,5 @@
 0.1.4
+ - feat: add switch for changing endianness of data stored
  - feat: add local thresholding step before segmentation
  - fix: check number of qpimages in sensor_data.h5 during dm_convert
  - fix: "exclude overlap" only used for background image

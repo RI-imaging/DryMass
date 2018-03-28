@@ -84,7 +84,8 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
         return []
 
     # apply local threshold
-    locthr = threshold_local(image, block_size=3*size)
+    block_size = ((3*size) // 2) * 2 + 1  # odd block size
+    locthr = threshold_local(image, block_size=block_size)
     image = image - locthr
 
     # threshold image
