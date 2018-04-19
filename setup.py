@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 from os.path import dirname, realpath, exists
 from setuptools import setup, find_packages
 import sys
@@ -35,6 +33,7 @@ setup(
     version=version,
     packages=find_packages(),
     package_dir={name: name},
+    include_package_data=True,
     license="MIT",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',

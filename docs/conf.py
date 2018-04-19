@@ -186,9 +186,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'DryMass', 'DryMass Documentation',
-     author, 'DryMass', 'One line description of project.',
-     'Miscellaneous'),
+    (master_doc, project, project + ' Documentation',
+     author, project, 'Phase imaging analysis software.',
+     'Scientific'),
 ]
 
 
