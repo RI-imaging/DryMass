@@ -26,9 +26,10 @@ Find regions of interest
 .. note::
 
   You can skip this part by copying *roi_slices.txt* from *DHM_HL60_cells.zip*
-  into the *DHM_HL60_cells.zip_dm* folder and setting ``enabled = False``
-  in the ``[roi]`` section of *drymass.cfg*.
-   
+  into the *DHM_HL60_cells.zip_dm* folder,
+  running :ref:`section_dm_convert` and manually adding the ``[roi]``
+  section to *drymass.cfg* with ``enabled = False``.
+
 We proceed slightly different than in :ref:`tutorial 1<tutorial01>`. Before
 we use the command  :ref:`section_dm_analyze_sphere` to extract the RI
 values of the HL60 cells, we have to modify our configuration.
@@ -49,7 +50,7 @@ following configuration keys in *drymass.cfg*:
 .. code-block:: none
 
   [specimen]
-  size = 13              # approximate cell diameter we are looking for [µm]
+  size um = 13              # approximate cell diameter we are looking for [µm]
 
   [roi]
   pad border = 80        # increase border size around cells

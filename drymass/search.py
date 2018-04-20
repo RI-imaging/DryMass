@@ -222,7 +222,8 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
             if olap + exclude_overlap > 0:
                 delregs.append(rr)
     for dd in delregs:
-        regs.remove(dd)
+        if dd in regs:  # make sure `dd` is removed only once
+            regs.remove(dd)
     # Create slices and pad the region sizes
     slices = []
     for re in regs:
