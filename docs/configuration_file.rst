@@ -26,7 +26,7 @@ please see :mod:`qpimage.bg_estimate`.
 These parameters tune the hologram analysis step (if applicable).
 The parameters shown are passed to :func:`qpimage.holo.get_field`.
 
-.. include_definition:: meta
+.. include_definition:: holo
 
 
 [meta] Image meta data
@@ -39,7 +39,7 @@ This section contains meta data of the experiment.
 
 [output] Supplementary data output
 ----------------------------------
-This section defines what additional data is written to disk.
+This section defines what additional data are written to disk.
 
 .. include_definition:: output
 
@@ -47,23 +47,27 @@ This section defines what additional data is written to disk.
 
 [roi] Extraction of regions of interest
 ---------------------------------------
+The extraction of ROIs is done in :func:`drymass.extractroi.extract_roi`.
+
 .. include_definition:: roi
 
 .. _config_specimen:
 
 [specimen] Specimen parameters
 ------------------------------
-.. include_definition:: specimen
+Prior information about the analyzed object(s).
 
+.. include_definition:: specimen
 
 
 .. _config_sphere:
 
 [sphere] Sphere-based image analysis
 ------------------------------------
-qpsphere.edgefit.contour_canny
-qpsphere.imagefit.alg.match_phase
+Retrieval of refractive index and radius is done with the Python module
+:ref:`qpsphere <qpsphere:index>`. The parameters either apply to 
+:func:`qpsphere.edgefit.contour_canny` or to
+:func:`qpsphere.imagefit.alg.match_phase`, depending on
+:ref:`which analysis approach <qpsphere:choose_method_model>` is used.
 
 .. include_definition:: sphere
-
-   

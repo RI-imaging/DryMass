@@ -82,7 +82,7 @@ config = {
             (.7, float, "Allowed maximal eccentricity of the specimen"),
         "enabled":
             (True, fbool, "Perform automated search for ROIs"),
-            # If set to false, the file "roi_slices.txt" must contain ROIs
+            # If set to *False*, the file "roi_slices.txt" must contain ROIs
         "exclude overlap":
             (30.0, float, "Allowed distance between two objects [px]"),
         "force":
@@ -128,9 +128,10 @@ config = {
             (1, int, "Verbosity level of image fitting algorithm"),
         "method":
             ("edge", lcstr, "Method for determining sphere parameters"),
-            # Valid values are *edge* and *image*.
+            # Valid values are *edge* or *image*.
         "model":
-            # see :ref:`qpsphere:choose_method_model`
+            # Valid values are defined in
+            # :data:`qpsphere.models.available`. 
             ("projection", lcstr, "Physical sphere model"),
         "refraction increment":
             (.18, float, "Refraction increment [mL/g]"),

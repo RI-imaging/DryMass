@@ -72,7 +72,7 @@ def parse_element(rst, name="", doc="", notes=[], default="", dtype=""):
     if default == "np.nan":
         default = "nan"
 
-    rst.append("* | **{}** ({}) -- {} ".format(name, default, doc))
+    rst.append("* | **{}** (*{}*) -- {} ".format(name, default, doc))
     if notes:
         rst.append("  | {}".format("".join(notes)))
 
