@@ -6,36 +6,40 @@ from .cfg_funcs import fbool, float_or_str, int_or_str, lcstr, \
 
 config = {
     "bg": {
-        # indexing starts at 1
         "amplitude data":
             ("none", int_or_str, "Amplitude bg correction file or index"),
-        # see qpimage library: e.g. fit, gauss, mean, mode
+            # Image indexing starts with 1.
         "amplitude offset":
             ("mean", lcstr, "Amplitude bg correction offset method"),
-        # see qpimage library: e.g. tilt, offset
+            # Valid values are stored in
+            # :mod:`qpimage.core`.
         "amplitude profile":
             ("tilt", lcstr, "Amplitude bg correction profile method"),
-        # see skimage.filters.threshold_*
+            # Valid values are e.g. *offset*, *tilt*, *poly2o*.
         "amplitude binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
+            # If not *nan*, defines a threshold for background segmentation
+            # or a method in :mod:`skimage.filters`.
         "amplitude border perc":
             (10, float, "Amplitude bg border region to analyze [%]"),
         "amplitude border px":
             (5, int, "Amplitude bg border region to analyze [px]"),
         "enabled":
             (True, fbool, "Enable bg correction globally"),
-        # indexing starts at 1
+            # Set to *False* when editing *roi_slices.txt*.
         "phase data":
             ("none", int_or_str, "Phase bg correction file or index"),
-        # see qpimage library: e.g. fit, gauss, mean, mode
+            # Image indexing starts with 1.
         "phase offset":
             ("mean", lcstr, "Phase bg correction offset method"),
-        # see qpimage library: e.g. tilt, offset
+            # Valid values are e.g. *fit*, *gauss*, *mean*, *mode*.
         "phase profile":
             ("tilt", lcstr, "Phase bg correction profile method"),
-        # see skimage.filters.threshold_*
+            # Valid values are e.g. *offset*, *tilt*, *poly2o*.
         "phase binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
+            # If not *nan*, defines a threshold for background segmentation
+            # or a method in :mod:`skimage.filters`.
         "phase border perc":
             (10, float, "Phase bg border region to analyze [%]"),
         "phase border px":
@@ -43,15 +47,15 @@ config = {
     },
     "holo": {
         # see qpimage.holo.get_field
-        # filter_name
         "filter name":
             ("disk", str, "Filter name for sideband isolation"),
-        # filter_size
+            # filter_name
         "filter size":
             (1 / 3, float, "Filter size (fraction of the sideband frequency)"),
-        # sideband
+            # filter_size
         "sideband":
             (1, floattuple_or_one, "Sideband +/-1, or frequency coordinates"),
+            # sideband
     },
     "meta": {
         "medium index":
@@ -74,11 +78,11 @@ config = {
             (10, int, "Minimum distance of objects to image border [px]"),
         "eccentricity max":
             (.7, float, "Allowed maximal eccentricity of the specimen"),
-        # If set to false, the file "roi_slices.txt" must contain ROIs
         "enabled":
             (True, fbool, "Perform automated search for ROIs"),
+            # If set to false, the file "roi_slices.txt" must contain ROIs
         "exclude overlap":
-            (30., float, "Allowed distance between two objects [px]"),
+            (30.0, float, "Allowed distance between two objects [px]"),
         "force":
             ((), tupletupleint, "Force ROI coordinates (x1,x2,y1,y2) [px]"),
         "pad border":
@@ -87,12 +91,11 @@ config = {
             (.5, float, "Allowed variation relative to specimen size"),
     },
     "specimen": {
-        # this is used as the initial value for the sphere analysis
         "size um":
             (10, float, "Approximate diameter of the specimen [µm]"),
+            # this is used as the initial value for the sphere analysis
     },
     "sphere": {
-        # see qpsphere.edgefit.contour_canny
         "edge coarse":
             (.4, float, "Coarse edge detection filter size"),
         "edge fine":
@@ -103,7 +106,6 @@ config = {
             (1.1, float, "Exterior edge point filtering radius"),
         "edge iter":
             (20, int, "Maximum number iterations for coarse edge detection"),
-        # see qpsphere.imagefit.alg.match_phase
         "image fit range position":  # crel
             (.05, float, "Fit interpolation range for radius"),
         "image fit range radius":  # rrel
@@ -122,11 +124,11 @@ config = {
             (.0005, float, "Stopping criterion for refractive index"),
         "image verbosity":  # verbose
             (1, int, "Verbosity level of image fitting algorithm"),
-        # see qpsphere.analyze
         "method":
             ("edge", lcstr, "Method for determining sphere parameters"),
-        # see qpsphere.models
+            # Valid values are *edge* and *image*.
         "model":
+            # see :ref:`qpsphere:choose_method_model`
             ("projection", lcstr, "Physical sphere model"),
         "refraction increment":
             (.18, float, "Refraction increment [mL/g]"),

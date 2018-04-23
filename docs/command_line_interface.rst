@@ -123,9 +123,11 @@ tomographic approaches that require an acquisition of multiple phase
 images from different directions). The parameters for the sphere analysis,
 such as analysis method and scattering model
 are defined in the :ref:`sphere <config_sphere>` section of the 
-:doc:`drymass configuration file <configuration_file>`.
-The following files are created by dm_analyze_sphere (
-`METHOD` is the analysis method and `MODEL` is the
+:doc:`drymass configuration file <configuration_file>`. For an overview
+of the available models, please refer to the
+:ref:`qpsphere docs <qpsphere:choose_method_model>`. 
+The following files are created by dm_analyze_sphere
+(`METHOD` is the analysis method and `MODEL` is the
 scattering model defined in *drymass.cfg*):
 
 *sphere_METHOD_MODEL_data.h5*

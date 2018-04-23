@@ -11,64 +11,48 @@ The configuration file is divided into sections.
 
 [bg] Background correction
 --------------------------
-.. literalinclude:: ../drymass/definitions.py
-   :language: python
-   :start-after: "bg"
-   :end-before: }
-   :dedent: 8
+DryMass uses the Python library :ref:`qpimage <qpimage:index>` for
+background correction. For detailed information on the
+algorithms (and the corresponding keyword arguments) used,
+please see :mod:`qpimage.bg_estimate`.
+
+.. include_definition:: bg
 
 
 .. _config_meta:
 
 [meta] Image meta data
 ----------------------
-.. literalinclude:: ../drymass/definitions.py
-   :language: python
-   :start-after: "meta"
-   :end-before: }
-   :dedent: 8
+.. include_definition:: meta
 
 
 .. _config_roi:
 
 [roi] Extraction of regions of interest
 ---------------------------------------
-.. literalinclude:: ../drymass/definitions.py
-   :language: python
-   :start-after: "roi"
-   :end-before: }
-   :dedent: 8
-
+.. include_definition:: roi
 
 .. _config_output:
 
 [output] Supplementary data output
 ----------------------------------
-.. literalinclude:: ../drymass/definitions.py
-   :language: python
-   :start-after: "output"
-   :end-before: }
-   :dedent: 8
-
+.. include_definition:: output
 
 .. _config_specimen:
 
 [specimen] Specimen parameters
 ------------------------------
-.. literalinclude:: ../drymass/definitions.py
-   :language: python
-   :start-after: "specimen"
-   :end-before: }
-   :dedent: 8
+.. include_definition:: specimen
+
 
 
 .. _config_sphere:
 
 [sphere] Sphere-based image analysis
 ------------------------------------
-.. literalinclude:: ../drymass/definitions.py
-   :language: python
-   :start-after: "sphere"
-   :end-before: }
-   :dedent: 8
+qpsphere.edgefit.contour_canny
+qpsphere.imagefit.alg.match_phase
 
+.. include_definition:: sphere
+
+   
