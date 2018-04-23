@@ -17,6 +17,8 @@ Please note that if DryMass is installed in a
 DryMass CLI is only available if this environment is activated.
 
 
+.. _section_dm_convert:
+
 dm_convert
 ----------
 This command converts experimental data on disk to the TIF file format
