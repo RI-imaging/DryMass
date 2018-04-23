@@ -11,11 +11,12 @@ config = {
             # Image indexing starts with 1.
         "amplitude offset":
             ("mean", lcstr, "Amplitude bg correction offset method"),
-            # Valid values are stored in
-            # :mod:`qpimage.core`.
+            # Valid values are defined in
+            # :mod:`qpimage.bg_estimate.VALID_FIT_OFFSETS`.
         "amplitude profile":
             ("tilt", lcstr, "Amplitude bg correction profile method"),
-            # Valid values are e.g. *offset*, *tilt*, *poly2o*.
+            # Valid values are defined in
+            # :mod:`qpimage.bg_estimate.VALID_FIT_PROFILES`.
         "amplitude binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
             # If not *nan*, defines a threshold for background segmentation
