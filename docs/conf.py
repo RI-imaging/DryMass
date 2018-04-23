@@ -34,7 +34,7 @@ sys.path.append(op.abspath('extensions'))
 
 # RTD version
 if "READTHEDOCS_VERSION" in os.environ:
-    rtd_version = os.environ()["READTHEDOCS_VERSION"]
+    rtd_version = os.environ["READTHEDOCS_VERSION"]
 else:
     rtd_version = "latest"
 
