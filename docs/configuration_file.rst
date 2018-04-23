@@ -1,4 +1,4 @@
-.. _section_configuration_file:
+.. _sec_configuration_file:
 
 ==================
 Configuration file

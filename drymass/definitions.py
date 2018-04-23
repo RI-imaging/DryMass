@@ -54,7 +54,7 @@ config = {
         "filter size":  # filter_size
             (1/3, float, "Filter size (fraction of the sideband frequency)"),
         "sideband":  # sideband
-            (1, floattuple_or_one, "Sideband ±1, or frequency coordinates"),
+            (1, floattuple_or_one, "Sideband ±1 or frequency coordinates"),
     },
     "meta": {
         "medium index":

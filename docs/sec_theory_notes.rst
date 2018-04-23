@@ -123,7 +123,7 @@ Notes and gotchas
   suggested for cells based on the refraction increment of cellular
   constituents by references :cite:`Barer_1954` and :cite:`Barer_1953`.
   The refraction increment can be manually set using the
-  :ref:`configuration <section_configuration_file>` key
+  :ref:`configuration <sec_configuration_file>` key
   "refraction increment" in the "sphere" section.
 
 - **Variations in the refraction increment** may occur and

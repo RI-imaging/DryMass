@@ -45,7 +45,7 @@ DryMass has created a directory called ``QLSR_PAA_beads.zip_dm`` (the
 input argument with an `_dm` appended) which contains the following
 files
 
-- **drymass.cfg**: DryMass :ref:`section_configuration_file`
+- **drymass.cfg**: DryMass :ref:`sec_configuration_file`
 - **roi_data.h5**: regions of interest (ROIs)
 - **roi_data.tif**: phase and amplitude data of the ROIs as a tif file
 - **roi_slices.txt**: positions of the ROIs
@@ -68,7 +68,7 @@ indicates the ROI that was found by DryMass, labeled with the identifier
 *85449:0.0*. The file *sensor_roi_images.tif* allows you to check that
 DryMass has correctly found the objects that you are interested in. If the
 beads were not detected correctly, we would probably have to adjust the
-size parameter in the :ref:`section_configuration_file` (see also 
+size parameter in the :ref:`sec_configuration_file` (see also 
 :ref:`section_dm_extract_roi`).
 
 It appears that DryMass has correctly found all beads with the default
