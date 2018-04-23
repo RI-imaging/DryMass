@@ -72,21 +72,16 @@ def parse_element(rst, name="", doc="", notes=[], default="", dtype=""):
     if default == "np.nan":
         default = "nan"
 
+    rst.append("* **{}:** {} ".format(name, doc))
     rst.append("")
     rst.append("  .. csv-table::")
     rst.append("     :widths: auto")
     rst.append("     :delim: tab")
     rst.append("")
-    rst.append("     **{}:**\t {} ".format(name, doc))
-    rst.append("")
-    rst.append("  .. csv-table::")
-    rst.append("     :widths: auto")
-    rst.append("     :delim: tab")
-    rst.append("")
-    rst.append("     \tDefault\t {}".format(default))
-    rst.append("     \tType\t {}".format(dtype))
+    rst.append("     Default\t {}".format(default))
+    rst.append("     Type\t {}".format(dtype))
     if notes:
-        rst.append("      \tNotes\t {}".format("".join(notes)))
+        rst.append("      Notes\t {}".format("".join(notes)))
     rst.append("")
 
 
