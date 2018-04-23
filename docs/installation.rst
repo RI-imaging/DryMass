@@ -29,11 +29,13 @@ Upgrade
 If you have installed on older version of DryMass and wish to upgrade
 to the latest version, use
 
-``pip install drymass --upgrade``
+``pip uninstall drymass`` followed by
+
+``pip install drymass``.
 
 If you wish to install a specific version of DryMass (e.g. 0.1.0), use
 
-``pip install 'drymass==0.1.0'``
+``pip install 'drymass==0.1.0'``.
 
 
 Known issues
