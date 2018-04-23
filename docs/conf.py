@@ -42,7 +42,8 @@ else:
 install_requires = ["h5py", "lmfit", "numpy", "scipy", "skimage",
                     "skimage.restoration", "skimage.external",
                     "skimage.filters", "skimage.segmentation",
-                    "skimage.morphology", "skimage.measure"]
+                    "skimage.morphology", "skimage.measure",
+                    "qpimage", "qpsphere", "qpformat"]
 
 for mod_name in install_requires:
     sys.modules[mod_name] = mock.Mock()

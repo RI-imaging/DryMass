@@ -4,7 +4,7 @@ import numpy as np
 
 
 def fbool(value):
-    """boolean"""
+    """Boolean value from string or number"""
     if isinstance(value, str):
         value = value.lower()
         if value == "false":
@@ -21,7 +21,7 @@ def fbool(value):
 
 
 def fintlist(alist):
-    """A list of integers"""
+    """List of integers from string or list of strings/integers"""
     outlist = []
     if isinstance(alist, str):
         # we have a string (comma-separated integers)
@@ -33,7 +33,7 @@ def fintlist(alist):
 
 
 def float_or_str(flt_or_str):
-    """Either a float or an alphanumeric string"""
+    """Float value from string or number"""
     if isinstance(flt_or_str, str):
         flt_or_str = flt_or_str.strip()
         if flt_or_str == "nan":
@@ -50,7 +50,7 @@ def float_or_str(flt_or_str):
 
 
 def floattuple_or_one(fti):
-    """Either a tuple of floats or +/-1"""
+    """Tuple of floats or ±1 from a string or a number"""
     msg = "Expected +1, -1 or (float, float), got '{}'".format(fti)
     if isinstance(fti, str):
         try:
@@ -76,7 +76,7 @@ def floattuple_or_one(fti):
 
 
 def int_or_str(it_or_str):
-    """Either an int or an alphanumeric string"""
+    """Integer or string from a string or a number"""
     if isinstance(it_or_str, str):
         it_or_str = it_or_str.strip()
         if it_or_str.replace(".", "").isdigit():
@@ -89,12 +89,12 @@ def int_or_str(it_or_str):
 
 
 def lcstr(astr):
-    """lower-case string"""
+    """Convert a string to lower-case"""
     return astr.lower()
 
 
 def tupletupleint(items):
-    """A tuple containing x- and y- slice tuples"""
+    """A tuple containing x- and y- slice tuples from a string or tuple"""
     if isinstance(items, str):
         for s in " ()[]":
             items = items.replace(s, "")

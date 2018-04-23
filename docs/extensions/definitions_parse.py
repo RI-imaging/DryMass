@@ -72,9 +72,13 @@ def parse_element(rst, name="", doc="", notes=[], default="", dtype=""):
     if default == "np.nan":
         default = "nan"
 
-    rst.append("* | **{}** (*{}*) -- {} ".format(name, default, doc))
+    if dtype in ["float", "int", "str"]:
+        str_dtype = ":class:`{}`".format(dtype)
+    else:
+        str_dtype = ":func:`{0} <drymass.cfg_funcs.{0}>`".format(dtype)
+    rst.append("* | **{}** = {} ({}) -- {} ".format(name, default, str_dtype, doc))
     if notes:
-        rst.append("  | {}".format("".join(notes)))
+        rst.append("  | {}".format("".join(notes).strip()))
 
 
 def setup(app):
