@@ -36,7 +36,6 @@ values of the HL60 cells, we have to modify our configuration.
 We start by executing ``dm_extract_roi DHM_HL60_cells.zip`` which prompts
 us for the *pixel size* (0.107µm), and the *wavelength* (633nm),
 which can be found in the *readme.txt* file inside the zip archive.
-
 This command imports the raw data and searches for cells in the phase
 data. Opening the file *sensor_roi_images.tif*, we realize that the search
 parameters are not set optimally. This is image 27:
@@ -50,7 +49,7 @@ following configuration keys in *drymass.cfg*:
 .. code-block:: none
 
   [specimen]
-  size um = 13              # approximate cell diameter we are looking for [µm]
+  size um = 13           # approximate cell diameter we are looking for [µm]
 
   [roi]
   pad border = 80        # increase border size around cells
@@ -194,52 +193,12 @@ deviations mostly originate from the inhomogeneity of the cell.
 
 Plot the results
 ----------------
-To plot the results, we use the following Python program.
+To plot the results, we use the 
+:download:`following Python script <t02_method_comparison.py>`.
 
-.. code:: python
-
-    import matplotlib.pylab as plt
-    import numpy as np
-    
-    
-    def dot_boxplot(ax, data, colors, labels, **kwargs):
-        """Combined box and scatter plot"""
-        box_list = []
-    
-        for ii in range(len(data)):
-            # set same random state for every scatter plot
-            rs = np.random.RandomState(42).get_state()
-            np.random.set_state(rs)
-            y = data[ii]
-            x = np.random.normal(ii+1, 0.15, len(y))
-            plt.plot(x, y, 'o', alpha=0.5, color=colors[ii])
-            box_list.append(y)
-    
-        ax.boxplot(box_list,
-                   sym="",
-                   medianprops={"color": "black", "linestyle": "solid"},
-                   widths=0.3,
-                   labels=labels,
-                   **kwargs)
-        plt.grid(axis="y")
-
-    ri_data = [
-        np.loadtxt("sphere_image_rytov-sc_statistics.txt", usecols=(1,)),
-        np.loadtxt("sphere_image_rytov_statistics.txt", usecols=(1,)),
-        np.loadtxt("sphere_image_projection_statistics.txt", usecols=(1,)),
-        np.loadtxt("sphere_edge_projection_statistics.txt", usecols=(1,)),
-        ]
-    colors = ["#E48620", "#DE2400", "#6e559d", "#048E00"]
-    labels = ["image rytov-sc", "image rytov",
-              "image projection", "edge projection"]
-
-    plt.figure(figsize=(8, 5))
-    ax = plt.subplot(111, title="HL60 (DHM)")
-    ax.set_ylabel("refractive index")
-    dot_boxplot(ax=ax, data=ri_data, colors=colors, labels=labels)
-    plt.tight_layout()
-    plt.show()
-
+.. literalinclude:: t02_method_comparison.py
+    :language: python
+    :linenos:
 
 .. figure:: t02_reproduced_5d.jpg
 
