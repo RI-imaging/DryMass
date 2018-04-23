@@ -53,7 +53,7 @@ config = {
             ("disk", str, "Filter name for sideband isolation"),
             # filter_name
         "filter size":
-            (1 / 3, float, "Filter size (fraction of the sideband frequency)"),
+            (1/3, float, "Filter size (fraction of the sideband frequency)"),
             # filter_size
         "sideband":
             (1, floattuple_or_one, "Sideband +/-1, or frequency coordinates"),
@@ -90,30 +90,30 @@ config = {
         "pad border":
             (40, int, "Padding of object regions [px]"),
         "size variation":
-            (.5, float, "Allowed variation relative to specimen size"),
+            (0.5, float, "Allowed variation relative to specimen size"),
     },
     "specimen": {
         "size um":
             (10, float, "Approximate diameter of the specimen [µm]"),
-            # this is used as the initial value for the sphere analysis
+            # This is used as the initial value for the sphere analysis.
     },
     "sphere": {
         "edge coarse":
-            (.4, float, "Coarse edge detection filter size"),
+            (0.4, float, "Coarse edge detection filter size"),
         "edge fine":
-            (.1, float, "Fine edge detection filter size"),
+            (0.1, float, "Fine edge detection filter size"),
         "edge clip radius min":
-            (.9, float, "Interior edge point filtering radius"),
+            (0.9, float, "Interior edge point filtering radius"),
         "edge clip radius max":
             (1.1, float, "Exterior edge point filtering radius"),
         "edge iter":
             (20, int, "Maximum number iterations for coarse edge detection"),
         "image fit range position":  # crel
-            (.05, float, "Fit interpolation range for radius"),
+            (0.05, float, "Fit interpolation range for radius"),
         "image fit range radius":  # rrel
-            (.05, float, "Fit interpolation range for radius"),
+            (0.05, float, "Fit interpolation range for radius"),
         "image fit range refractive index":  # nrel
-            (.10, float, "Fit interpolation range for refractive index"),
+            (0.10, float, "Fit interpolation range for refractive index"),
         "image fix phase offset":  # fix_pha_offset
             (False, fbool, "Fix the simulation background phase to zero"),
         "image iter":  # max_iter
@@ -121,9 +121,9 @@ config = {
         "image stop delta position":  # stop_dc
             (1, float, "Stopping criterion for position"),
         "image stop delta radius":  # stop_dr
-            (.0010, float, "Stopping criterion for radius"),
+            (0.0010, float, "Stopping criterion for radius"),
         "image stop delta refractive index":  # stop_dn
-            (.0005, float, "Stopping criterion for refractive index"),
+            (0.0005, float, "Stopping criterion for refractive index"),
         "image verbosity":  # verbose
             (1, int, "Verbosity level of image fitting algorithm"),
         "method":
@@ -131,10 +131,10 @@ config = {
             # Valid values are *edge* or *image*.
         "model":
             # Valid values are defined in
-            # :data:`qpsphere.models.available`. 
+            # :data:`qpsphere.models.available`.
             ("projection", lcstr, "Physical sphere model"),
         "refraction increment":
-            (.18, float, "Refraction increment [mL/g]"),
+            (0.18, float, "Refraction increment [mL/g]"),
         "radial inclusion factor":
             (1.2, float, "Radial inclusion factor for dry mass computation"),
     },
