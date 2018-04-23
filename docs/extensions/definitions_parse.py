@@ -75,7 +75,6 @@ def parse_element(rst, name="", doc="", notes=[], default="", dtype=""):
     rst.append("* | **{}** ({}) -- {} ".format(name, default, doc))
     if notes:
         rst.append("  | {}".format("".join(notes)))
-    rst.append("")
 
 
 def setup(app):
