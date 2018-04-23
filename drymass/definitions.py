@@ -79,7 +79,7 @@ config = {
         "dist border":
             (10, int, "Minimum distance of objects to image border [px]"),
         "eccentricity max":
-            (.7, float, "Allowed maximal eccentricity of the specimen"),
+            (0.7, float, "Allowed maximal eccentricity of the specimen"),
         "enabled":
             (True, fbool, "Perform automated search for ROIs"),
             # If set to *False*, the file "roi_slices.txt" must contain ROIs
