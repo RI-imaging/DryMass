@@ -12,11 +12,11 @@ config = {
         "amplitude offset":
             ("mean", lcstr, "Amplitude bg correction offset method"),
             # Valid values are defined in
-            # :mod:`qpimage.bg_estimate.VALID_FIT_OFFSETS`.
+            # :data:`qpimage.bg_estimate.VALID_FIT_OFFSETS`.
         "amplitude profile":
             ("tilt", lcstr, "Amplitude bg correction profile method"),
             # Valid values are defined in
-            # :mod:`qpimage.bg_estimate.VALID_FIT_PROFILES`.
+            # :data:`qpimage.bg_estimate.VALID_FIT_PROFILES`.
         "amplitude binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
             # If not *nan*, defines a threshold for background segmentation
@@ -33,10 +33,12 @@ config = {
             # Image indexing starts with 1.
         "phase offset":
             ("mean", lcstr, "Phase bg correction offset method"),
-            # Valid values are e.g. *fit*, *gauss*, *mean*, *mode*.
+            # Valid values are defined in
+            # :data:`qpimage.bg_estimate.VALID_FIT_OFFSETS`.
         "phase profile":
             ("tilt", lcstr, "Phase bg correction profile method"),
-            # Valid values are e.g. *offset*, *tilt*, *poly2o*.
+            # Valid values are defined in
+            # :data:`qpimage.bg_estimate.VALID_FIT_PROFILES`.
         "phase binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
             # If not *nan*, defines a threshold for background segmentation
@@ -47,7 +49,6 @@ config = {
             (5, int, "Phase bg border region to analyze [px]"),
     },
     "holo": {
-        # see qpimage.holo.get_field
         "filter name":
             ("disk", str, "Filter name for sideband isolation"),
             # filter_name

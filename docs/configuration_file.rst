@@ -21,22 +21,33 @@ please see :mod:`qpimage.bg_estimate`.
 
 .. _config_meta:
 
-[meta] Image meta data
-----------------------
+[holo] Hologram analysis
+------------------------
+These parameters tune the hologram analysis step (if applicable).
+The parameters shown are passed to :func:`qpimage.holo.get_field`.
+
 .. include_definition:: meta
 
+
+[meta] Image meta data
+----------------------
+This section contains meta data of the experiment.
+
+.. include_definition:: meta
+
+.. _config_output:
+
+[output] Supplementary data output
+----------------------------------
+This section defines what additional data is written to disk.
+
+.. include_definition:: output
 
 .. _config_roi:
 
 [roi] Extraction of regions of interest
 ---------------------------------------
 .. include_definition:: roi
-
-.. _config_output:
-
-[output] Supplementary data output
-----------------------------------
-.. include_definition:: output
 
 .. _config_specimen:
 
