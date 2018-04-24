@@ -27,7 +27,7 @@ for use with `Fiji/ImageJ <https://fiji.sc/>`_ and to the hdf5-based
 The experimental data files are loaded with the
 `qpformat <http://qpformat.readthedocs.io/en/stable/>`_ library, which
 supports several quantitative phase imaging file formats. If a specific
-format is not supported, please create an issue at the `qpimage issue
+format is not supported, please create an issue at the `qpformat issue
 page <https://github.com/RI-imaging/qpformat/issues>`_. A typical use
 case of dm_convert on Windows is
 
@@ -117,11 +117,11 @@ This command is used for the analysis of spherical phase objects
 such as liquid droplets, beads, or suspended cells. The basic
 principle is thoroughly described in reference :cite:`Schuermann_2016`.
 In short, this approach assumes that the objects found with dm_extract_roi
-are homogenous and spherical which allows to extract parameters such as
+are homogeneous and spherical which allows to extract parameters such as
 radius and refractive index from a single phase image (as opposed to
 tomographic approaches that require an acquisition of multiple phase
 images from different directions). The parameters for the sphere analysis,
-such as analysis method and scattering model
+such as analysis method and scattering model,
 are defined in the :ref:`sphere <config_sphere>` section of the 
 :doc:`drymass configuration file <configuration_file>`. For an overview
 of the available models, please refer to the
@@ -145,4 +145,4 @@ scattering model defined in *drymass.cfg*):
 
 *sphere_METHOD_MODEL_statistics.txt*
   the analysis results, including refractive index, radius, and :ref:`relative and
-  absolute dry mass <section_theory_dry_mass>` as a txt file.
+  absolute dry mass <section_theory_dry_mass>` as a text file.

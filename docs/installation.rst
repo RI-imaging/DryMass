@@ -26,7 +26,7 @@ To install DryMass, use one of the following methods
 
 Upgrade
 -------
-If you have installed on older version of DryMass and wish to upgrade
+If you have installed an older version of DryMass and wish to upgrade
 to the latest version, use
 
 ``pip uninstall drymass`` followed by
