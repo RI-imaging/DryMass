@@ -121,7 +121,15 @@ class ConfigFile(object):
                 key = key.strip()
                 val = val.strip()
                 key_func = definitions.config[sec][key][1]
-                val = key_func(val)
+                try:
+                    val = key_func(val)
+                except ValueError as e:
+                    # This means that the `key_func` has a problem with this
+                    # value. To make things transparent, we append information
+                    # to the error message.
+                    e.args += ('Invalid value in "[{}]: {} = {}"'.format(
+                               sec, key, val),)
+                    raise
                 outdict[sec][key] = val
         # Insert default variables where missing
         must_write = False

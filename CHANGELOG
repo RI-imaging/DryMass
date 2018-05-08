@@ -1,3 +1,7 @@
+0.1.5
+ - fix: improve verbosity of error messages
+ - fix: config value "[roi] size variation" must be in interval [0,1]
+ - fix: handle ROIs with failed edge detection in "dm_analyze_sphere"
 0.1.4
  - feat: add local thresholding step before segmentation
  - fix: check number of qpimages in sensor_data.h5 during dm_convert

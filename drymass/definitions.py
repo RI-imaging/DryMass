@@ -1,6 +1,6 @@
 import numpy as np
 
-from .cfg_funcs import fbool, float_or_str, int_or_str, lcstr, \
+from .cfg_funcs import fbool, float01, float_or_str, int_or_str, lcstr, \
     floattuple_or_one, tupletupleint
 
 
@@ -87,7 +87,7 @@ config = {
         "pad border":
             (40, int, "Padding of object regions [px]"),
         "size variation":
-            (0.5, float, "Allowed variation relative to specimen size"),
+            (0.5, float01, "Allowed variation relative to specimen size"),
     },
     "specimen": {
         "size um":

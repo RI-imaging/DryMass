@@ -1,4 +1,5 @@
 import pathlib
+import warnings
 
 import numpy as np
 import qpimage
@@ -33,15 +34,31 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
         fd.write("#" + "\t".join(header) + "\r\n")
 
         for qpi in qps_in:
-            # determine parameters
-            n, r, c, qpi_sim = qpsphere.analyze(qpi,
-                                                r0=r0,
-                                                method=method,
-                                                model=model,
-                                                edgekw=edgekw,
-                                                imagekw=imagekw,
-                                                ret_center=True,
-                                                ret_qpi=True)
+            try:
+                # fit sphere model
+                n, r, c, qpi_sim = qpsphere.analyze(qpi,
+                                                    r0=r0,
+                                                    method=method,
+                                                    model=model,
+                                                    edgekw=edgekw,
+                                                    imagekw=imagekw,
+                                                    ret_center=True,
+                                                    ret_qpi=True)
+            except qpsphere.edgefit.RadiusExceedsImageSizeError:
+                # Edge detection cannot proceed because the presumed
+                # object radius exceeds the image size. This might be
+                # the result of a "size variation" set too large.
+                msg = "Edge detection failed for ROI " \
+                      + "{}! ".format(qpi["identifier"]) \
+                      + "Try reducing the value of [roi]: 'size variation'."
+                warnings.warn(msg)
+                # use dummy data
+                n = np.nan
+                r = np.nan
+                c = (np.nan, np.nan)
+                qpi_sim = qpsphere.simulate(radius=0,
+                                            sphere_index=1,
+                                            grid_size=qpi.shape)
             if "time" in qpi:
                 qptime = qpi["time"]
             else:

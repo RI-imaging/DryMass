@@ -14,7 +14,7 @@ def fbool(value):
         elif value:
             value = bool(float(value))
         else:
-            raise ValueError("empty string")
+            raise ValueError("Got empty string!")
     else:
         value = bool(float(value))
     return value
@@ -30,6 +30,14 @@ def fintlist(alist):
         if it:
             outlist.append(int(float(it)))
     return outlist
+
+
+def float01(flt):
+    """Float value between 0 and 1"""
+    flt = float(flt)
+    if flt < 0 or flt > 1:
+        raise ValueError("Input must be between 0 and 1!")
+    return flt
 
 
 def float_or_str(flt_or_str):
@@ -51,7 +59,7 @@ def float_or_str(flt_or_str):
 
 def floattuple_or_one(fti):
     """Tuple of floats or ±1 from a string or a number"""
-    msg = "Expected +1, -1 or (float, float), got '{}'".format(fti)
+    msg = "Expected +1, -1 or (float, float), got '{}'!".format(fti)
     if isinstance(fti, str):
         try:
             fti = int(float(fti))
