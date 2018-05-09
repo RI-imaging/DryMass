@@ -73,18 +73,18 @@ config = {
             (True, fbool, "Phase/Amplitude sensor tif data"),
     },
     "roi": {
-        "dist border":
+        "dist border px":
             (10, int, "Minimum distance of objects to image border [px]"),
         "eccentricity max":
             (0.7, float, "Allowed maximal eccentricity of the specimen"),
         "enabled":
             (True, fbool, "Perform automated search for ROIs"),
             # If set to *False*, the file "roi_slices.txt" must contain ROIs.
-        "exclude overlap":
+        "exclude overlap px":
             (30.0, float, "Allowed distance between two objects [px]"),
         "force":
             ((), tupletupleint, "Force ROI coordinates (x1,x2,y1,y2) [px]"),
-        "pad border":
+        "pad border px":
             (40, int, "Padding of object regions [px]"),
         "size variation":
             (0.5, float01, "Allowed variation relative to specimen size"),

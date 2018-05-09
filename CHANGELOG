@@ -1,4 +1,6 @@
 0.1.5
+ - ref: update [roi] configuration keys names to reflect pixel units:
+   "dist border px", "exclude overlap px", "pad border px"
  - fix: improve verbosity of error messages
  - fix: config value "[roi] size variation" must be in interval [0,1]
  - fix: handle ROIs with failed edge detection in "dm_analyze_sphere"

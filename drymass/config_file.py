@@ -120,6 +120,12 @@ class ConfigFile(object):
                 key, val = line.split("=")
                 key = key.strip()
                 val = val.strip()
+                # Backwards compatibility:
+                # In 0.1.5, several keys were renamed to reflect pixel units.
+                if sec == "roi" and key in ["dist border",
+                                            "exclude overlap",
+                                            "pad border"]:
+                    key += " px"
                 key_func = definitions.config[sec][key][1]
                 try:
                     val = key_func(val)

@@ -165,9 +165,9 @@ def cli_extract_roi(ret_data=False):
         size_m=cfg["specimen"]["size um"] * 1e-6,
         size_var=cfg["roi"]["size variation"],
         max_ecc=cfg["roi"]["eccentricity max"],
-        dist_border=cfg["roi"]["dist border"],
-        pad_border=cfg["roi"]["pad border"],
-        exclude_overlap=cfg["roi"]["exclude overlap"],
+        dist_border=cfg["roi"]["dist border px"],
+        pad_border=cfg["roi"]["pad border px"],
+        exclude_overlap=cfg["roi"]["exclude overlap px"],
         bg_amp_kw=bg_amp_kw,
         bg_amp_bin=cfg["bg"]["amplitude binary threshold"],
         bg_pha_kw=bg_pha_kw,
@@ -186,9 +186,9 @@ def cli_extract_roi(ret_data=False):
               + "- increase maximum allowed eccentricity "
               + "({})\n".format(strpar(cfg, "roi", "eccentricity max"))
               + "- reduce minimum distance to image border in pixels "
-              + "({})\n".format(strpar(cfg, "roi", "dist border"))
+              + "({})\n".format(strpar(cfg, "roi", "dist border px"))
               + "- reduce minimum distance inbetween ROIs "
-              + "({})".format(strpar(cfg, "roi", "exclude overlap"))
+              + "({})".format(strpar(cfg, "roi", "exclude overlap px"))
               )
         sys.exit(1)
 
