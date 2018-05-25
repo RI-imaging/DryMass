@@ -2,6 +2,10 @@ import pathlib
 import warnings
 
 
+class ROIManagerWarnging(Warning):
+    pass
+
+
 class ROIManager(object):
     def __init__(self, identifier=None):
         self.identifier = identifier
@@ -48,7 +52,3 @@ class ROIManager(object):
             for roi in self.rois:
                 roi = [str(r) for r in roi]
                 fd.write("\t".join(roi) + "\r\n")
-
-
-class ROIManagerWarnging(Warning):
-    pass

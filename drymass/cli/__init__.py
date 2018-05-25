@@ -159,7 +159,7 @@ def cli_extract_roi(ret_data=False):
         bg_amp_kw = None
         bg_pha_kw = None
 
-    h5roi, rmgr = extract_roi(
+    h5roi, rmgr, changed = extract_roi(
         h5series=h5series,
         dir_out=path_out,
         size_m=cfg["specimen"]["size um"] * 1e-6,
@@ -174,6 +174,7 @@ def cli_extract_roi(ret_data=False):
         bg_pha_bin=cfg["bg"]["phase binary threshold"],
         search_enabled=cfg["roi"]["enabled"],
         ret_roimgr=True,
+        ret_changed=True,
     )
     print("Done.")
     if len(rmgr) == 0:
@@ -192,7 +193,7 @@ def cli_extract_roi(ret_data=False):
               )
         sys.exit(1)
 
-    if cfg["output"]["roi images"]:
+    if changed and cfg["output"]["roi images"]:
         print("Plotting detected ROIs... ", end="", flush=True)
         tifout = path_out / FILE_SENSOR_WITH_ROI_IMAGE
         # plot h5series and rmgr with matplotlib
