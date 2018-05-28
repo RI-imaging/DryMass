@@ -46,6 +46,9 @@ class IncludeDirective(Directive):
         rst = []
         for line in text:
             line = line.strip("\n")
+            if line.startswith("  ") and line.strip().startswith("-"):
+                # list in list:
+                rst.append("")
             if not line.startswith(" "):
                 rst.append("")
                 line = "version " + line
