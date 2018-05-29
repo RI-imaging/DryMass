@@ -95,6 +95,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'DryMass'
+github_project = 'RI-imaging/' + project
 copyright = '2017, Paul Müller'
 author = 'Paul Müller'
 
