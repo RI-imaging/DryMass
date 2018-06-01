@@ -1,7 +1,6 @@
 import argparse
 import functools
 import io
-import os
 import pathlib
 import sys
 
@@ -218,15 +217,17 @@ def cli_extract_roi(ret_data=False):
 def setup_analysis():
     print("DryMass version {}".format(version))
     parser = argparse.ArgumentParser(description='DryMass QPI analysis.')
-    parser.add_argument('path', metavar='path', type=str,
+    parser.add_argument('path', metavar='path', nargs='+', type=str,
                         help='Data path')
     args = parser.parse_args()
-    path_in = pathlib.Path(args.path).resolve()
+    # Workaround: We use nargs='+' and join the input to support white
+    # spaces in path names.
+    jpath = " ".join(args.path)
+    path_in = pathlib.Path(jpath).resolve()
     if not path_in.exists():
         raise ValueError("Path '{}' does not exist!".format(path_in))
-    path_out = pathlib.Path(str(path_in) + OUTPUT_SUFFIX)
-    if not path_out.exists():
-        os.mkdir(str(path_out))
+    path_out = path_in.with_name(path_in.name + OUTPUT_SUFFIX)
+    path_out.mkdir(exist_ok=True)
     print("Input:  {}".format(path_in))
     print("Output: {}".format(path_out))
     return path_in, path_out

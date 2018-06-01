@@ -1,3 +1,5 @@
+0.2.1
+ - cli: support white spaces for input data path argument
 0.2.0
  - feat: reuse computed ROI data from previous runs
  - ref: update [roi] configuration key names to reflect pixel units:
