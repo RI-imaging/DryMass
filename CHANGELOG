@@ -1,5 +1,8 @@
 0.2.1
- - cli: support white spaces for input data path argument
+ - command line interface:
+   - fix: allow white spaces for input data path argument
+   - fix: improve verbosity of status messages
+ - docs: add troubleshooting section
 0.2.0
  - feat: reuse computed ROI data from previous runs
  - ref: update [roi] configuration key names to reflect pixel units:

@@ -12,8 +12,8 @@ FILE_SENSOR_DATA_TIF = "sensor_data.tif"
 
 
 def convert(path_in, dir_out, meta_data={}, holo_kw={},
-            bg_data_amp=None, bg_data_pha=None,
-            write_tif=False, ret_dataset=False):
+            bg_data_amp=None, bg_data_pha=None, write_tif=False,
+            ret_dataset=False, ret_changed=False):
     """Convert experimental data to `qpimage.QPSeries` on disk
 
     Parameters
@@ -105,10 +105,14 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
         # Also write tif data
         h5series2tif(h5in=h5out, tifout=imout)
 
+    ret = [h5out]
     if ret_dataset:
-        return h5out, ds
-    else:
-        return h5out
+        ret.append(ds)
+    if ret_changed:
+        ret.append(create)
+    if len(ret) == 1:
+        ret = ret[0]
+    return ret
 
 
 def h5series2tif(h5in, tifout):

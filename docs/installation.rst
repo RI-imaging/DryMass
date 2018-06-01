@@ -1,7 +1,8 @@
 .. _section_install:
 
+==================
 Installing DryMass
-===================
+==================
 
 DryMass is written in pure Python and supports Python version 3.5
 and higher. DryMass depends on several other scientific Python packages,

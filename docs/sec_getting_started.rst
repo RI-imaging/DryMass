@@ -8,3 +8,4 @@ Getting started
   installation
   command_line_interface
   configuration_file
+  trouble

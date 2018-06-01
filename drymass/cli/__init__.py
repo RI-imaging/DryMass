@@ -113,19 +113,23 @@ def cli_convert(ret_data=False):
     if bg_data_pha == "none":
         bg_data_pha = None
 
-    h5series, ds = convert(path_in=path_in,
-                           dir_out=path_out,
-                           meta_data=meta_data,
-                           holo_kw=holo_kw,
-                           bg_data_amp=bg_data_amp,
-                           bg_data_pha=bg_data_pha,
-                           write_tif=cfg["output"]["sensor tif data"],
-                           ret_dataset=True,
-                           )
+    h5series, ds, changed = convert(path_in=path_in,
+                                    dir_out=path_out,
+                                    meta_data=meta_data,
+                                    holo_kw=holo_kw,
+                                    bg_data_amp=bg_data_amp,
+                                    bg_data_pha=bg_data_pha,
+                                    write_tif=cfg["output"]["sensor tif data"],
+                                    ret_dataset=True,
+                                    ret_changed=True,
+                                    )
     if "hologram" not in ds.storage_type:
         # remove "holo" section from configuration
         cfg.remove_section("holo")
-    print("Done.")
+    if changed:
+        print("Done.")
+    else:
+        print("Reusing.")
     if ret_data:
         return h5series
 
@@ -175,7 +179,10 @@ def cli_extract_roi(ret_data=False):
         ret_roimgr=True,
         ret_changed=True,
     )
-    print("Done.")
+    if changed:
+        print("Done.")
+    else:
+        print("Reusing.")
     if len(rmgr) == 0:
         print("No ROIs could be found!\n"
               + "Please try editing '{}':\n".format(cfg.path)
