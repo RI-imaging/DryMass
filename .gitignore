@@ -101,4 +101,5 @@ ENV/
 .mypy_cache/
 _version_save.py
 *.bib.bak
+*.bib.sav
 .pytest_cache
