@@ -51,19 +51,21 @@ def cli_analyze_sphere(ret_data=False):
         "stop_dn": cfg["sphere"]["image stop delta refractive index"],
         "verbose": cfg["sphere"]["image verbosity"],
     }
-    h5sim = analyze_sphere(h5roiseries=h5roi,
-                           dir_out=path_out,
-                           r0=cfg["specimen"]["size um"] / 2 * 1e-6,
-                           method=cfg["sphere"]["method"],
-                           model=cfg["sphere"]["model"],
-                           alpha=cfg["sphere"]["refraction increment"],
-                           rad_fact=cfg["sphere"]["radial inclusion factor"],
-                           edgekw=edgekw,
-                           imagekw=imagekw,
-                           )
+    h5sim, changed = analyze_sphere(
+        h5roi=h5roi,
+        dir_out=path_out,
+        r0=cfg["specimen"]["size um"] / 2 * 1e-6,
+        method=cfg["sphere"]["method"],
+        model=cfg["sphere"]["model"],
+        alpha=cfg["sphere"]["refraction increment"],
+        rad_fact=cfg["sphere"]["radial inclusion factor"],
+        edgekw=edgekw,
+        imagekw=imagekw,
+        ret_changed=True,
+        )
     print("Done.")
 
-    if cfg["output"]["sphere images"]:
+    if changed and cfg["output"]["sphere images"]:
         print("Plotting sphere images... ", end="", flush=True)
         tifout = path_out / FILE_SPHERE_ANALYSIS_IMAGE.format(
             cfg["sphere"]["method"],

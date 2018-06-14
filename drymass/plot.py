@@ -221,7 +221,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
     plt.tight_layout(rect=(0, 0, 1, .95))
 
     # add identifier
-    fig.text(x=.5, y=.99, s=qpi_real["identifier"],
+    fig.text(x=.5, y=.99, s=qpi_sim["identifier"],
              verticalalignment="top",
              horizontalalignment="center",
              fontsize=14)

@@ -43,6 +43,7 @@ setup(
                       ] + release_deps,
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
+    python_requires='>=3.5, <4',
     entry_points={
        "console_scripts": [
            "dm_analyze_sphere = drymass.cli:cli_analyze_sphere",
@@ -50,7 +51,6 @@ setup(
            "dm_extract_roi = drymass.cli:cli_extract_roi",
             ],
        },
-    python_requires='>=3.5, <4',
     keywords=["digital holographic microscopy",
               "optics",
               "quantitative phase imaging",

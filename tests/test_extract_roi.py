@@ -22,8 +22,8 @@ def setup_test_data(radius=30, pxsize=1e-6, num=1):
     path = tempfile.mktemp(suffix=".h5", prefix="drymass_test_roi")
     dout = tempfile.mkdtemp(prefix="drymass_test_roi_")
     with qpimage.QPSeries(h5file=path) as qps:
-        for _i in range(num):
-            qps.add_qpimage(qpi, identifier="test")
+        for ii in range(num):
+            qps.add_qpimage(qpi, identifier="test_{}".format(ii))
     return qpi, path, dout
 
 

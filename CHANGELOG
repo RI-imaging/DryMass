@@ -1,4 +1,5 @@
 0.2.1
+ - feat: sphere analysis is picked up where left off in previous run
  - command line interface:
    - fix: allow white spaces for input data path argument
    - fix: improve verbosity of status messages

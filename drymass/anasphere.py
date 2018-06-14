@@ -5,22 +5,44 @@ import numpy as np
 import qpimage
 import qpsphere
 
+from . import util
 
 FILE_SPHERE_DATA = "sphere_{}_{}_data.h5"
 FILE_SPHERE_STAT = "sphere_{}_{}_statistics.txt"
 
 
-def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
+class EdgeDetectionFailedWarning(UserWarning):
+    pass
+
+
+def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                    model="projection", edgekw={}, imagekw={},
-                   alpha=.18, rad_fact=1.2):
+                   alpha=.18, rad_fact=1.2, ret_changed=False):
 
     dir_out = pathlib.Path(dir_out).resolve()
 
     h5out = dir_out / FILE_SPHERE_DATA.format(method, model)
     statout = dir_out / FILE_SPHERE_STAT.format(method, model)
 
-    with qpimage.QPSeries(h5file=h5roiseries, h5mode="r") as qps_in, \
-            qpimage.QPSeries(h5file=h5out, h5mode="w") as qps_out, \
+    with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps:
+        cfgid = util.hash_object([qps,
+                                  r0,
+                                  method,
+                                  model,
+                                  edgekw,
+                                  imagekw if method == "image" else None,
+                                  alpha,
+                                  rad_fact])
+
+    create = mode_for_sphere_analysis(h5in=h5roi, h5out=h5out, cfgid=cfgid)
+
+    # initialize file
+    initmode = "w" if create else "r"
+    with qpimage.QPSeries(h5file=h5out, h5mode=initmode) as qps_out:
+        # get all simulation identifiers from previous analysis
+        ids_out = [qpi["identifier"] for qpi in qps_out]
+
+    with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_in, \
             statout.open(mode="w") as fd:
 
         header = ["identifier",
@@ -34,36 +56,47 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
         fd.write("#" + "\t".join(header) + "\r\n")
 
         for qpi in qps_in:
-            try:
-                # fit sphere model
-                n, r, c, qpi_sim = qpsphere.analyze(qpi,
-                                                    r0=r0,
-                                                    method=method,
-                                                    model=model,
-                                                    edgekw=edgekw,
-                                                    imagekw=imagekw,
-                                                    ret_center=True,
-                                                    ret_qpi=True)
-            except qpsphere.edgefit.RadiusExceedsImageSizeError:
-                # Edge detection cannot proceed because the presumed
-                # object radius exceeds the image size. This might be
-                # the result of a "size variation" set too large.
-                msg = "Edge detection failed for ROI " \
-                      + "{}! ".format(qpi["identifier"]) \
-                      + "Try reducing the value of [roi]: 'size variation'."
-                warnings.warn(msg)
-                # use dummy data
-                n = np.nan
-                r = np.nan
-                c = (np.nan, np.nan)
-                qpi_sim = qpsphere.simulate(radius=0,
-                                            sphere_index=1,
-                                            grid_size=qpi.shape)
+            simident = "{}:{}:sim:{}".format(qpi["identifier"], cfgid, model)
+            if simident in ids_out:
+                # read simulation results
+                with qpimage.QPSeries(h5file=h5out, h5mode="r") as qps_out:
+                    n = qps_out[simident]["sim index"]
+                    r = qps_out[simident]["sim radius"]
+                    c = qps_out[simident]["sim center"]
+            else:
+                try:
+                    # fit sphere model
+                    n, r, c, qpi_sim = qpsphere.analyze(qpi,
+                                                        r0=r0,
+                                                        method=method,
+                                                        model=model,
+                                                        edgekw=edgekw,
+                                                        imagekw=imagekw,
+                                                        ret_center=True,
+                                                        ret_qpi=True)
+                except qpsphere.edgefit.RadiusExceedsImageSizeError:
+                    # Edge detection cannot proceed because the presumed
+                    # object radius exceeds the image size. This might be
+                    # the result of a "size variation" set too large.
+                    msg = "Edge detection failed for ROI " \
+                          + "{}! Try ".format(qpi["identifier"]) \
+                          + "reducing the value of [roi]: 'size variation'."
+                    warnings.warn(msg, EdgeDetectionFailedWarning)
+                    # use dummy data
+                    n = np.nan
+                    r = np.nan
+                    c = (np.nan, np.nan)
+                    qpi_sim = qpsphere.simulate(radius=0,
+                                                sphere_index=1,
+                                                grid_size=qpi.shape)
+                # write simulation results
+                with qpimage.QPSeries(h5file=h5out, h5mode="a") as qps_out:
+                    qps_out.add_qpimage(qpi=qpi_sim, identifier=simident)
+            # finally, update text file
             if "time" in qpi:
                 qptime = qpi["time"]
             else:
                 qptime = 0
-            # save in txt file
             data = {
                 "identifier": qpi["identifier"],
                 "index": n,
@@ -86,10 +119,11 @@ def analyze_sphere(h5roiseries, dir_out, r0=10e-6, method="edge",
                 "medium": qpi["medium index"]
             }
             fd.write("\t".join([str(data[k]) for k in header]) + "\r\n")
-            simident = "{}:{}:{}".format(qpi["identifier"], "sim", model)
-            qps_out.add_qpimage(qpi=qpi_sim, identifier=simident)
 
-    return h5out
+    if ret_changed:
+        return h5out, create
+    else:
+        return h5out
 
 
 def absolute_dry_mass_sphere(qpi, radius, center, alpha=.18, rad_fact=1.2):
@@ -199,3 +233,57 @@ def relative_dry_mass(qpi, radius, center, alpha=.18, rad_fact=1.2):
     # [kg]
     dm = wavelength / (2 * np.pi * alpha * fact) * phi_tot * pxarea
     return dm
+
+
+def mode_for_sphere_analysis(h5in, h5out, cfgid):
+    """Determine the mode for the QPSeries file for subsequent analysis
+
+    Sometimes an analysis is interrupted and the output files are
+    still intact. This method determines whether it is possible to
+    continue the analysis where left off or not.
+
+    Parameters
+    ----------
+    h5in: pathlib.Path
+        The input QPSeries file
+    h5out: pathlib.Path
+        The output QPSeries file
+    cfgid: str
+        The configuration hash of the sphere analysis which is
+        part of the output QPSeries analysis
+
+    Returns
+    -------
+    create: bool
+        Whether the output QPSeries file is ok. This is dependent
+        on the following scenarios:
+
+        - True: There is no output QPSeries file, it is corrupt,
+              or at least one of the qpimage identifiers is not present
+              in the input QPSeries.
+        - False: Some of the input QPSeries identifiers are
+              present in the output QPSeries.
+    """
+    with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps_in:
+        # read all identifiers
+        idsin = [qpi["identifier"] for qpi in qps_in]
+
+    try:
+        with qpimage.QPSeries(h5file=h5out, h5mode="r") as qps_out:
+            # read all identifiers
+            idsout = [qpi["identifier"] for qpi in qps_out]
+    except (IOError, OSError):
+        # corrupt file
+        idsout = []
+
+    valid = []  # matching identifiers
+    bad = []  # those exist in h5out but not in h5in
+
+    for oid in idsout:
+        iid, iicfg = oid.rsplit(":", 3)[:2]
+        if iid in idsin and iicfg == cfgid:
+            valid.append(iid)
+        else:
+            bad.append(iid)
+
+    return bad or not valid
