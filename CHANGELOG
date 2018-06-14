@@ -1,4 +1,6 @@
 0.2.1
+ - fix: hologram keyword arguments were not used for background
+   correction
  - feat: sphere analysis is picked up where left off in previous run
  - command line interface:
    - fix: allow white spaces for input data path argument

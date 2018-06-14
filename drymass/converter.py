@@ -53,7 +53,9 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
             bgamp = ds.get_qpimage(bg_data_amp - 1).amp
         elif isinstance(bg_data_amp, (str, pathlib.Path)):
             bgamppath = path_in.parent / bg_data_amp
-            dsbgamp = qpformat.load_data(path=bgamppath, meta_data=meta_data)
+            dsbgamp = qpformat.load_data(path=bgamppath,
+                                         meta_data=meta_data,
+                                         holo_kw=holo_kw)
             if len(dsbgamp) != 1:
                 msg = "Background correction with series data not implemented!"
                 raise NotImplementedError(msg)
@@ -73,7 +75,9 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
             bgpha = ds.get_qpimage(bg_data_pha - 1).pha
         elif isinstance(bg_data_pha, (str, pathlib.Path)):
             bgphapath = path_in.parent / bg_data_amp
-            dsbgpha = qpformat.load_data(path=bgphapath, meta_data=meta_data)
+            dsbgpha = qpformat.load_data(path=bgphapath,
+                                         meta_data=meta_data,
+                                         holo_kw=holo_kw)
             if len(dsbgpha) != 1:
                 msg = "Background correction with series data not implemented!"
                 raise NotImplementedError(msg)
