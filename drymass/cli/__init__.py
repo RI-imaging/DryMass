@@ -63,6 +63,7 @@ def cli_analyze_sphere(ret_data=False):
         imagekw=imagekw,
         ret_changed=True,
         )
+
     print("Done.")
 
     if changed and cfg["output"]["sphere images"]:
