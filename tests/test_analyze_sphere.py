@@ -61,6 +61,12 @@ def test_radius_exceeds_image_size_warning():
         assert np.all(qpso[0].amp == 1)
         assert np.all(qpso[0].pha == 0)
 
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
 
 def test_recompute_broken_output_path():
     _qpi, path, dout = setup_test_data()
@@ -75,6 +81,12 @@ def test_recompute_broken_output_path():
     _p, changed = drymass.analyze_sphere(path, dir_out=dout, ret_changed=True)
     assert changed, "non-existent file should be recomputed"
 
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
 
 def test_recompute_edge_when_imagekw_changes():
     _qpi, path, dout = setup_test_data()
@@ -87,6 +99,12 @@ def test_recompute_edge_when_imagekw_changes():
                                          imagekw={"stop_dc": .8},
                                          ret_changed=True)
     assert not changed, "different imagekw when method is edge"
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
 
 
 def test_recompute_edge_when_otherkw_changes():
@@ -104,6 +122,12 @@ def test_recompute_edge_when_otherkw_changes():
                                          edgekw={"clip_rmax": 1.2},
                                          ret_changed=True)
     assert changed, "change due to other edgekw"
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
 
 
 if __name__ == "__main__":

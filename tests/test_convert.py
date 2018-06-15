@@ -201,6 +201,29 @@ def test_change_wavelength():
     shutil.rmtree(dout, ignore_errors=True)
 
 
+def test_reuse():
+    _qpi, path, dout = setup_test_data(num=2)
+
+    _po, changed1 = drymass.convert(path_in=path,
+                                    dir_out=dout,
+                                    bg_data_amp=0,
+                                    bg_data_pha=0,
+                                    ret_changed=True)
+    _po, changed2 = drymass.convert(path_in=path,
+                                    dir_out=dout,
+                                    bg_data_amp=0,
+                                    bg_data_pha=0,
+                                    ret_changed=True)
+    assert changed1
+    assert not changed2
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()
