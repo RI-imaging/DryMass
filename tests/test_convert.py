@@ -8,24 +8,29 @@ import qpimage
 import drymass
 
 
-def test_change_wavelength():
-    size = 200
+def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
+                    wavelength=550e-9, num=1):
     x = np.arange(size).reshape(-1, 1)
     y = np.arange(size).reshape(1, -1)
     cx = 80
     cy = 120
-    radius = 30
     r = np.sqrt((x - cx)**2 + (y - cy)**2)
-    image = (r < radius) * 1.3
-    pxsize = 1e-6
+    image = (r < radius_px) * 1.3
     qpi = qpimage.QPImage(data=image,
                           which_data="phase",
-                          meta_data={"pixel size": pxsize})
+                          meta_data={"pixel size": pxsize,
+                                     "medium index": medium_index,
+                                     "wavelength": wavelength})
     path = tempfile.mktemp(suffix=".h5", prefix="drymass_test_convert")
-    dout = tempfile.mkdtemp(prefix="drymass_test_roi_")
-    with qpimage.QPSeries(h5file=path) as qps:
-        qps.add_qpimage(qpi, identifier="test")
+    dout = tempfile.mkdtemp(prefix="drymass_test_sphere_")
+    with qpimage.QPSeries(h5file=path, h5mode="w") as qps:
+        for ii in range(num):
+            qps.add_qpimage(qpi, identifier="test_{}".format(ii))
+    return qpi, path, dout
 
+
+def test_change_wavelength():
+    _qpi, path, dout = setup_test_data()
     path_out = drymass.convert(path_in=path,
                                dir_out=dout,
                                meta_data={"wavelength": 500e-9})
@@ -41,6 +46,44 @@ def test_change_wavelength():
         id2 = qpso.identifier
 
     assert id1 != id2, "Files should have different identifiers"
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
+def test_bg_correction_index():
+    qpi, path, dout = setup_test_data(num=2)
+
+    path_out = drymass.convert(path_in=path,
+                               dir_out=dout,
+                               bg_data_amp=0,
+                               bg_data_pha=0)
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
+        # background correction with same input image will result
+        # in a flat QPImage.
+        assert np.all(qps[0].pha == 0)
+        assert np.all(qps[0].amp == 1)
+
+    # To be absolutely sure this works, append a blank
+    # QPImage and do it again.
+    with qpimage.QPSeries(h5file=path, h5mode="a") as qps:
+        pha = .5 * np.ones(qps[0].shape)
+        amp = .9 * np.ones(qps[0].shape)
+        qps.add_qpimage(qpimage.QPImage(data=(pha, amp),
+                                        which_data="phase,amplitude"))
+
+    path_out = drymass.convert(path_in=path,
+                               dir_out=dout,
+                               bg_data_amp=2,
+                               bg_data_pha=2)
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
+        # background correction with same input image will result
+        # in a flat QPImage.
+        assert np.allclose(qps[0].pha, qpi.pha - .5)
+        assert np.allclose(qps[0].amp, qpi.amp / .9)
 
     try:
         os.remove(path)

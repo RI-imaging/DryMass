@@ -1,6 +1,7 @@
 import argparse
 import functools
 import io
+import numbers
 import pathlib
 import sys
 
@@ -112,9 +113,15 @@ def cli_convert(ret_data=False):
 
     if bg_data_amp == "none":
         bg_data_amp = None
+    elif isinstance(bg_data_amp, numbers.Integral):
+        # indexing starts at 1
+        bg_data_amp -= 1
 
     if bg_data_pha == "none":
         bg_data_pha = None
+    elif isinstance(bg_data_pha, numbers.Integral):
+        # indexing starts at 1
+        bg_data_pha -= 1
 
     h5series, ds, changed = convert(path_in=path_in,
                                     dir_out=path_out,

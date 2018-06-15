@@ -24,7 +24,7 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
         - `None`:
           No background data
         - `int`:
-          Image index (starting at 1) of the input data set
+          Image index (starting at 0) of the input data set
           to use as background data
         - `str`, `pathlib.Path`:
           Path to a separate file that is used for background
@@ -45,12 +45,12 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
         if bg_data_amp is None:
             bgamp = np.ones(ds.get_qpimage(0).shape)
         elif isinstance(bg_data_amp, numbers.Integral):
-            if bg_data_amp <= 0 or bg_data_amp > len(ds):
-                msg = "Amplitude background index must be between 1 and " \
-                      + "{}".format(len(ds))
+            if bg_data_amp < 0 or bg_data_amp > (len(ds)-1):
+                msg = "Amplitude background index must be between 0 and " \
+                      + "{}".format(len(ds)-1)
                 raise ValueError(msg)
-            # indexing in configuration file starts at 1
-            bgamp = ds.get_qpimage(bg_data_amp - 1).amp
+            # indexing in configuration file starts at 0
+            bgamp = ds.get_qpimage(bg_data_amp).amp
         elif isinstance(bg_data_amp, (str, pathlib.Path)):
             bgamppath = path_in.parent / bg_data_amp
             dsbgamp = qpformat.load_data(path=bgamppath,
@@ -67,12 +67,12 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
         if bg_data_pha is None:
             bgpha = np.zeros(ds.get_qpimage(0).shape)
         elif isinstance(bg_data_amp, numbers.Integral):
-            if bg_data_pha <= 0 or bg_data_pha > len(ds):
-                msg = "Phase data index must be between 1 and {}".format(
-                    len(ds))
+            if bg_data_pha < 0 or bg_data_pha > (len(ds)-1):
+                msg = "Phase data index must be between 0 and {}".format(
+                    len(ds)-1)
                 raise ValueError(msg)
-            # indexing in configuration file starts at 1
-            bgpha = ds.get_qpimage(bg_data_pha - 1).pha
+            # indexing in configuration file starts at 0
+            bgpha = ds.get_qpimage(bg_data_pha).pha
         elif isinstance(bg_data_pha, (str, pathlib.Path)):
             bgphapath = path_in.parent / bg_data_amp
             dsbgpha = qpformat.load_data(path=bgphapath,
