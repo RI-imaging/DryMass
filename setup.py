@@ -20,9 +20,9 @@ if version.count("dev") or sys.argv.count("test"):
                     "qpimage",
                     "qpsphere"]
 else:
-    release_deps = ["qpformat==0.1.7",
+    release_deps = ["qpformat==0.2.0",
                     "qpimage==0.2.0",
-                    "qpsphere==0.1.6",
+                    "qpsphere==0.2.0",
                     ]
 
 setup(
@@ -43,7 +43,7 @@ setup(
                       ] + release_deps,
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
-    python_requires='>=3.5, <4',
+    python_requires='>=3.6, <4',
     entry_points={
        "console_scripts": [
            "dm_analyze_sphere = drymass.cli:cli_analyze_sphere",

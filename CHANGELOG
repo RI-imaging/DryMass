@@ -1,4 +1,5 @@
-0.2.1
+0.3.0
+ - drop support for Python 3.5
  - ref: background correction in convert.py uses background indices
    starting at 0 while the CLI keeps using indices starting at 1
  - fix: hologram keyword arguments were not used for background
