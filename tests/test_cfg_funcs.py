@@ -44,6 +44,24 @@ def test_fintlist():
     assert cfg_funcs.fintlist([1.1, 2.1, 3.1]) == [1, 2, 3]
 
 
+def test_float01():
+    assert cfg_funcs.float01(.03) == .03
+
+    try:
+        cfg_funcs.float01(1.03)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        cfg_funcs.float01(-1.03)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+
 def test_float_or_str():
     assert np.isnan(cfg_funcs.float_or_str("nan"))
     assert isinstance(cfg_funcs.float_or_str("1.1"), float)
