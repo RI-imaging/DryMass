@@ -58,28 +58,30 @@ def float_or_str(flt_or_str):
 
 
 def floattuple_or_one(fti):
-    """Tuple of floats or ±1 from a string or a number"""
+    """Tuple of two floats or ±1 from a string or a number"""
     msg = "Expected +1, -1 or (float, float), got '{}'!".format(fti)
-    if isinstance(fti, str):
-        try:
-            fti = int(float(fti))
-        except ValueError:
+    if isinstance(fti, (list, tuple)):
+        if len(fti) != 2:
             raise ValueError(msg)
-    if isinstance(fti, numbers.Number):
+        fti = [float(fti[0]), float(fti[1])]
+    elif isinstance(fti, str):
+        if fti.count(","):  # tuple
+            for s in " ()[]":
+                fti = fti.replace(s, "")
+            fti = floattuple_or_one(fti.split(","))
+        else:  # one
+            try:
+                fti = int(float(fti))
+            except ValueError:
+                raise ValueError(msg)
+    elif isinstance(fti, numbers.Number):
         fti = int(fti)
         if fti in [+1, -1]:
             pass
         else:
             raise ValueError(msg)
     else:
-        fti = list(fti)
-        if len(fti) == 2:
-            try:
-                fti = (float(fti[0]), float(fti[1]))
-            except ValueError:
-                raise ValueError(msg)
-        else:
-            raise ValueError(msg)
+        fti = floattuple_or_one(list(fti))
     return fti
 
 

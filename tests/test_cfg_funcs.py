@@ -72,6 +72,43 @@ def test_float_or_str():
     assert cfg_funcs.float_or_str("1.1e-5") == 1.1e-5
 
 
+def test_float_tuple_or_one():
+    assert cfg_funcs.floattuple_or_one("1") == 1
+    assert cfg_funcs.floattuple_or_one("+1") == 1
+    assert cfg_funcs.floattuple_or_one("-1") == -1
+    assert cfg_funcs.floattuple_or_one(1) == 1
+    assert cfg_funcs.floattuple_or_one(-1) == -1
+    assert cfg_funcs.floattuple_or_one(1.0) == 1
+    assert cfg_funcs.floattuple_or_one(-1.0) == -1
+    assert np.allclose(cfg_funcs.floattuple_or_one([1, 2]), [1, 2])
+    assert np.allclose(cfg_funcs.floattuple_or_one(["1", "2"]), [1, 2])
+    assert np.allclose(cfg_funcs.floattuple_or_one("1.0, 2"), [1, 2])
+    assert np.allclose(cfg_funcs.floattuple_or_one((1, 2)), [1, 2])
+    assert np.allclose(cfg_funcs.floattuple_or_one([1.2, 2.9]), [1.2, 2.9])
+    assert np.allclose(cfg_funcs.floattuple_or_one(np.array([1, 2])), [1, 2])
+
+    try:
+        cfg_funcs.floattuple_or_one("1,2,3,4")
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        cfg_funcs.floattuple_or_one("nan")
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        cfg_funcs.floattuple_or_one(2)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+
 def test_int_or_str():
     assert isinstance(cfg_funcs.int_or_str("1.1"), int)
     assert isinstance(cfg_funcs.int_or_str(1), int)
