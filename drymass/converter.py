@@ -62,11 +62,12 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
             else:
                 bgamp = dsbgamp.get_qpimage(0).amp
         else:
-            raise ValueError("Undefined bg_data_amp: {}".format(bg_data_amp))
+            msg = "Unknown type for `bg_data_amp`: {}".format(bg_data_amp)
+            raise ValueError(msg)
 
         if bg_data_pha is None:
             bgpha = np.zeros(ds.get_qpimage(0).shape)
-        elif isinstance(bg_data_amp, numbers.Integral):
+        elif isinstance(bg_data_pha, numbers.Integral):
             if bg_data_pha < 0 or bg_data_pha > (len(ds)-1):
                 msg = "Phase data index must be between 0 and {}".format(
                     len(ds)-1)
@@ -84,7 +85,8 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
             else:
                 bgpha = dsbgpha.get_qpimage(0).pha
         else:
-            raise ValueError("Undefined bg_data_pha: {}".format(bg_data_pha))
+            msg = "Unknown type for `bg_data_pha`: {}".format(bg_data_pha)
+            raise ValueError(msg)
 
         bg_data = qpimage.QPImage(data=(bgpha, bgamp),
                                   which_data=("phase", "amplitude"))

@@ -15,9 +15,10 @@ def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
     cx = 80
     cy = 120
     r = np.sqrt((x - cx)**2 + (y - cy)**2)
-    image = (r < radius_px) * 1.3
-    qpi = qpimage.QPImage(data=image,
-                          which_data="phase",
+    pha = (r < radius_px) * 1.3
+    amp = .5 + np.roll(pha, 10) / pha.max()
+    qpi = qpimage.QPImage(data=(pha, amp),
+                          which_data="phase,amplitude",
                           meta_data={"pixel size": pxsize,
                                      "medium index": medium_index,
                                      "wavelength": wavelength})
@@ -27,31 +28,6 @@ def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
         for ii in range(num):
             qps.add_qpimage(qpi, identifier="test_{}".format(ii))
     return qpi, path, dout
-
-
-def test_change_wavelength():
-    _qpi, path, dout = setup_test_data()
-    path_out = drymass.convert(path_in=path,
-                               dir_out=dout,
-                               meta_data={"wavelength": 500e-9})
-
-    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qpso:
-        id1 = qpso.identifier
-
-    path_out2 = drymass.convert(path_in=path,
-                                dir_out=dout,
-                                meta_data={"wavelength": 333e-9})
-
-    with qpimage.QPSeries(h5file=path_out2, h5mode="r") as qpso:
-        id2 = qpso.identifier
-
-    assert id1 != id2, "Files should have different identifiers"
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 def test_bg_correction_index():
@@ -84,6 +60,87 @@ def test_bg_correction_index():
         # in a flat QPImage.
         assert np.allclose(qps[0].pha, qpi.pha - .5)
         assert np.allclose(qps[0].amp, qpi.amp / .9)
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
+def test_bg_correction_index_bad():
+    _qpi, path, dout = setup_test_data(num=2)
+
+    try:
+        drymass.convert(path_in=path, dir_out=dout, bg_data_amp=-1)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        drymass.convert(path_in=path, dir_out=dout, bg_data_pha=-1)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        drymass.convert(path_in=path, dir_out=dout, bg_data_amp=2)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        drymass.convert(path_in=path, dir_out=dout, bg_data_pha=2)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
+def test_bg_correction_none_bad():
+    _qpi, path, dout = setup_test_data(num=2)
+
+    path_out = drymass.convert(path_in=path, dir_out=dout, bg_data_amp=0)
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
+        # background correction with same input image will result
+        # in a flat QPImage.
+        assert not np.all(qps[0].pha == 0)
+        assert np.all(qps[0].amp == 1)
+
+    path_out = drymass.convert(path_in=path, dir_out=dout, bg_data_pha=0)
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
+        # background correction with same input image will result
+        # in a flat QPImage.
+        assert np.all(qps[0].pha == 0)
+        assert not np.all(qps[0].amp == 1)
+
+
+def test_change_wavelength():
+    _qpi, path, dout = setup_test_data()
+    path_out = drymass.convert(path_in=path,
+                               dir_out=dout,
+                               meta_data={"wavelength": 500e-9})
+
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qpso:
+        id1 = qpso.identifier
+
+    path_out2 = drymass.convert(path_in=path,
+                                dir_out=dout,
+                                meta_data={"wavelength": 333e-9})
+
+    with qpimage.QPSeries(h5file=path_out2, h5mode="r") as qpso:
+        id2 = qpso.identifier
+
+    assert id1 != id2, "Files should have different identifiers"
 
     try:
         os.remove(path)
