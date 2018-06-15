@@ -42,52 +42,12 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
     if not (bg_data_amp is None and bg_data_pha is None):
         # Only set background of data set if there is
         # a background defined.
-        if bg_data_amp is None:
-            bgamp = np.ones(ds.get_qpimage(0).shape)
-        elif isinstance(bg_data_amp, numbers.Integral):
-            if bg_data_amp < 0 or bg_data_amp > (len(ds)-1):
-                msg = "Amplitude background index must be between 0 and " \
-                      + "{}".format(len(ds)-1)
-                raise ValueError(msg)
-            # indexing in configuration file starts at 0
-            bgamp = ds.get_qpimage(bg_data_amp).amp
-        elif isinstance(bg_data_amp, (str, pathlib.Path)):
-            bgamppath = path_in.parent / bg_data_amp
-            dsbgamp = qpformat.load_data(path=bgamppath,
-                                         meta_data=meta_data,
-                                         holo_kw=holo_kw)
-            if len(dsbgamp) != 1:
-                msg = "Background correction with series data not implemented!"
-                raise NotImplementedError(msg)
-            else:
-                bgamp = dsbgamp.get_qpimage(0).amp
-        else:
-            msg = "Unknown type for `bg_data_amp`: {}".format(bg_data_amp)
-            raise ValueError(msg)
-
-        if bg_data_pha is None:
-            bgpha = np.zeros(ds.get_qpimage(0).shape)
-        elif isinstance(bg_data_pha, numbers.Integral):
-            if bg_data_pha < 0 or bg_data_pha > (len(ds)-1):
-                msg = "Phase data index must be between 0 and {}".format(
-                    len(ds)-1)
-                raise ValueError(msg)
-            # indexing in configuration file starts at 0
-            bgpha = ds.get_qpimage(bg_data_pha).pha
-        elif isinstance(bg_data_pha, (str, pathlib.Path)):
-            bgphapath = path_in.parent / bg_data_amp
-            dsbgpha = qpformat.load_data(path=bgphapath,
-                                         meta_data=meta_data,
-                                         holo_kw=holo_kw)
-            if len(dsbgpha) != 1:
-                msg = "Background correction with series data not implemented!"
-                raise NotImplementedError(msg)
-            else:
-                bgpha = dsbgpha.get_qpimage(0).pha
-        else:
-            msg = "Unknown type for `bg_data_pha`: {}".format(bg_data_pha)
-            raise ValueError(msg)
-
+        bgamp = get_background(bg_data=bg_data_amp,
+                               dataset=ds,
+                               which="amplitude")
+        bgpha = get_background(bg_data=bg_data_pha,
+                               dataset=ds,
+                               which="phase")
         bg_data = qpimage.QPImage(data=(bgpha, bgamp),
                                   which_data=("phase", "amplitude"))
         ds.set_bg(bg_data)
@@ -119,6 +79,62 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
     if len(ret) == 1:
         ret = ret[0]
     return ret
+
+
+def get_background(bg_data, dataset, which="phase"):
+    """Obtain the background data for a dataset
+
+    Parameters
+    ----------
+    bg_data: None, int, str, or pathlib.Path
+        Represents the background data:
+
+        - None: no background data
+        - int: image with this index in `dataset` is used
+          for background correction
+        - str, pathlib.Path: An external file will be used for background
+          correction.
+    dataset: qpformat.dataset.SeriesData
+        The dataset for which the background data is collected.
+        No background correction is performed! `dataset` is needed
+        for integer `bg_data` and for path-based `bg_data`
+        (because of meta data and hologram kwargs).
+
+    Returns
+    -------
+    bg: 2d np.ndarray
+        The background data.
+    """
+    if which not in ["phase", "amplitude"]:
+        raise ValueError("`which` must be 'phase' or 'amplitude'!")
+    if bg_data is None:
+        bg = np.ones(dataset.get_qpimage(0).shape)
+    elif isinstance(bg_data, numbers.Integral):
+        if bg_data < 0 or bg_data > (len(dataset)-1):
+            msg = "Background {} index must be between 0 and {}!"
+            raise ValueError(msg.format(which, len(dataset)-1))
+        # indexing in configuration file starts at 0
+        if which == "phase":
+            bg = dataset.get_qpimage(bg_data).pha
+        else:
+            bg = dataset.get_qpimage(bg_data).amp
+    elif isinstance(bg_data, (str, pathlib.Path)):
+        bgpath = pathlib.Path(bg_data)
+        dsbg = qpformat.load_data(path=bgpath,
+                                  meta_data=dataset.meta_data,
+                                  holo_kw=dataset.holo_kw)
+        if len(dsbg) != 1:
+            msg = "Background correction with series data not implemented!"
+            raise NotImplementedError(msg)
+        else:
+            if which == "phase":
+                bg = dsbg.get_qpimage(0).pha
+            else:
+                bg = dsbg.get_qpimage(0).amp
+    else:
+        msg = "Unknown type for {} `bg_data`: {}".format(which, bg_data)
+        raise ValueError(msg)
+    return bg
 
 
 def h5series2tif(h5in, tifout):

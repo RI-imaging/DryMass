@@ -106,6 +106,30 @@ def test_bg_correction_index_bad():
     shutil.rmtree(dout, ignore_errors=True)
 
 
+def test_bg_correction_invalid():
+    _qpi, path, dout = setup_test_data(num=2)
+
+    try:
+        drymass.convert(path_in=path, dir_out=dout, bg_data_pha=np.zeros(10))
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        drymass.convert(path_in=path, dir_out=dout, bg_data_pha=1.2)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
 def test_bg_correction_none_bad():
     _qpi, path, dout = setup_test_data(num=2)
 
@@ -122,6 +146,34 @@ def test_bg_correction_none_bad():
         # in a flat QPImage.
         assert np.all(qps[0].pha == 0)
         assert not np.all(qps[0].amp == 1)
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
+def test_bg_correction_path():
+    _qpi, path, dout = setup_test_data(num=2)
+    _bgqpi, bgpath, bgdout = setup_test_data(num=1)
+
+    path_out = drymass.convert(path_in=path, dir_out=dout,
+                               bg_data_pha=bgpath,
+                               bg_data_amp=bgpath)
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
+        # background correction with same input image will result
+        # in a flat QPImage.
+        assert np.all(qps[0].pha == 0)
+        assert np.all(qps[0].amp == 1)
+
+    try:
+        os.remove(path)
+        os.remove(bgpath)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+    shutil.rmtree(bgdout, ignore_errors=True)
 
 
 def test_change_wavelength():
