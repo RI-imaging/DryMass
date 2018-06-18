@@ -20,6 +20,7 @@ try:
 except TypeError:  # building the docs
     pass
 
+
 def add_cbar(ax, mapper, cbformat="%.2f", label="",
              loc="right", size="5%", labelloc=None):
     if labelloc is None:
