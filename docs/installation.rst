@@ -4,8 +4,8 @@
 Installing DryMass
 ==================
 
-DryMass is written in pure Python and supports Python version 3.5
-and higher. DryMass depends on several other scientific Python packages,
+DryMass is written in pure Python and supports Python version 3.6
+and later. DryMass depends on several other scientific Python packages,
 including:
 
  - `numpy <https://docs.scipy.org/doc/numpy/>`_,
@@ -34,9 +34,9 @@ to the latest version, use
 
 ``pip install drymass``.
 
-If you wish to install a specific version of DryMass (e.g. 0.1.0), use
+If you wish to install a specific version of DryMass (e.g. 0.3.0), use
 
-``pip install 'drymass==0.1.0'``.
+``pip install 'drymass==0.3.0'``.
 
 
 Known issues
@@ -47,7 +47,7 @@ Known issues
    | `"Could not find a version that satisfies the requirement drymass (from versions: )`
    | `No matching distribution found for drymass`",
    
-   please make sure that you are using Python version 3.5 or higher with ``python --version``.
+   please make sure that you are using Python version 3.6 or later with ``python --version``.
    If that is already the case, please run ``pip -vvv install drymass`` and create an
    `issue <https://github.com/RI-imaging/DryMass/issues>`_ with the error
    messages (e.g. as a screenshot) that you get.
@@ -63,6 +63,6 @@ Known issues
    install `scikit-image` via ``conda install scikit-image``.
    If you are not using Anaconda, you can install one of the `wheels
    provided by Christoph Gohlke <https://www.lfd.uci.edu/~gohlke/pythonlibs/#scikit-image>`_
-   (download e.g. "scikit_image‑0.13.1‑cp35‑cp35m‑win_amd64.whl" if you have installed
-   the 64bit version of Python 3.5, navigate to the download directory and run
-   ``pip install scikit_image‑0.13.1‑cp35‑cp35m‑win_amd64.whl``). 
+   (download e.g. "scikit_image‑0.14.0‑cp36‑cp35m‑win_amd64.whl" if you have installed
+   the 64bit version of Python 3.6, navigate to the download directory and run
+   ``pip install scikit_image‑0.14.0‑cp35‑cp36m‑win_amd64.whl``). 

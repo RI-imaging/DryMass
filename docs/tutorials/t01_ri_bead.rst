@@ -42,7 +42,7 @@ will look similar to this (2.5x time lapse):
 .. figure:: t01_analyze_sphere.gif
 
 DryMass has created a directory called ``QLSR_PAA_beads.zip_dm`` (the
-input argument with an `_dm` appended) which contains the following
+input argument with `_dm` appended) which contains the following
 files
 
 - **drymass.cfg**: DryMass :ref:`sec_configuration_file`
