@@ -1,7 +1,7 @@
 import pathlib
 
 from . import definitions
-from ._version import version
+from .._version import version
 
 FILE_CONFIG = "drymass.cfg"
 

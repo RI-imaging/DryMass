@@ -1,6 +1,6 @@
 import numpy as np
 
-from .cfg_funcs import fbool, float01, float_or_str, int_or_str, lcstr, \
+from .parse_funcs import fbool, float01, float_or_str, int_or_str, lcstr, \
     floattuple_or_one, tupletupleint
 
 

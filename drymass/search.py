@@ -6,7 +6,7 @@ from skimage.measure import regionprops
 
 
 def approx_bg(data, filter_size=None):
-    """ Approximate the image background with Gaussian convolution
+    """Approximate the image background with Gaussian convolution
 
     Parameters
     ----------

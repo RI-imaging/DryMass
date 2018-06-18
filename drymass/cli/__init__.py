@@ -1,8 +1,5 @@
-import argparse
-import functools
 import io
 import numbers
-import pathlib
 import sys
 
 import numpy as np
@@ -10,27 +7,26 @@ from PIL import Image
 import qpimage
 from skimage.external import tifffile
 
+from . import dialog
+from . import settings
+from . import plot
+
 from ..anasphere import analyze_sphere
 from ..converter import convert
 from ..extractroi import extract_roi
-from .. import config_file
-from .. import definitions
-from .. import plot
-from .._version import version
 
 
-OUTPUT_SUFFIX = "_dm"
 FILE_SENSOR_WITH_ROI_IMAGE = "sensor_roi_images.tif"
 FILE_SPHERE_ANALYSIS_IMAGE = "sphere_{}_{}_images.tif"
 
 
-def cli_analyze_sphere(ret_data=False):
-    path_out = setup_analysis()[1]
-    cfg = user_complete_config_meta(path_out,
-                                    meta_keys=["medium index",
-                                               "pixel size um",
-                                               "wavelength nm"])
-    h5roi = cli_extract_roi(ret_data=True)
+def cli_analyze_sphere(path=None, ret_data=False):
+    path_in, path_out = dialog.main(path=path,
+                                    req_meta=["medium index",
+                                              "pixel size um",
+                                              "wavelength nm"])
+    cfg = settings.ConfigFile(path_out)
+    h5roi = cli_extract_roi(path=path_in, ret_data=True)
     print("Performing sphere analysis... ", end="", flush=True)
     # canny edge detection parameters
     edgekw = {
@@ -92,11 +88,11 @@ def cli_analyze_sphere(ret_data=False):
         print("Done")
 
 
-def cli_convert(ret_data=False):
-    path_in, path_out = setup_analysis()
-    cfg = user_complete_config_meta(path_out,
-                                    meta_keys=["pixel size um",
-                                               "wavelength nm"])
+def cli_convert(path=None, ret_data=False):
+    path_in, path_out = dialog.main(path=path,
+                                    req_meta=["pixel size um",
+                                              "wavelength nm"])
+    cfg = settings.ConfigFile(path_out)
     print("Converting input data... ", end="", flush=True)
     meta_data = {"pixel size": cfg["meta"]["pixel size um"] * 1e-6,
                  "wavelength": cfg["meta"]["wavelength nm"] * 1e-9,
@@ -144,12 +140,12 @@ def cli_convert(ret_data=False):
         return h5series
 
 
-def cli_extract_roi(ret_data=False):
-    path_out = setup_analysis()[1]
+def cli_extract_roi(path=None, ret_data=False):
+    path_in, path_out = dialog.main(path=path)
     # cli_convert will ask for the required meta data
-    h5series = cli_convert(ret_data=True)
+    h5series = cli_convert(path=path_in, ret_data=True)
     # get the configuration after cli_convert was run
-    cfg = config_file.ConfigFile(path_out)
+    cfg = settings.ConfigFile(path_out)
     print("Extracting ROIs... ", end="", flush=True)
     if cfg["bg"]["enabled"]:
         bg_amp_kw = {"fit_offset": cfg["bg"]["amplitude offset"],
@@ -230,36 +226,5 @@ def cli_extract_roi(ret_data=False):
         return h5roi
 
 
-@functools.lru_cache(maxsize=4)
-def setup_analysis():
-    print("DryMass version {}".format(version))
-    parser = argparse.ArgumentParser(description='DryMass QPI analysis.')
-    parser.add_argument('path', metavar='path', nargs='+', type=str,
-                        help='Data path')
-    args = parser.parse_args()
-    # Workaround: We use nargs='+' and join the input to support white
-    # spaces in path names.
-    jpath = " ".join(args.path)
-    path_in = pathlib.Path(jpath).resolve()
-    if not path_in.exists():
-        raise ValueError("Path '{}' does not exist!".format(path_in))
-    path_out = path_in.with_name(path_in.name + OUTPUT_SUFFIX)
-    path_out.mkdir(exist_ok=True)
-    print("Input:  {}".format(path_in))
-    print("Output: {}".format(path_out))
-    return path_in, path_out
-
-
 def strpar(cfg, section, key):
     return "[{}] {} = {}".format(section, key, cfg[section][key])
-
-
-def user_complete_config_meta(path, meta_keys):
-    cfg = config_file.ConfigFile(path)
-    meta = cfg["meta"]
-    for key in sorted(meta_keys):
-        description = definitions.config["meta"][key][2]
-        if key not in meta or np.isnan(meta[key]):
-            val = input("Please enter '{}' ({}): ".format(key, description))
-            cfg.set_value("meta", key, val)
-    return cfg

@@ -3,19 +3,19 @@ import shutil
 
 import numpy as np
 
-from drymass import config_file
+from drymass.cli import settings
 
 
 def test_basic():
     path = tempfile.mkdtemp(prefix="drymass_test_config_")
-    cfg = config_file.ConfigFile(path=path)
+    cfg = settings.ConfigFile(path=path)
     assert isinstance(cfg["bg"], dict)
     shutil.rmtree(path, ignore_errors=True)
 
 
 def test_dtype():
     path = tempfile.mkdtemp(prefix="drymass_test_config_")
-    cfg = config_file.ConfigFile(path=path)
+    cfg = settings.ConfigFile(path=path)
 
     cfg["specimen"] = {"size um": 11.3}
     assert np.allclose(cfg["specimen"]["size um"], 11.3)
