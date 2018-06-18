@@ -1,5 +1,6 @@
 import io
 import numbers
+import pathlib
 import sys
 
 import numpy as np
@@ -7,8 +8,8 @@ from PIL import Image
 import qpimage
 from skimage.external import tifffile
 
+from . import config
 from . import dialog
-from . import settings
 from . import plot
 
 from ..anasphere import analyze_sphere
@@ -25,7 +26,7 @@ def cli_analyze_sphere(path=None, ret_data=False):
                                     req_meta=["medium index",
                                               "pixel size um",
                                               "wavelength nm"])
-    cfg = settings.ConfigFile(path_out)
+    cfg = config.ConfigFile(path_out)
     h5roi = cli_extract_roi(path=path_in, ret_data=True)
     print("Performing sphere analysis... ", end="", flush=True)
     # canny edge detection parameters
@@ -92,7 +93,7 @@ def cli_convert(path=None, ret_data=False):
     path_in, path_out = dialog.main(path=path,
                                     req_meta=["pixel size um",
                                               "wavelength nm"])
-    cfg = settings.ConfigFile(path_out)
+    cfg = config.ConfigFile(path_out)
     print("Converting input data... ", end="", flush=True)
     meta_data = {"pixel size": cfg["meta"]["pixel size um"] * 1e-6,
                  "wavelength": cfg["meta"]["wavelength nm"] * 1e-9,
@@ -104,20 +105,10 @@ def cli_convert(path=None, ret_data=False):
                "sideband": cfg["holo"]["sideband"],
                }
 
-    bg_data_amp = cfg["bg"]["amplitude data"]
-    bg_data_pha = cfg["bg"]["phase data"]
-
-    if bg_data_amp == "none":
-        bg_data_amp = None
-    elif isinstance(bg_data_amp, numbers.Integral):
-        # indexing starts at 1
-        bg_data_amp -= 1
-
-    if bg_data_pha == "none":
-        bg_data_pha = None
-    elif isinstance(bg_data_pha, numbers.Integral):
-        # indexing starts at 1
-        bg_data_pha -= 1
+    bg_data_amp = parse_bg_value(cfg["bg"]["amplitude data"],
+                                 reldir=path_in.parent)
+    bg_data_pha = parse_bg_value(cfg["bg"]["phase data"],
+                                 reldir=path_in.parent)
 
     h5series, ds, changed = convert(path_in=path_in,
                                     dir_out=path_out,
@@ -145,7 +136,7 @@ def cli_extract_roi(path=None, ret_data=False):
     # cli_convert will ask for the required meta data
     h5series = cli_convert(path=path_in, ret_data=True)
     # get the configuration after cli_convert was run
-    cfg = settings.ConfigFile(path_out)
+    cfg = config.ConfigFile(path_out)
     print("Extracting ROIs... ", end="", flush=True)
     if cfg["bg"]["enabled"]:
         bg_amp_kw = {"fit_offset": cfg["bg"]["amplitude offset"],
@@ -224,6 +215,23 @@ def cli_extract_roi(path=None, ret_data=False):
 
     if ret_data:
         return h5roi
+
+
+def parse_bg_value(bg, reldir):
+    if bg == "none":
+        bg = None
+    elif isinstance(bg, numbers.Integral):
+        # indexing starts at 1
+        bg -= 1
+    elif isinstance(bg, str):
+        # can be a file name relative to the input directory
+        # or an absolute path.
+        reldir = pathlib.Path(reldir)
+        path = reldir / bg
+        if not path.exists():
+            path = pathlib.Path(bg)
+        bg = path
+    return bg
 
 
 def strpar(cfg, section, key):

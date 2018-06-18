@@ -1,14 +1,16 @@
 import numpy as np
 
-from .parse_funcs import fbool, float01, float_or_str, int_or_str, lcstr, \
+from .parse_funcs import fbool, float01, float_or_str, int_or_path, lcstr, \
     floattuple_or_one, tupletupleint
 
 
 config = {
     "bg": {
         "amplitude data":
-            ("none", int_or_str, "Amplitude bg correction file or index"),
+            ("none", int_or_path, "Amplitude bg correction file or index"),
             # Image indexing starts with 1.
+            # If a file, either specify the full path or the relative
+            # path to the directory containing the input data.
         "amplitude offset":
             ("mean", lcstr, "Amplitude bg correction offset method"),
             # Valid values are defined in
@@ -29,8 +31,10 @@ config = {
             (True, fbool, "Enable bg correction globally"),
             # Set to *False* when manually editing *roi_slices.txt*.
         "phase data":
-            ("none", int_or_str, "Phase bg correction file or index"),
+            ("none", int_or_path, "Phase bg correction file or index"),
             # Image indexing starts with 1.
+            # If a file, either specify the full path or the relative
+            # path to the directory containing the input data.
         "phase offset":
             ("mean", lcstr, "Phase bg correction offset method"),
             # Valid values are defined in

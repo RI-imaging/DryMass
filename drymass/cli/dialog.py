@@ -7,7 +7,7 @@ import numpy as np
 from .._version import version
 
 from . import definitions
-from . import settings
+from . import config
 
 
 OUTPUT_SUFFIX = "_dm"
@@ -15,7 +15,7 @@ OUTPUT_SUFFIX = "_dm"
 
 @functools.lru_cache(maxsize=32)
 def input_setting(path, section, key):
-    cfg = settings.ConfigFile(path)
+    cfg = config.ConfigFile(path)
     sec = cfg[section]
     description = definitions.config[section][key][2]
     if key not in sec or np.isnan(sec[key]):

@@ -15,7 +15,7 @@ class IncludeDirective(Directive):
     def run(self):
         # determine path of definitions.py
         here = pathlib.Path(__file__).parent
-        dfn = str(here / ".." / ".." / "drymass" / "definitions.py")
+        dfn = str(here / ".." / ".." / "drymass" / "cli" / "definitions.py")
 
         with io.open(dfn, "r") as myfile:
             text = myfile.readlines()
@@ -75,7 +75,7 @@ def parse_element(rst, name="", doc="", notes=[], default="", dtype=""):
     if dtype in ["float", "int", "str"]:
         str_dtype = ":class:`{}`".format(dtype)
     else:
-        str_dtype = ":func:`{0} <drymass.cfg_funcs.{0}>`".format(dtype)
+        str_dtype = ":func:`{0} <drymass.cli.parse_funcs.{0}>`".format(dtype)
     rst.append("* | **{}** = {} ({}) -- {} ".format(name, default, str_dtype, doc))
     if notes:
         rst.append("  | {}".format("".join(notes).strip()))

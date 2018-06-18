@@ -1,4 +1,5 @@
 import numbers
+import pathlib
 
 import numpy as np
 
@@ -85,16 +86,18 @@ def floattuple_or_one(fti):
     return fti
 
 
-def int_or_str(it_or_str):
+def int_or_path(intpath):
     """Integer or string from a string or a number"""
-    if isinstance(it_or_str, str):
-        it_or_str = it_or_str.strip()
-        if it_or_str.replace(".", "").isdigit():
-            value = int(float(it_or_str))
+    if isinstance(intpath, str):
+        intpath = intpath.strip()
+        if intpath.replace(".", "").isdigit():
+            value = int(float(intpath))
         else:
-            value = it_or_str
+            value = str(intpath)
+    elif isinstance(intpath, pathlib.Path):
+        value = str(intpath)
     else:
-        value = int(float(it_or_str))
+        value = int(float(intpath))
     return value
 
 

@@ -109,13 +109,13 @@ def test_float_tuple_or_one():
         assert False
 
 
-def test_int_or_str():
-    assert isinstance(parse_funcs.int_or_str("1.1"), int)
-    assert isinstance(parse_funcs.int_or_str(1), int)
-    assert isinstance(parse_funcs.int_or_str(False), int)
-    assert parse_funcs.int_or_str("1.1") == 1
-    assert parse_funcs.int_or_str("1.1b") == "1.1b"
-    assert parse_funcs.int_or_str("2") == 2
+def test_int_or_path():
+    assert isinstance(parse_funcs.int_or_path("1.1"), int)
+    assert isinstance(parse_funcs.int_or_path(1), int)
+    assert isinstance(parse_funcs.int_or_path(False), int)
+    assert parse_funcs.int_or_path("1.1") == 1
+    assert parse_funcs.int_or_path("1.1b") == "1.1b"
+    assert parse_funcs.int_or_path("2") == 2
 
 
 def test_lcstr():

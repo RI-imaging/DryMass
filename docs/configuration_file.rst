@@ -7,6 +7,7 @@ The DryMass configuration file *drymass.cfg* is located in the
 root of the output folder ("*_dm*" appended to the data path).
 The configuration file is divided into sections.
 
+
 .. _config_bg:
 
 [bg] Background correction
@@ -35,6 +36,7 @@ This section contains meta data of the experiment.
 
 .. include_definition:: meta
 
+
 .. _config_output:
 
 [output] Supplementary data output
@@ -43,6 +45,7 @@ This section defines what additional data are written to disk.
 
 .. include_definition:: output
 
+
 .. _config_roi:
 
 [roi] Extraction of regions of interest
@@ -50,6 +53,7 @@ This section defines what additional data are written to disk.
 The extraction of ROIs is done in :func:`drymass.extractroi.extract_roi`.
 
 .. include_definition:: roi
+
 
 .. _config_specimen:
 
