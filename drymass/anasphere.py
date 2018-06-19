@@ -119,6 +119,7 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                 "medium": qpi["medium index"]
             }
             fd.write("\t".join([str(data[k]) for k in header]) + "\r\n")
+            fd.flush()
 
     if ret_changed:
         return h5out, create
