@@ -24,7 +24,7 @@ please see :mod:`qpimage.bg_estimate`.
 
 [holo] Hologram analysis
 ------------------------
-These parameters tune the hologram analysis step (if applicable).
+These parameters tune the analysis of off-axis hologram data (if applicable).
 The parameters shown are passed to :func:`qpimage.holo.get_field`.
 
 .. include_definition:: holo
