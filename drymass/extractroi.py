@@ -1,3 +1,4 @@
+from os import fspath
 import pathlib
 import warnings
 
@@ -51,7 +52,7 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
     # Extract ROI images
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps, \
             qpimage.QPSeries(h5file=h5out, h5mode="w") as qps_roi, \
-            tifffile.TiffWriter(str(imout), imagej=True) as tf:
+            tifffile.TiffWriter(fspath(imout), imagej=True) as tf:
         for ii in range(len(qps)):
             # image to analyze
             qpi = qps[ii]

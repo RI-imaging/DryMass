@@ -1,4 +1,5 @@
 import numbers
+from os import fspath
 import pathlib
 
 import numpy as np
@@ -139,7 +140,7 @@ def get_background(bg_data, dataset, which="phase"):
 
 def h5series2tif(h5in, tifout):
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps, \
-            tifffile.TiffWriter(str(tifout), imagej=True) as tf:
+            tifffile.TiffWriter(fspath(tifout), imagej=True) as tf:
         for ii in range(len(qps)):
             qpi = qps[ii]
             res = 1 / qpi["pixel size"] * 1e-6  # use µm

@@ -1,12 +1,7 @@
-from os.path import abspath, dirname
-import sys
-
 import numpy as np
 import qpimage
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-from drymass import search  # noqa: E402
+from drymass import search
 
 
 def test_basic():

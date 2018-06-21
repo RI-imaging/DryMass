@@ -1,5 +1,6 @@
 import io
 import numbers
+from os import fspath
 import pathlib
 import sys
 
@@ -73,7 +74,7 @@ def cli_analyze_sphere(path=None, ret_data=False):
         # plot h5series and rmgr with matplotlib
         with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_roi, \
                 qpimage.QPSeries(h5file=h5sim, h5mode="r") as qps_sim, \
-                tifffile.TiffWriter(str(tifout), imagej=True) as tf:
+                tifffile.TiffWriter(fspath(tifout), imagej=True) as tf:
             for ii in range(len(qps_roi)):
                 qpi_real = qps_roi[ii]
                 qpi_sim = qps_sim[ii]
@@ -201,7 +202,7 @@ def cli_extract_roi(path=None, ret_data=False):
         tifout = path_out / FILE_SENSOR_WITH_ROI_IMAGE
         # plot h5series and rmgr with matplotlib
         with qpimage.QPSeries(h5file=h5series, h5mode="r") as qps, \
-                tifffile.TiffWriter(str(tifout), imagej=True) as tf:
+                tifffile.TiffWriter(fspath(tifout), imagej=True) as tf:
             for ii in range(len(qps)):
                 rois = rmgr.get_from_image_index(ii)
                 imio = io.BytesIO()

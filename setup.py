@@ -38,7 +38,7 @@ setup(
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["matplotlib",
-                      "numpy",
+                      "numpy>=1.12.0",
                       "scikit-image>=0.13.1",
                       ] + release_deps,
     setup_requires=['pytest-runner'],

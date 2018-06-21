@@ -1,4 +1,5 @@
 import numbers
+from os import fspath
 import pathlib
 
 import numpy as np
@@ -93,9 +94,9 @@ def int_or_path(intpath):
         if intpath.replace(".", "").isdigit():
             value = int(float(intpath))
         else:
-            value = str(intpath)
+            value = fspath(intpath)
     elif isinstance(intpath, pathlib.Path):
-        value = str(intpath)
+        value = fspath(intpath)
     else:
         value = int(float(intpath))
     return value
