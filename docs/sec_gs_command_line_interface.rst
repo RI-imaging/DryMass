@@ -26,7 +26,8 @@ for use with `Fiji/ImageJ <https://fiji.sc/>`_ and to the hdf5-based
 `qpimage <https://qpimage.readthedocs.io/en/stable>`_ data file format.
 The experimental data files are loaded with the
 `qpformat <http://qpformat.readthedocs.io/en/stable/>`_ library, which
-supports several quantitative phase imaging file formats. If a specific
+supports :ref:`several quantitative phase imaging file formats 
+<qpformat:supported_formats>`. If a specific
 format is not supported, please create an issue at the `qpformat issue
 page <https://github.com/RI-imaging/qpformat/issues>`_. A typical use
 case of dm_convert on Windows is
@@ -49,7 +50,7 @@ Then, a new directory ``d:\\data\path\to\experiment_dm`` is created
 with the following files:
 
 *drymass.cfg*
-  the user-editable :doc:`drymass configuration file <configuration_file>`
+  the user-editable :doc:`drymass configuration file <sec_gs_configuration_file>`
   which is used in subsequent analysis steps
 
 *sensor_data.h5*
@@ -80,7 +81,7 @@ The usage is the same as that of dm_convert:
 
 The command dm_extract_roi automatically runs dm_convert if it has not been
 run before. If ROI detection fails, the search parameters have to manually
-be updated in the :doc:`drymass configuration file <configuration_file>`. The most
+be updated in the :doc:`drymass configuration file <sec_gs_configuration_file>`. The most
 important parameter is the diameter of the specimen in microns ("*size um*"
 in the :ref:`specimen <config_specimen>` section);
 all other parameters are defined in the :ref:`roi <config_roi>`
@@ -106,7 +107,7 @@ The following files are created by dm_extract_roi:
   rendered sensor phase images with labeled ROIs;
   only created if "*roi images*" is set to "*True*"
   in the :ref:`output <config_output>` section of the
-  :doc:`drymass configuration file <configuration_file>`
+  :doc:`drymass configuration file <sec_gs_configuration_file>`
 
 
 .. _section_dm_analyze_sphere:
@@ -123,7 +124,7 @@ tomographic approaches that require an acquisition of multiple phase
 images from different directions). The parameters for the sphere analysis,
 such as analysis method and scattering model,
 are defined in the :ref:`sphere <config_sphere>` section of the 
-:doc:`drymass configuration file <configuration_file>`. For an overview
+:doc:`drymass configuration file <sec_gs_configuration_file>`. For an overview
 of the available models, please refer to the
 :ref:`qpsphere docs <qpsphere:choose_method_model>`. 
 The following files are created by dm_analyze_sphere

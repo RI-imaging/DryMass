@@ -5,7 +5,7 @@ Getting started
 .. toctree::
   :maxdepth: 2
 
-  installation
-  command_line_interface
-  configuration_file
-  trouble
+  sec_gs_installation
+  sec_gs_command_line_interface
+  sec_gs_configuration_file
+  sec_gs_trouble
