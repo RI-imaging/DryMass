@@ -3,7 +3,6 @@ import numpy as np
 from .parse_funcs import fbool, float01, float_or_str, int_or_path, lcstr, \
     floattuple_or_one, tupletupleint
 
-
 config = {
     "bg": {
         "amplitude data":

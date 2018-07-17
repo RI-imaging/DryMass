@@ -23,6 +23,7 @@ except TypeError:  # building the docs
 
 def add_cbar(ax, mapper, cbformat="%.2f", label="",
              loc="right", size="5%", labelloc=None):
+    """Add a colorbar to a plot"""
     if labelloc is None:
         labelloc = loc
     divider = make_axes_locatable(ax)
@@ -35,9 +36,30 @@ def add_cbar(ax, mapper, cbformat="%.2f", label="",
 
 def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
                ret_cbar=False, **kwargs):
-    """
-    type can be "phase", "intensity", "fluorescence"
+    """Plot an image
 
+    Parameters
+    ----------
+    data: 2d np.ndarray
+        Input image
+    ax: matplotlib.Axes
+        Axis to plot to
+    imtype: str
+        One of ["intensity", "phase", "phase_error",
+        "refractive index"].
+    cbar: bool
+        Whether to add a colorbar.
+    px_um: float
+        Pixel size [µm]
+    ret_cbar: bool
+        Whether to return the colorbar.
+    kwargs: dict
+        Keyword arguments to `plt.imshow`.
+
+    Returns
+    -------
+    ax [, cbar]:
+        Axis and colorbar.
     """
     if ax is None:
         ax = plt.subplot(111)
@@ -113,6 +135,7 @@ def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
 
 
 def plot_qpi_phase(qpi, rois=None, path=None):
+    """Plot phase data"""
     fig = plt.figure(figsize=(6, 4))
     ax1 = plt.subplot(111, title="sensor phase image")
     px_um = qpi["pixel size"] * 1e6
@@ -148,6 +171,7 @@ def plot_qpi_phase(qpi, rois=None, path=None):
 
 
 def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
+    """Plot QPI sphere analysis data"""
     fig = plt.figure(figsize=(9, 5))
     px_um = qpi_real["pixel size"] * 1e6
     radius_um = qpi_sim["sim radius"] * 1e6

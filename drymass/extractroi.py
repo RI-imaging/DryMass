@@ -11,15 +11,17 @@ from . import search, util
 from .roi import ROIManager
 
 
-# default background correction kwargs
+#: Default background correction keyword arguments
 BG_DEFAULT_KW = {"fit_offset": "mean",
                  "fit_profile": "tilt",
                  "border_perc": 5,
                  "border_px": 5,
                  }
-# file names
+#: Output ROI qpimage.QPSeries data
 FILE_ROI_DATA_H5 = "roi_data.h5"
+#: Output phase/amplitude TIFF data
 FILE_ROI_DATA_TIF = "roi_data.tif"
+#: Output slice locations
 FILE_SLICES = "roi_slices.txt"
 
 
@@ -238,6 +240,16 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
 
 
 def get_binary(image, value_or_method):
+    """Convert an image to a binary image
+
+    Parameters
+    ----------
+    image: 2d np.ndarray
+        Input image
+    value_or_method: float or str
+        Either a threshold value or a string naming a
+        filter method in :mod:`skimage.filters`.
+    """
     if isinstance(value_or_method, str):
         method = getattr(skimage.filters, value_or_method)
         return image < method(image)

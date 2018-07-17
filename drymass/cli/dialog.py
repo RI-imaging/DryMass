@@ -9,12 +9,13 @@ from .._version import version
 from . import definitions
 from . import config
 
-
+#: DryMass analysis output suffix (appended to data path)
 OUTPUT_SUFFIX = "_dm"
 
 
 @functools.lru_cache(maxsize=32)
 def input_setting(path, section, key):
+    """Ask the user for a configuration key"""
     cfg = config.ConfigFile(path)
     sec = cfg[section]
     description = definitions.config[section][key][2]
@@ -24,6 +25,7 @@ def input_setting(path, section, key):
 
 
 def main(path=None, req_meta=[]):
+    """Main user dialog with optional "meta" kwargs required"""
     # get directories
     if path is None:
         path_in = parse().resolve()
@@ -41,8 +43,9 @@ def main(path=None, req_meta=[]):
     return path_in, path_out
 
 
-@functools.lru_cache(maxsize=32)
+@functools.lru_cache(maxsize=32)  # cached to avoid multiple prints
 def parse():
+    """Obtain the input data set path by parsing the command line"""
     print("DryMass version {}".format(version))
     parser = argparse.ArgumentParser(description='DryMass QPI analysis.')
     parser.add_argument('path', metavar='path', nargs='+', type=str,
@@ -55,7 +58,8 @@ def parse():
     return path_in
 
 
-@functools.lru_cache(maxsize=32)
+@functools.lru_cache(maxsize=32)  # cached to avoid multiple prints
 def print_info(path_in, path_out):
+    """Print input and output paths"""
     print("Input:  {}".format(path_in))
     print("Output: {}".format(path_out))

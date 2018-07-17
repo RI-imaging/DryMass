@@ -3,6 +3,7 @@ import pathlib
 from . import definitions
 from .._version import version
 
+#: DryMass configuration file name
 FILE_CONFIG = "drymass.cfg"
 
 
@@ -11,7 +12,8 @@ class ConfigFile(object):
         """DryMass configuration file management
 
         Manage configuration file of an experimental data set
-        with restrictions imposed by `drymass.definitions.config`.
+        with restrictions imposed by
+        :data:`drymass.cli.definitions.config`.
 
         Parameters
         ----------

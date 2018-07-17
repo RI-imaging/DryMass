@@ -7,7 +7,9 @@ import qpsphere
 
 from . import util
 
+#: Output sphere analysis qpimage.QPSeries data
 FILE_SPHERE_DATA = "sphere_{}_{}_data.h5"
+#: Output sphere analysis statistics
 FILE_SPHERE_STAT = "sphere_{}_{}_statistics.txt"
 
 
@@ -18,7 +20,35 @@ class EdgeDetectionFailedWarning(UserWarning):
 def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                    model="projection", edgekw={}, imagekw={},
                    alpha=.18, rad_fact=1.2, ret_changed=False):
+    """Perform sphere analysis
 
+    Parameters
+    ----------
+    h5series: str
+        Path of qpimage.QPSeries hdf5 file
+    dir_out: str
+        Path to output directory
+    r0: float
+        Initial radius
+    method: str
+        Either "edge" or "image"; see :ref:`config_sphere` for
+        more information.
+    model: str
+        Propagation model to use; see :ref:`config_sphere` for
+        more information.
+    edgekw: dict
+        Keyword arguments to :func:`qpsphere.edgefit.contour_canny`
+    imagekw: dict
+        Keyword arguments to :func:`qpsphere.imagefit.alg.match_phase`
+    alpha: float
+        Refraction increment [mL/g]
+    rad_fact: float
+        Radial inclusion factor for dry mass computation
+    ret_changed: bool
+        Return boolean indicating whether the sphere data on disk was
+        created/updated (True) or whether previously created ROI
+        data was used (False).
+    """
     dir_out = pathlib.Path(dir_out).resolve()
 
     h5out = dir_out / FILE_SPHERE_DATA.format(method, model)
@@ -132,15 +162,17 @@ def absolute_dry_mass_sphere(qpi, radius, center, alpha=.18, rad_fact=1.2):
 
     The absolute dry mass is computed with
 
-    m_abs = m_rel + m_sup
-    m_rel = lambda / (2*PI*alpha) * phi_tot * deltaA
-    m_sup = 4*PI / (3*alpha) * radius^3 (n_med - n_PBS)
+    .. code::
 
-    with the vacuum wavelength `lambda`, the total phase
-    retardation in the area of interest `phi_tot`, the pixel
-    area `deltaA`, the refractive index of the medium `n_med`
-    (stored in `qpi.meta`), and the refractive index of phosphate
-    buffered saline (PBS) `n_PBS`=1.335.
+        m_abs = m_rel + m_sup
+        m_rel = lambda / (2*PI*alpha) * phi_tot * deltaA
+        m_sup = 4*PI / (3*alpha) * radius^3 (n_med - n_PBS)
+
+    with the vacuum wavelength ``lambda``, the total phase
+    retardation in the area of interest ``phi_tot``, the pixel
+    area ``deltaA``, the refractive index of the medium `n_med`
+    (stored in ``qpi.meta``), and the refractive index of phosphate
+    buffered saline (PBS) ``n_PBS=1.335``.
 
     This is the *absolute* dry mass, because it takes into account
     the offset caused by the suppressed density in the phase data.

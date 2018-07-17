@@ -103,3 +103,4 @@ _version_save.py
 *.bib.bak
 *.bib.sav
 .pytest_cache
+docs/output_rois.txt

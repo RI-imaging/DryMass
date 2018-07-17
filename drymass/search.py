@@ -10,14 +10,15 @@ def approx_bg(data, filter_size=None):
 
     Parameters
     ----------
-    data : 2d ndarray
+    data: 2d ndarray
         Data from which to compute the background
-    size : float
+    size: float
         Approximate size of the objects on the background. The size
         of the Gaussian is heuristically determined with
-        ..math::
-            \sigma = 5 \cdot \texttt{size}
 
+        .. math::
+
+            \\sigma = 5 \\cdot \\texttt{size}
 
     Returns
     -------
@@ -42,7 +43,7 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
                         dist_border=10, verbose=False):
     """Search objects in images
 
-    The wrapper `search_phase_objects` implements
+    The wrapper :func:`search_phase_objects` implements
     a more robust (heuristic) way of finding objects.
 
     Parameters
@@ -57,10 +58,13 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
     max_ecc: float in interval [0,1)
         Maximal eccentricity of the objects. The eccentricity of a
         circle is zero. For an ellipse it is defined as
-        ..math::
-            e=\varepsilon=\sqrt{\frac{a^2-b^2}{a^2}}
-            =\sqrt{1-\left(\frac{b}{a}\right)^2}
-            =f/a
+
+        .. math::
+
+            \\varepsilon=\\sqrt{\\frac{a^2-b^2}{a^2}}
+              = \\sqrt{1-\\left(\\frac{b}{a}\\right)^2}
+              = f/a.
+
     dist_border: float
         Minimum distance of detected regions to the borders of the
         image in pixels
@@ -138,16 +142,19 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
     max_ecc: float in interval [0,1)
         Maximal eccentricity of the objects. The eccentricity of a
         circle is zero. For an ellipse it is defined as
-        ..math::
-            e=\varepsilon=\sqrt{\frac{a^2-b^2}{a^2}}
-            =\sqrt{1-\left(\frac{b}{a}\right)^2}
-            =f/a
+
+        .. math::
+
+            \\varepsilon=\\sqrt{\\frac{a^2-b^2}{a^2}}
+              = \\sqrt{1-\\left(\\frac{b}{a}\\right)^2}
+              = f/a.
+
     dist_border: int
         Minimum distance of detected regions to the borders of the
         image in pixels
-    pad_border : int
+    pad_border: int
         Pad the regions of all objects
-    exclude_overlap : float
+    exclude_overlap: float
         Allowed distance in pixels between two detected regions
         (without `pad_border`)
     verbose: bool
@@ -160,6 +167,7 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
     Notes
     -----
     Description of the heuristic search algorithm:
+
     1. Search phase objects in `qpi.raw_pha` with a background
        correction computed from the gaussian-filtered image
     2. If no objects were found and `qpi.bg_pha` is nonzero,

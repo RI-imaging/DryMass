@@ -17,12 +17,14 @@ from ..anasphere import analyze_sphere
 from ..converter import convert
 from ..extractroi import extract_roi
 
-
+#: Matplotlib images of sensor data with labeled ROI (TIFF)
 FILE_SENSOR_WITH_ROI_IMAGE = "sensor_roi_images.tif"
+#: Matplotlib images of sphere analysis (TIFF)
 FILE_SPHERE_ANALYSIS_IMAGE = "sphere_{}_{}_images.tif"
 
 
 def cli_analyze_sphere(path=None, ret_data=False):
+    """Perform sphere analysis"""
     path_in, path_out = dialog.main(path=path,
                                     req_meta=["medium index",
                                               "pixel size um",
@@ -91,6 +93,7 @@ def cli_analyze_sphere(path=None, ret_data=False):
 
 
 def cli_convert(path=None, ret_data=False):
+    """Convert input data to QPSeries data"""
     path_in, path_out = dialog.main(path=path,
                                     req_meta=["pixel size um",
                                               "wavelength nm"])
@@ -133,6 +136,7 @@ def cli_convert(path=None, ret_data=False):
 
 
 def cli_extract_roi(path=None, ret_data=False):
+    """Extract regions of interest"""
     path_in, path_out = dialog.main(path=path)
     # cli_convert will ask for the required meta data
     h5series = cli_convert(path=path_in, ret_data=True)
@@ -219,6 +223,7 @@ def cli_extract_roi(path=None, ret_data=False):
 
 
 def parse_bg_value(bg, reldir):
+    """Determine the background to use from the configuration key"""
     if bg == "none":
         bg = None
     elif isinstance(bg, numbers.Integral):
@@ -236,4 +241,5 @@ def parse_bg_value(bg, reldir):
 
 
 def strpar(cfg, section, key):
+    """String representation of a section/key combination"""
     return "[{}] {} = {}".format(section, key, cfg[section][key])

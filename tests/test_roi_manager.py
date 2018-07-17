@@ -91,7 +91,7 @@ def test_identifier_warnging():
         rmg.add(roislice, image_index, roi_index, "testA")
         # Verify some things
         assert len(w) == 1
-        assert issubclass(w[-1].category, roi.ROIManagerWarnging)
+        assert issubclass(w[-1].category, roi.ROIManagerWarning)
         assert "`identifier` does not match dataset" in str(w[-1].message)
 
 

@@ -7,8 +7,9 @@ import qpformat
 import qpimage
 from skimage.external import tifffile
 
-
+#: Output qpimage.QPSeries sensor data
 FILE_SENSOR_DATA_H5 = "sensor_data.h5"
+#: Output phase/amplitude TIFF sensor data
 FILE_SENSOR_DATA_TIF = "sensor_data.tif"
 
 
@@ -139,6 +140,7 @@ def get_background(bg_data, dataset, which="phase"):
 
 
 def h5series2tif(h5in, tifout):
+    """Convert a qpimage.QPSeries file to a phase/amplitude TIFF file"""
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps, \
             tifffile.TiffWriter(fspath(tifout), imagej=True) as tf:
         for ii in range(len(qps)):

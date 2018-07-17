@@ -2,7 +2,7 @@ import pathlib
 import warnings
 
 
-class ROIManagerWarnging(UserWarning):
+class ROIManagerWarning(UserWarning):
     """Used for unexpected keyword arguments."""
     pass
 
@@ -44,7 +44,7 @@ class ROIManager(object):
             raise ValueError("`identifier` must be a string!")
         if self.identifier and self.identifier not in identifier:
             msg = "`identifier` does not match dataset: {}".format(identifier)
-            warnings.warn(msg, ROIManagerWarnging)
+            warnings.warn(msg, ROIManagerWarning)
         # verify roislice
         if not (isinstance(roislice, (tuple, list))
                 and len(roislice) == 2
