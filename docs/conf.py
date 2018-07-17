@@ -41,9 +41,7 @@ else:
 rtd_link = "stable" if rtd_version != "latest" else "latest"
 
 # Mock all dependencies
-install_requires = ["h5py", "lmfit",
-                    "matplotlib", "matplotlib.pylab", "mpl_toolkits",
-                    "mpl_toolkits.axes_grid1"]
+install_requires = ["h5py", "lmfit"]
 
 for mod_name in install_requires:
     sys.modules[mod_name] = mock.Mock()
