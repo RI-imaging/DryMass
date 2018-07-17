@@ -56,6 +56,7 @@ for mod_name in install_requires:
 # Order class attributes and functions in separate blocks
 autodoc_member_order = 'bysource'
 autodoc_mock_imports = install_requires
+autoclass_content = 'both'
 
 # Display link to GitHub repo instead of doc on rtfd
 rst_prolog = """
@@ -78,6 +79,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
               'sphinxcontrib.bibtex',
+              'IPython.sphinxext.ipython_directive',
+              'IPython.sphinxext.ipython_console_highlighting',
               'fancy_include',
               'github_changelog',
               'definitions_parse',

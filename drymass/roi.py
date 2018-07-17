@@ -2,12 +2,22 @@ import pathlib
 import warnings
 
 
-class ROIManagerWarnging(Warning):
+class ROIManagerWarnging(UserWarning):
+    """Used for unexpected keyword arguments."""
     pass
 
 
 class ROIManager(object):
     def __init__(self, identifier=None):
+        """Manage regions of interest (ROI) of an image series
+
+        Parameters
+        ----------
+        identifier: str or None
+            The identifier of the image series.
+        """
+        if not (isinstance(identifier, str) or identifier is None):
+            raise ValueError("`identifier` must be `None` or a string!")
         self.identifier = identifier
         self.rois = []
 
@@ -15,10 +25,32 @@ class ROIManager(object):
         return self.rois.__len__()
 
     def add(self, roislice, image_index, roi_index, identifier):
+        """Add a ROI to ROIManager
+
+        Parameters
+        ----------
+        roislice: (slice, slice)
+            Two slices indicating the x- and y-axis limits.
+        image_index: int
+            The image index of the image series.
+        roi_index: int
+            The ROI index in image `image_index`
+        identifier: str
+            The ROI identifier. If `self.identifier` is not contained
+            within `identifier`, a `ROIManagerWarning` will be issued.
+        """
         # verify identifier
+        if not isinstance(identifier, str):
+            raise ValueError("`identifier` must be a string!")
         if self.identifier and self.identifier not in identifier:
             msg = "`identifier` does not match dataset: {}".format(identifier)
             warnings.warn(msg, ROIManagerWarnging)
+        # verify roislice
+        if not (isinstance(roislice, (tuple, list))
+                and len(roislice) == 2
+                and isinstance(roislice[0], slice)
+                and isinstance(roislice[1], slice)):
+            raise ValueError("`roislice` must be a tuple of two slices!")
         self.rois.append((identifier, image_index, roi_index, roislice))
 
     def get_from_image_index(self, image_index):
@@ -26,6 +58,7 @@ class ROIManager(object):
         return rois
 
     def load(self, path):
+        """Load ROIs from a text file"""
         path = pathlib.Path(path)
         with path.open(mode="r") as fd:
             lines = fd.readlines()
@@ -47,6 +80,7 @@ class ROIManager(object):
                      )
 
     def save(self, path):
+        """Save ROIs to a text file (`path` will be overridden)"""
         path = pathlib.Path(path)
         with path.open(mode="w") as fd:
             for roi in self.rois:
