@@ -41,13 +41,9 @@ else:
 rtd_link = "stable" if rtd_version != "latest" else "latest"
 
 # Mock all dependencies
-install_requires = ["h5py", "lmfit", "numpy", "scipy", "skimage",
+install_requires = ["h5py", "lmfit", "scipy",
                     "matplotlib", "matplotlib.pylab", "mpl_toolkits",
-                    "mpl_toolkits.axes_grid1",
-                    "skimage.restoration", "skimage.external",
-                    "skimage.filters", "skimage.segmentation",
-                    "skimage.morphology", "skimage.measure",
-                    "qpimage", "qpsphere", "qpformat"]
+                    "mpl_toolkits.axes_grid1"]
 
 for mod_name in install_requires:
     sys.modules[mod_name] = mock.Mock()
