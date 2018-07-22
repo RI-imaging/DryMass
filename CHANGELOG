@@ -1,5 +1,6 @@
 0.3.3
  - ci: automate PyPI release with travis-ci
+ - setup: bump versions of dependent packages
 0.3.2
  - docs: update of introduction and minor changes
 0.3.1
