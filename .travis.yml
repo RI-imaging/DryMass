@@ -29,3 +29,14 @@ script:
        flake8 examples;
        flake8 tests;
   fi;
+deploy:
+  provider: pypi
+  user: "ci_qpi"
+  password:
+    secure: "MuccB3/8CV6a8UVHavS0zbcAZZH7MWG9yKBiqulJDQb1mQOveeWfV12dYPttHlbn62En3Abu+2CxzzFbVdWTEdBSu/ibNGdo2GTtwNDoGaozBHzxzLRm36HMm98y2UJtaPHrUr599Lg+RfEQOdrgKDemrUVBhm7vzaWuMbKQfhrYNeNoFlGX+qAnLnGtLEYc5tRfHquYuy9taQEbs+yECpHzrzAJkeYykWRzcm7MsUJVBPGmrSZ4eL3NHrQJeTqiIO4nhqWxIvjD9PyTUOT8H99U6QXnytdyRz4L7/a8+YQ72TQ+XVlHgu4X6b3lg8ScUVHQ3I9pYHaZ9rsQvLd5Np1tl6ekjbBtbQYpdLhwSrlXoTCD0+wcE32/FPF8w+bXmV2DJOk4pXvZRB1wD+VWm/6VpHYH1mKtFXEHJLfVTtIervrr0F7xhsKY1J2V/1/+IFTKcB4wfHAp3FjT6/5QE3O3jZfowwylX5EiNQY8BokHGsVlOExbXxy3PpN4q1AuPE1voA3R4m2Dys3Nfsdi/XgYOzxyCHxQ9qfZKq01GiGGdncKdn3IFiH+k63F3i/LWX/t4NDizRHUUjgO7kWxBpvCW5bQhyLRDP4DHFTGx0ulcPL2GzyOho98ia8i0QVyy9w4otxdXRApgQDjC/mmp38IfHyW7/Nh0nowXylp9Rk="
+  on:
+    tags: true
+    # limit to one version to avoid upload errors
+    python: 3.6
+    condition: "$TEST = PYTEST"
+  distributions: "sdist bdist_wheel"
