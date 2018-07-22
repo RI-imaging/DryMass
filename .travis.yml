@@ -19,7 +19,6 @@ install:
 - travis_retry pip install codecov coverage
 - pip freeze
 script:
-- set -ev
 - if [ "${TEST}" == "PYTEST" ]; then
        coverage run --source=drymass setup.py test;
        coverage report -m;
