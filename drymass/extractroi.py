@@ -68,14 +68,14 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                     amp_mask = get_binary(
                         qpisl.amp, value_or_method=bg_amp_bin)
                     qpisl.compute_bg(which_data="amplitude",
-                                     from_binary=amp_mask,
+                                     from_mask=amp_mask,
                                      **bg_amp_kw)
                 # phase bg correction
                 if bg_pha_kw:
                     pha_mask = get_binary(
                         qpisl.pha, value_or_method=bg_pha_bin)
                     qpisl.compute_bg(which_data="phase",
-                                     from_binary=pha_mask,
+                                     from_mask=pha_mask,
                                      **bg_pha_kw)
                 slident = "{}.{}".format(qpi["identifier"], jj)
                 if rid != slident:
