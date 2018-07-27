@@ -8,7 +8,7 @@ import qpimage
 import drymass
 
 
-def setup_test_data(radius=30, pxsize=1e-6, num=1):
+def setup_test_data(radius=30, pxsize=1e-6, num=1, identifier=None):
     size = 200
     x = np.arange(size).reshape(-1, 1)
     y = np.arange(size).reshape(1, -1)
@@ -21,9 +21,10 @@ def setup_test_data(radius=30, pxsize=1e-6, num=1):
                           meta_data={"pixel size": pxsize})
     path = tempfile.mktemp(suffix=".h5", prefix="drymass_test_roi")
     dout = tempfile.mkdtemp(prefix="drymass_test_roi_")
-    with qpimage.QPSeries(h5file=path) as qps:
+    with qpimage.QPSeries(h5file=path, identifier=identifier) as qps:
         for ii in range(num):
-            qps.add_qpimage(qpi, identifier="test_{}".format(ii))
+            qpid = "{}_test_{}".format(identifier, ii)
+            qps.add_qpimage(qpi, identifier=qpid)
     return qpi, path, dout
 
 
@@ -62,6 +63,33 @@ def test_ret_changed():
                                    ret_changed=True)
     assert ch1, "First call should create data on disk"
     assert not ch2, "Second call should reuse data on disk"
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
+def test_no_search():
+    radius = 30
+    pxsize = 1e-6
+    identifier = "asdkn179"
+    _qpi, path, dout = setup_test_data(radius=radius,
+                                       pxsize=pxsize,
+                                       identifier=identifier)
+    _p1, rm1 = drymass.extract_roi(path,
+                                   dir_out=dout,
+                                   size_m=2*radius*pxsize,
+                                   ret_roimgr=True)
+    _p2, rm2 = drymass.extract_roi(path,
+                                   dir_out=dout,
+                                   size_m=2*radius*pxsize,
+                                   search_enabled=False,
+                                   ret_roimgr=True,)
+    assert rm1.rois == rm2.rois
+    assert rm1.identifier == identifier
+    assert rm2.identifier == identifier
 
     try:
         os.remove(path)
