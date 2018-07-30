@@ -72,6 +72,12 @@ def test_bg_corr_thresh():
         assert np.min(qpso[0].pha) == 0
         assert np.allclose(np.max(qpso[0].pha), np.max(qpi.pha) - bg)
 
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
 
 def test_bg_corr_mask():
     radius = 30
@@ -81,8 +87,8 @@ def test_bg_corr_mask():
     bg += np.linspace(-.3, .5, size).reshape(-1, 1)
     _, path, dout = setup_test_data(radius=radius, size=size,
                                     pxsize=pxsize, bg=bg)
-    qpiref, _, _ = setup_test_data(radius=radius, size=size,
-                                   pxsize=pxsize, bg=None)
+    qpiref, p2, d2 = setup_test_data(radius=radius, size=size,
+                                     pxsize=pxsize, bg=None)
 
     bg_pha_kw = {"fit_offset": "mean",
                  "fit_profile": "tilt",
@@ -97,6 +103,14 @@ def test_bg_corr_mask():
         assert np.allclose(np.min(qpso[0].pha), 0, atol=4e-9, rtol=0)
         assert np.allclose(np.max(qpso[0].pha), np.max(qpiref.pha),
                            atol=1.1e-7, rtol=0)
+
+    try:
+        os.remove(path)
+        os.remove(p2)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+    shutil.rmtree(d2, ignore_errors=True)
 
 
 def test_ret_changed():
