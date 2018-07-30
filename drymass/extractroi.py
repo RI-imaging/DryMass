@@ -30,7 +30,11 @@ def _bg_correct(qpi, which_data, bg_kw={}, bg_mask_thresh=np.nan,
                 bg_mask_sphere_kw={}):
     if bg_kw:
         if not np.isnan(bg_mask_thresh):  # binary threshold mask
-            mask1 = image2mask(qpi.amp,
+            if which_data == "phase":
+                image = qpi.pha
+            else:
+                image = qpi.amp
+            mask1 = image2mask(image,
                                value_or_method=bg_mask_thresh)
         else:
             mask1 = None
@@ -46,14 +50,14 @@ def _bg_correct(qpi, which_data, bg_kw={}, bg_mask_thresh=np.nan,
         else:
             mask2 = None
         # combine masks
-        if mask1 and mask2:
-            mask = np.logical_and(mask1, mask2)
-        elif mask1:
-            mask = mask1
-        elif mask2:
-            mask = mask2
-        else:
+        if mask1 is None and mask2 is None:
             mask = None
+        elif mask1 is None:
+            mask = mask2
+        elif mask2 is None:
+            mask = mask1
+        else:
+            mask = np.logical_and(mask1, mask2)
         # perforn actual bg correction
         qpi.compute_bg(which_data=which_data,
                        from_mask=mask,

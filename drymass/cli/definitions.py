@@ -11,8 +11,10 @@ config = {
             # segmentation or a method in :mod:`skimage.filters`.
         "amplitude border perc":
             (10, float, "Amplitude bg border region to analyze [%]"),
+            # Set to 0 to disable.
         "amplitude border px":
             (5, int, "Amplitude bg border region to analyze [px]"),
+            # Set to 0 to disable.
         "amplitude data":
             ("none", int_or_path, "Amplitude bg correction file or index"),
             # Image indexing starts with 1.
@@ -20,7 +22,7 @@ config = {
             # path to the directory containing the input data.
         "amplitude mask sphere":
             (np.nan, float, "Circular mask for amplitude bg correction"),
-            # If not NaN, a mask is used for background correction.
+            # If not *nan*, a mask is used for background correction.
             # A value of "1.0" results in a mask with the radius as
             # determined with the edge-detection approach from phase [sic].
             # Set this to "1.1" to exclude peripheral phase values.
@@ -45,8 +47,10 @@ config = {
             # segmentation or a method in :mod:`skimage.filters`.
         "phase border perc":
             (10, float, "Phase bg border region to analyze [%]"),
+            # Set to 0 to disable.
         "phase border px":
             (5, int, "Phase bg border region to analyze [px]"),
+            # Set to 0 to disable.
         "phase data":
             ("none", int_or_path, "Phase bg correction file or index"),
             # Image indexing starts with 1.
@@ -54,7 +58,7 @@ config = {
             # path to the directory containing the input data.
         "phase mask sphere":
             (np.nan, float, "Circular mask for phase bg correction"),
-            # If not NaN, a mask is used for background correction.
+            # If not *nan*, a mask is used for background correction.
             # A value of "1.0" results in a mask with the radius as
             # determined with the edge-detection approach from phase.
             # Set this to "1.1" to exclude peripheral phase values.

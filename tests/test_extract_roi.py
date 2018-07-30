@@ -8,17 +8,21 @@ import qpimage
 import drymass
 
 
-def setup_test_data(radius=30, pxsize=1e-6, num=1, identifier=None):
-    size = 200
+def setup_test_data(radius=30, pxsize=1e-6, size=200, num=1, identifier=None,
+                    medium_index=1.335, wavelength=550e-9, bg=None):
     x = np.arange(size).reshape(-1, 1)
     y = np.arange(size).reshape(1, -1)
     cx = 80
     cy = 120
     r = np.sqrt((x - cx)**2 + (y - cy)**2)
     image = (r < radius) * 1.3
+    if bg is not None:
+        image += bg
     qpi = qpimage.QPImage(data=image,
                           which_data="phase",
-                          meta_data={"pixel size": pxsize})
+                          meta_data={"pixel size": pxsize,
+                                     "medium index": medium_index,
+                                     "wavelength": wavelength})
     path = tempfile.mktemp(suffix=".h5", prefix="drymass_test_roi")
     dout = tempfile.mkdtemp(prefix="drymass_test_roi_")
     with qpimage.QPSeries(h5file=path, identifier=identifier) as qps:
@@ -47,6 +51,52 @@ def test_basic():
     except OSError:
         pass
     shutil.rmtree(dout, ignore_errors=True)
+
+
+def test_bg_corr_thresh():
+    radius = 30
+    pxsize = 1e-6
+    bg = .3
+    qpi, path, dout = setup_test_data(radius=radius, pxsize=pxsize, bg=bg)
+
+    bg_pha_kw = {"fit_offset": "mean",
+                 "fit_profile": "tilt",
+                 "border_perc": 0,
+                 "border_px": 0}
+    path_out = drymass.extract_roi(path,
+                                   dir_out=dout,
+                                   size_m=2*radius*pxsize,
+                                   bg_pha_kw=bg_pha_kw,
+                                   bg_pha_bin=bg*1.1)
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qpso:
+        assert np.min(qpso[0].pha) == 0
+        assert np.allclose(np.max(qpso[0].pha), np.max(qpi.pha) - bg)
+
+
+def test_bg_corr_mask():
+    radius = 30
+    pxsize = 1e-6
+    size = 200
+    bg = np.zeros((size, size)) + .1
+    bg += np.linspace(-.3, .5, size).reshape(-1, 1)
+    _, path, dout = setup_test_data(radius=radius, size=size,
+                                    pxsize=pxsize, bg=bg)
+    qpiref, _, _ = setup_test_data(radius=radius, size=size,
+                                   pxsize=pxsize, bg=None)
+
+    bg_pha_kw = {"fit_offset": "mean",
+                 "fit_profile": "tilt",
+                 "border_perc": 0,
+                 "border_px": 0}
+    path_out = drymass.extract_roi(path,
+                                   dir_out=dout,
+                                   size_m=2*radius*pxsize,
+                                   bg_pha_kw=bg_pha_kw,
+                                   bg_pha_mask_radial_clearance=1.1)
+    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qpso:
+        assert np.allclose(np.min(qpso[0].pha), 0, atol=4e-9, rtol=0)
+        assert np.allclose(np.max(qpso[0].pha), np.max(qpiref.pha),
+                           atol=1.1e-7, rtol=0)
 
 
 def test_ret_changed():
