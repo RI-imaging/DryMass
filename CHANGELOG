@@ -1,4 +1,7 @@
-0.3.4
+0.4.0
+ - feat: ROI background correction supports masking of the
+   imaged object via the "amplitude mask sphere" and
+   "phase mask sphere" settings in the [bg] section.
  - setup: support qpimage>=0.4.0
 0.3.3
  - ci: automate PyPI release with travis-ci

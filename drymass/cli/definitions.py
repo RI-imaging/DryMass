@@ -5,19 +5,6 @@ from .parse_funcs import fbool, float01, float_or_str, int_or_path, lcstr, \
 
 config = {
     "bg": {
-        "amplitude data":
-            ("none", int_or_path, "Amplitude bg correction file or index"),
-            # Image indexing starts with 1.
-            # If a file, either specify the full path or the relative
-            # path to the directory containing the input data.
-        "amplitude offset":
-            ("mean", lcstr, "Amplitude bg correction offset method"),
-            # Valid values are defined in
-            # :data:`qpimage.bg_estimate.VALID_FIT_OFFSETS`.
-        "amplitude profile":
-            ("tilt", lcstr, "Amplitude bg correction profile method"),
-            # Valid values are defined in
-            # :data:`qpimage.bg_estimate.VALID_FIT_PROFILES`.
         "amplitude binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
             # If not *nan*, defines either a threshold for background
@@ -26,22 +13,32 @@ config = {
             (10, float, "Amplitude bg border region to analyze [%]"),
         "amplitude border px":
             (5, int, "Amplitude bg border region to analyze [px]"),
-        "enabled":
-            (True, fbool, "Enable bg correction globally"),
-            # Set to *False* when manually editing *roi_slices.txt*.
-        "phase data":
-            ("none", int_or_path, "Phase bg correction file or index"),
+        "amplitude data":
+            ("none", int_or_path, "Amplitude bg correction file or index"),
             # Image indexing starts with 1.
             # If a file, either specify the full path or the relative
             # path to the directory containing the input data.
-        "phase offset":
-            ("mean", lcstr, "Phase bg correction offset method"),
+        "amplitude mask sphere":
+            (np.nan, float, "Circular mask for amplitude bg correction"),
+            # If not NaN, a mask is used for background correction.
+            # A value of "1.0" results in a mask with the radius as
+            # determined with the edge-detection approach from phase [sic].
+            # Set this to "1.1" to exclude peripheral phase values.
+            # If the amplitude border values or binary thresholds
+            # are set, the intersection of the resulting masks is used
+            # for background correction. For procedural details see
+            # :func:`qpsphere.cnvnc.bg_phase_mask_for_qpi`.
+        "amplitude offset":
+            ("mean", lcstr, "Amplitude bg correction offset method"),
             # Valid values are defined in
             # :data:`qpimage.bg_estimate.VALID_FIT_OFFSETS`.
-        "phase profile":
-            ("tilt", lcstr, "Phase bg correction profile method"),
+        "amplitude profile":
+            ("tilt", lcstr, "Amplitude bg correction profile method"),
             # Valid values are defined in
             # :data:`qpimage.bg_estimate.VALID_FIT_PROFILES`.
+        "enabled":
+            (True, fbool, "Enable bg correction globally"),
+            # Set to *False* to disable background correction.
         "phase binary threshold":
             (np.nan, float_or_str, "Binary image threshold value or method"),
             # If not *nan*, defines either a threshold for background
@@ -50,6 +47,29 @@ config = {
             (10, float, "Phase bg border region to analyze [%]"),
         "phase border px":
             (5, int, "Phase bg border region to analyze [px]"),
+        "phase data":
+            ("none", int_or_path, "Phase bg correction file or index"),
+            # Image indexing starts with 1.
+            # If a file, either specify the full path or the relative
+            # path to the directory containing the input data.
+        "phase mask sphere":
+            (np.nan, float, "Circular mask for phase bg correction"),
+            # If not NaN, a mask is used for background correction.
+            # A value of "1.0" results in a mask with the radius as
+            # determined with the edge-detection approach from phase.
+            # Set this to "1.1" to exclude peripheral phase values.
+            # If the phase border values or binary thresholds
+            # are set, the intersection of the resulting masks is used
+            # for background correction. For procedural details see
+            # :func:`qpsphere.cnvnc.bg_phase_mask_for_qpi`.
+        "phase offset":
+            ("mean", lcstr, "Phase bg correction offset method"),
+            # Valid values are defined in
+            # :data:`qpimage.bg_estimate.VALID_FIT_OFFSETS`.
+        "phase profile":
+            ("tilt", lcstr, "Phase bg correction profile method"),
+            # Valid values are defined in
+            # :data:`qpimage.bg_estimate.VALID_FIT_PROFILES`.
     },
     "holo": {
         "filter name":  # filter_name

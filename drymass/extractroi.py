@@ -4,6 +4,7 @@ import warnings
 
 import numpy as np
 import qpimage
+import qpsphere
 from skimage.external import tifffile
 import skimage.filters
 
@@ -25,9 +26,45 @@ FILE_ROI_DATA_TIF = "roi_data.tif"
 FILE_SLICES = "roi_slices.txt"
 
 
+def _bg_correct(qpi, which_data, bg_kw={}, bg_mask_thresh=np.nan,
+                bg_mask_sphere_kw={}):
+    if bg_kw:
+        if not np.isnan(bg_mask_thresh):  # binary threshold mask
+            mask1 = image2mask(qpi.amp,
+                               value_or_method=bg_mask_thresh)
+        else:
+            mask1 = None
+        if not np.isnan(bg_mask_sphere_kw["radial_clearance"]):  # sphere mask
+            mask2 = qpsphere.cnvnc.bg_phase_mask_for_qpi(
+                qpi=qpi,
+                r0=bg_mask_sphere_kw["r0"],
+                method="edge",
+                model="projection",
+                edgekw=bg_mask_sphere_kw["edgekw"],
+                imagekw={},
+                radial_clearance=bg_mask_sphere_kw["radial_clearance"])
+        else:
+            mask2 = None
+        # combine masks
+        if mask1 and mask2:
+            mask = np.logical_and(mask1, mask2)
+        elif mask1:
+            mask = mask1
+        elif mask2:
+            mask = mask2
+        else:
+            mask = None
+        # perforn actual bg correction
+        qpi.compute_bg(which_data=which_data,
+                       from_mask=mask,
+                       **bg_kw)
+
+
 def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
-                 dist_border, pad_border, exclude_overlap, bg_amp_kw,
-                 bg_amp_bin, bg_pha_kw, bg_pha_bin, search_enabled):
+                 dist_border, pad_border, exclude_overlap,
+                 bg_amp_kw, bg_amp_bin, bg_amp_mask_sphere_kw,
+                 bg_pha_kw, bg_pha_bin, bg_pha_mask_sphere_kw,
+                 search_enabled):
     # Determine ROI location
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps:
         rmgr = ROIManager(qps.identifier)
@@ -64,19 +101,17 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                 # Extract the ROI
                 qpisl = qpi.__getitem__(sl)
                 # amplitude bg correction
-                if bg_amp_kw:
-                    amp_mask = get_binary(
-                        qpisl.amp, value_or_method=bg_amp_bin)
-                    qpisl.compute_bg(which_data="amplitude",
-                                     from_mask=amp_mask,
-                                     **bg_amp_kw)
+                _bg_correct(qpi=qpisl,
+                            which_data="amplitude",
+                            bg_kw=bg_amp_kw,
+                            bg_mask_thresh=bg_amp_bin,
+                            bg_mask_sphere_kw=bg_amp_mask_sphere_kw)
                 # phase bg correction
-                if bg_pha_kw:
-                    pha_mask = get_binary(
-                        qpisl.pha, value_or_method=bg_pha_bin)
-                    qpisl.compute_bg(which_data="phase",
-                                     from_mask=pha_mask,
-                                     **bg_pha_kw)
+                _bg_correct(qpi=qpisl,
+                            which_data="phase",
+                            bg_kw=bg_pha_kw,
+                            bg_mask_thresh=bg_pha_bin,
+                            bg_mask_sphere_kw=bg_pha_mask_sphere_kw)
                 slident = "{}.{}".format(qpi["identifier"], jj)
                 if rid != slident:
                     # This might happen if the user does not know the
@@ -108,8 +143,11 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dist_border=10, pad_border=40, exclude_overlap=30.,
                 bg_amp_kw=BG_DEFAULT_KW, bg_amp_bin=np.nan,
+                bg_amp_mask_radial_clearance=np.nan,
                 bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=np.nan,
-                search_enabled=True, ret_roimgr=False, ret_changed=False):
+                bg_pha_mask_radial_clearance=np.nan,
+                bg_sphere_edge_kw={}, search_enabled=True,
+                ret_roimgr=False, ret_changed=False):
     """Extract ROIs from a qpimage.QPSeries hdf5 file
 
     Parameters
@@ -138,6 +176,10 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         The amplitude binary threshold value or the method for binary
         threshold determination; see :mod:`skimage.filters`
         `threshold_*` methods
+    bg_amp_mask_radial_clearance: float
+        If not NaN, use :func:`qpsphere.cnvnc.bg_phase_mask_for_qpi`
+        to compute a mask image and use it for amplitude
+        background correction.
     bg_pha_kw: dict or None
         Phase image background correction keyword arguments
         (see :func:`qpimage.QPImage.compute_bg`), defaults
@@ -146,6 +188,10 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         The phase binary threshold value or the method for binary
         threshold determination; see :mod:`skimage.filters`
         `threshold_*` methods
+    bg_pha_mask_radial_clearance: float
+        If not NaN, use :func:`qpsphere.cnvnc.bg_phase_mask_for_qpi`
+        to compute a mask image and use it for phase
+        background correction.
     search_enabled: bool
         If True, perform automated search for ROIs using the
         parameters above. If False, extract the ROIs from `FILE_SLICES`
@@ -185,8 +231,11 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                                   exclude_overlap,
                                   bg_amp_kw,
                                   bg_amp_bin,
+                                  bg_amp_mask_radial_clearance,
                                   bg_pha_kw,
                                   bg_pha_bin,
+                                  bg_pha_mask_radial_clearance,
+                                  bg_sphere_edge_kw,
                                   search_enabled,
                                   ])
 
@@ -203,22 +252,34 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         create = True
 
     if create:
-        rmgr = _extract_roi(h5in=h5in,
-                            h5out=h5out,
-                            slout=slout,
-                            imout=imout,
-                            size_m=size_m,
-                            size_var=size_var,
-                            max_ecc=max_ecc,
-                            dist_border=dist_border,
-                            pad_border=pad_border,
-                            exclude_overlap=exclude_overlap,
-                            bg_amp_kw=bg_amp_kw,
-                            bg_amp_bin=bg_amp_bin,
-                            bg_pha_kw=bg_pha_kw,
-                            bg_pha_bin=bg_pha_bin,
-                            search_enabled=search_enabled,
-                            )
+        bg_amp_mask_sphere_kw = {
+            "r0": size_m / 2,
+            "edgekw": bg_sphere_edge_kw,
+            "radial_clearance": bg_amp_mask_radial_clearance}
+        bg_pha_mask_sphere_kw = {
+            "r0": size_m / 2,
+            "edgekw": bg_sphere_edge_kw,
+            "radial_clearance": bg_pha_mask_radial_clearance}
+
+        rmgr = _extract_roi(
+            h5in=h5in,
+            h5out=h5out,
+            slout=slout,
+            imout=imout,
+            size_m=size_m,
+            size_var=size_var,
+            max_ecc=max_ecc,
+            dist_border=dist_border,
+            pad_border=pad_border,
+            exclude_overlap=exclude_overlap,
+            bg_amp_kw=bg_amp_kw,
+            bg_amp_bin=bg_amp_bin,
+            bg_amp_mask_sphere_kw=bg_amp_mask_sphere_kw,
+            bg_pha_kw=bg_pha_kw,
+            bg_pha_bin=bg_pha_bin,
+            bg_pha_mask_sphere_kw=bg_pha_mask_sphere_kw,
+            search_enabled=search_enabled,
+            )
         # manually set the identifier with the updated file slout
         slid = util.hash_file(slout)
         identifier = "{}-{}".format(cfgid, slid)
@@ -239,8 +300,8 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
     return ret
 
 
-def get_binary(image, value_or_method):
-    """Convert an image to a binary image
+def image2mask(image, value_or_method):
+    """Convert an image to a binary mask
 
     Parameters
     ----------
@@ -253,7 +314,5 @@ def get_binary(image, value_or_method):
     if isinstance(value_or_method, str):
         method = getattr(skimage.filters, value_or_method)
         return image < method(image)
-    elif np.isnan(value_or_method):
-        return None
     else:
         return image < value_or_method

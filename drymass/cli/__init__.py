@@ -160,9 +160,24 @@ def cli_extract_roi(path=None, ret_data=False):
             bg_amp_kw["fit_profile"] = "tilt"
         if bg_pha_kw["fit_profile"] == "ramp":
             bg_pha_kw["fit_profile"] = "tilt"
+        # Only get the Canny edge detection parameters if needed
+        if not (np.isnan(cfg["bg"]["phase mask sphere"])
+                and np.isnan(cfg["bg"]["amplitude mask sphere"])):
+            dialog.main(path=path, req_meta=["medium index"])
+            # This will generate the [sphere] section in drymass.cfg
+            edge_kw = {
+                "clip_rmin": cfg["sphere"]["edge clip radius min"],
+                "clip_rmax": cfg["sphere"]["edge clip radius max"],
+                "mult_coarse": cfg["sphere"]["edge coarse"],
+                "mult_fine": cfg["sphere"]["edge fine"],
+                "maxiter": cfg["sphere"]["edge iter"],
+            }
+        else:
+            edge_kw = {}
     else:
         bg_amp_kw = None
         bg_pha_kw = None
+        edge_kw = {}
 
     h5roi, rmgr, changed = extract_roi(
         h5series=h5series,
@@ -175,8 +190,11 @@ def cli_extract_roi(path=None, ret_data=False):
         exclude_overlap=cfg["roi"]["exclude overlap px"],
         bg_amp_kw=bg_amp_kw,
         bg_amp_bin=cfg["bg"]["amplitude binary threshold"],
+        bg_amp_mask_radial_clearance=cfg["bg"]["amplitude mask sphere"],
         bg_pha_kw=bg_pha_kw,
         bg_pha_bin=cfg["bg"]["phase binary threshold"],
+        bg_pha_mask_radial_clearance=cfg["bg"]["phase mask sphere"],
+        bg_sphere_edge_kw=edge_kw,
         search_enabled=cfg["roi"]["enabled"],
         ret_roimgr=True,
         ret_changed=True,
