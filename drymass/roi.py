@@ -43,7 +43,8 @@ class ROIManager(object):
         if not isinstance(identifier, str):
             raise ValueError("`identifier` must be a string!")
         if self.identifier and self.identifier not in identifier:
-            msg = "`identifier` does not match dataset: {}".format(identifier)
+            msg = "Identifier of ROIManager `{}` ".format(self.identifier) \
+                  + "does not match that of QPSeries `{}`.".format(identifier)
             warnings.warn(msg, ROIManagerWarning)
         # verify roislice
         if not (isinstance(roislice, (tuple, list))

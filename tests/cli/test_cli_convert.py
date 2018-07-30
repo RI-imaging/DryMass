@@ -24,7 +24,7 @@ def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
                                      "wavelength": wavelength})
     path_in = tempfile.mktemp(suffix=".h5", prefix="drymass_test_cli_convert")
     path_in = pathlib.Path(path_in)
-    with qpimage.QPSeries(h5file=path_in, h5mode="w") as qps:
+    with qpimage.QPSeries(h5file=path_in, h5mode="w", identifier="tes") as qps:
         for ii in range(num):
             qps.add_qpimage(qpi, identifier="test_{}".format(ii))
     # add drymass configuration file

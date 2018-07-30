@@ -92,7 +92,7 @@ def test_identifier_warnging():
         # Verify some things
         assert len(w) == 1
         assert issubclass(w[-1].category, roi.ROIManagerWarning)
-        assert "`identifier` does not match dataset" in str(w[-1].message)
+        assert "does not match that of QPSeries" in str(w[-1].message)
 
 
 if __name__ == "__main__":
