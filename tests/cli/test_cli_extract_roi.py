@@ -25,9 +25,9 @@ def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
                                      "wavelength": wavelength})
     path_in = tempfile.mktemp(suffix=".h5", prefix="drymass_test_cli_convert")
     path_in = pathlib.Path(path_in)
-    with qpimage.QPSeries(h5file=path_in, h5mode="w", identifier="tes") as qps:
+    with qpimage.QPSeries(h5file=path_in, h5mode="w", identifier="tt") as qps:
         for ii in range(num):
-            qps.add_qpimage(qpi, identifier="test_{}".format(ii))
+            qps.add_qpimage(qpi, identifier="image_{}".format(ii))
     # add drymass configuration file
     path_out = path_in.with_name(path_in.name + dialog.OUTPUT_SUFFIX)
     path_out.mkdir()
@@ -53,11 +53,36 @@ def test_base():
     # check existence of files
     pathtif = path_out / FILE_ROI_DATA_TIF
     assert pathtif.exists()
-    assert pathtif.lstat().st_size > 10000
+    assert pathtif.stat().st_size > 10000
 
     pathsl = path_out / FILE_SLICES
     assert pathsl.exists()
     assert len(pathsl.read_bytes()) > 100
+
+    try:
+        path_in.unlink()
+    except OSError:
+        pass
+    shutil.rmtree(path_out, ignore_errors=True)
+
+
+def test_reuse():
+    _, path_in, path_out = setup_test_data(num=2)
+    cfg = config.ConfigFile(path_out)
+    cfg.set_value(section="meta", key="pixel size um", value=1)
+
+    h5data = cli_extract_roi(path=path_in, ret_data=True)
+
+    time = h5data.stat().st_mtime
+
+    # Do the same thing
+    cli_extract_roi(path=path_in, ret_data=True)
+    assert time == h5data.stat().st_mtime
+
+    # Change something
+    cfg.set_value(section="meta", key="pixel size um", value=1.01)
+    cli_extract_roi(path=path_in, ret_data=True)
+    assert time != h5data.stat().st_mtime
 
     try:
         path_in.unlink()
