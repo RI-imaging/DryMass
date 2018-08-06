@@ -118,8 +118,6 @@ class ConfigFile(object):
         then the defaults are be inserted and self.path is
         overridden.
         """
-        if not self.path.exists():
-            return {}
         with self.path.open() as fd:
             data = fd.readlines()
         outdict = {}
