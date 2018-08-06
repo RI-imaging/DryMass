@@ -3,6 +3,7 @@
    imaged object via the "amplitude mask sphere" and
    "phase mask sphere" settings in the [bg] section.
  - setup: support qpimage>=0.4.0
+ - tests: improve coverage
 0.3.3
  - ci: automate PyPI release with travis-ci
  - setup: bump versions of dependent packages

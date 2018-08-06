@@ -157,12 +157,6 @@ def cli_extract_roi(path=None, ret_data=False):
                      "border_perc": cfg["bg"]["phase border perc"],
                      "border_px": cfg["bg"]["phase border px"],
                      }
-        # compatibility for drymass.cfg files created with
-        # drymass < 0.1.3 (API changed in qpimage 0.1.6).
-        if bg_amp_kw["fit_profile"] == "ramp":
-            bg_amp_kw["fit_profile"] = "tilt"
-        if bg_pha_kw["fit_profile"] == "ramp":
-            bg_pha_kw["fit_profile"] = "tilt"
         # Only get the Canny edge detection parameters if needed
         if not (np.isnan(cfg["bg"]["phase mask sphere"])
                 and np.isnan(cfg["bg"]["amplitude mask sphere"])):

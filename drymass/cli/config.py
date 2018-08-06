@@ -23,6 +23,7 @@ class ConfigFile(object):
         path = pathlib.Path(path).resolve()
         if path.is_dir():
             path = path / FILE_CONFIG
+        path.touch()
         self.path = path
 
     def __getitem__(self, section):
@@ -91,6 +92,18 @@ class ConfigFile(object):
             raise ValueError("Wrong dtype: {}: {}={}".format(section,
                                                              key, value))
 
+    def _parse_compat(self, section, key, value):
+        if section == "bg":
+            # drymass < 0.1.3: API changed in qpimage 0.1.6
+            if (key in ["amplitude profile", "phase profile"]
+                    and value == "ramp"):
+                value = "tilt"
+        elif section == "roi":
+            # drymass <= 0.1.5: keys were renamed to reflect pixel units
+            if key in ["dist border", "exclude overlap", "pad border"]:
+                key += " px"
+        return key, value
+
     def _parse(self):
         """Return full documentation
 
@@ -122,12 +135,8 @@ class ConfigFile(object):
                 key, val = line.split("=")
                 key = key.strip()
                 val = val.strip()
-                # Backwards compatibility:
-                # In 0.1.5, several keys were renamed to reflect pixel units.
-                if sec == "roi" and key in ["dist border",
-                                            "exclude overlap",
-                                            "pad border"]:
-                    key += " px"
+                # backwards compatibility:
+                key, val = self._parse_compat(sec, key, val)
                 key_func = definitions.config[sec][key][1]
                 try:
                     val = key_func(val)
