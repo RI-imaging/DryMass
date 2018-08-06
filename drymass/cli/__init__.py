@@ -91,6 +91,9 @@ def cli_analyze_sphere(path=None, ret_data=False):
                 tf.save(imdat)
         print("Done")
 
+    if ret_data:
+        return h5sim
+
 
 def cli_convert(path=None, ret_data=False):
     """Convert input data to QPSeries data"""
