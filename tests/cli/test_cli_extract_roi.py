@@ -3,6 +3,7 @@ import shutil
 import tempfile
 
 import numpy as np
+import pytest
 import qpimage
 
 from drymass.cli import cli_extract_roi, config, dialog
@@ -89,6 +90,17 @@ def test_reuse():
     except OSError:
         pass
     shutil.rmtree(path_out, ignore_errors=True)
+
+
+@pytest.mark.filterwarnings('ignore::RuntimeWarning')
+def test_no_roi_found():
+    _, path_in, _ = setup_test_data(radius_px=0)
+
+    with pytest.raises(SystemExit) as pytest_wrapped_e:
+        # catches sys.exit() calls
+        cli_extract_roi(path=path_in, ret_data=True)
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 1
 
 
 if __name__ == "__main__":
