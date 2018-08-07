@@ -47,16 +47,51 @@ data sets (e.g. > 10 cells). Here are a few examples:
   and cell size.
 
 
-Quantitative phase imaging
---------------------------
+What is quantitative phase imaging?
+-----------------------------------
 Quantitative phase imaging (QPI) is a 2D imaging technique that quantifies
 the phase retardation of a wave traveling through a specimen.
-For instance, digital holographic microscopy (DHM) :cite:`Kemper_2007` can be
+For instance, digital holographic microscopy (DHM) :cite:`Kemper2007a` can be
 used to record the quantitative phase image of biological cells, yielding the
 optical density from which the :ref:`dry mass <section_theory_dry_mass>` or
 the refractive index (RI) can be computed. Another example is electron holography
-:cite:`Lehmann_2002` which can be used to visualize
+:cite:`Lehmann2002` which can be used to visualize
 `p-n junctions <https://en.wikipedia.org/wiki/P%E2%80%93n_junction>`_
 due to the different electronic potentials in the doped semiconductors. 
 DryMass was designed for the analysis of single cells (typical units for distance [µm]
 and wavelength [nm]), but the concepts used apply to both methods.
+
+
+How should I cite DryMass?
+--------------------------
+If you are using DryMass in a scientific publication, please
+cite it with:
+
+::
+
+  (...) using DryMass version X.X.X (available at
+  https://pypi.python.org/pypi/drymass).
+
+or in a bibliography
+
+::
+  
+  Paul Müller (2018), DryMass version X.X.X: Phase image analysis
+  [Software]. Available at https://pypi.python.org/pypi/drymass.
+
+and replace ``X.X.X`` with the version of DryMass that you used.
+
+Furthermore, several ideas that DryMass builds upon have been described
+and published in scientific journals:
+
+
+- Retrieval of RI and radius using the OPD edge-detection approach
+  is described in :cite:`Schuermann2015` and :cite:`Schuermann2016`
+  (``method="edge"`` and ``model="projection"`` in the ``[sphere]``
+  section of the :ref:`Configuration <sec_configuration_file>`).
+
+- Retrieval of RI and radius by fitting 2D models (OPD projection,
+  Rytov approximation, systematically corrected Rytov approximation,
+  Mie) to phase images is described in :cite:`Mueller2018`.
+  (``method="image"`` in the ``[sphere]``
+  section of the :ref:`Configuration <sec_configuration_file>`).

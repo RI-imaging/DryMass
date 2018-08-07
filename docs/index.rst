@@ -18,7 +18,7 @@ This is the documentation of DryMass version |release|.
    sec_examples
    sec_code_reference
    sec_changelog
-   sec_z_bib
+   zsec_bib
 
 
 Indices and tables

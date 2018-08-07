@@ -121,7 +121,7 @@ edge-detection algorithm applied to the phase image. Since the
 edge-detection algorithm determines the edge on the slope of the phase
 profile and not where the phase profile starts to deviate from the background,
 it underestimates the radius. The solution to this problem is to take into
-account the full phase image when determining RI and radius :cite:`Kemper2007`
+account the full phase image when determining RI and radius :cite:`Kemper2007b`
 :cite:`Mueller2018`.
 
 This can be achieved by modifying the ``[sphere]`` section of *drymass.cfg*.

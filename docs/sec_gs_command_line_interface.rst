@@ -116,7 +116,7 @@ dm_analyze_sphere
 -----------------
 This command is used for the analysis of spherical phase objects
 such as liquid droplets, beads, or suspended cells. The basic
-principle is thoroughly described in reference :cite:`Schuermann_2016`.
+principle is thoroughly described in reference :cite:`Schuermann2016`.
 In short, this approach assumes that the objects found with dm_extract_roi
 are homogeneous and spherical which allows to extract parameters such as
 radius and refractive index from a single phase image (as opposed to

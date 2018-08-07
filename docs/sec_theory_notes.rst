@@ -11,7 +11,7 @@ Theory Notes
 Computation of cell dry mass
 ============================
 The concept of cell dry mass computation was first introduced by Barer
-:cite:`Barer_1952`. The dry mass :math:`m` of a biological cell is defined
+:cite:`Barer1952`. The dry mass :math:`m` of a biological cell is defined
 by its non-aqueous fraction :math:`f(x,y,z)` (concentration or density in g/L),
 i.e. the number of grams of protein and DNA within the cell volume
 (excluding salts).
@@ -121,7 +121,7 @@ Range of validity
 Variations in the refraction increment may occur and
 thus the above considerations are not always valid.
 For a detailed discussion of the variables that affect the
-refraction increment, please see :cite:`Barer_1954`.
+refraction increment, please see :cite:`Barer1954`.
 
 
 Dependency on imaging wavelength
@@ -129,7 +129,7 @@ Dependency on imaging wavelength
 Barer and Joseph measured the refraction increment of several proteins
 in dependence of wavelength. In general, short wavelengths (366nm) yield
 values close to 0.200mL/g while long wavelengths (656nm) yield smaller values
-close to 0.180mL/g (table 3 in :cite:`Barer_1954`).
+close to 0.180mL/g (table 3 in :cite:`Barer1954`).
 
 
 Dependency on protein concentration
@@ -137,14 +137,14 @@ Dependency on protein concentration
 The refraction increment has been reported to be linear for a wide range of
 protein concentrations. Barer and Joseph found that bovine serum albumin
 exhibits a linear refraction increment up to its limit of solubility (figure 2
-in :cite:`Barer_1954`). They additionally received a personal communication
+in :cite:`Barer1954`). They additionally received a personal communication
 stating that this is also the case for gelatin.
 
 
 Dependency on pH, temperature, and salts
 ----------------------------------------
 The refraction increment is little dependent on pH, temperature, and salts
-:cite:`Barer_1954`.
+:cite:`Barer1954`.
 
 
 
@@ -155,7 +155,7 @@ fluid. This weight difference is defined by the volume of the cell minus the
 volume of the protein and DNA content. While it seems to be difficult to define
 a partial specific volume (PSV) for DNA, there appears to be a consensus
 regarding the PSV of proteins, yielding approximately 0.73mL/g
-(see e.g. reference :cite:`Barer_1957` as well as :cite:`Harpaz_1994` and
+(see e.g. reference :cite:`Barer1957` as well as :cite:`Harpaz1994` and
 `question 843 of the O-manual <http://msg.ucsf.edu/local/programs/ono/manuals/ofaq//Q.843.html>`_
 referring to it). For example, the protein and DNA of a cell with a radius of 10µm
 and a dry mass of 350pg (cell volume 4.19pL, average refractive index 1.35) occupy
@@ -184,7 +184,7 @@ Default parameters in DryMass
 - **The default refraction increment** is
   :math:`\alpha` = 0.18mL/g, as
   suggested for cells based on the refraction increment of cellular
-  constituents by references :cite:`Barer_1954` and :cite:`Barer_1953`.
+  constituents by references :cite:`Barer1954` and :cite:`Barer1953`.
   The refraction increment can be manually set using the
   :ref:`configuration <sec_configuration_file>` key
   "refraction increment" in the "sphere" section.
