@@ -4,8 +4,8 @@ from os import fspath
 import pathlib
 import sys
 
+import matplotlib.image as mpimg
 import numpy as np
-from PIL import Image
 import qpimage
 from skimage.external import tifffile
 
@@ -87,7 +87,7 @@ def cli_analyze_sphere(path=None, ret_data=False):
                                      path=imio,
                                      simtype=cfg["sphere"]["model"])
                 imio.seek(0)
-                imdat = np.array(Image.open(imio))
+                imdat = (mpimg.imread(imio) * 255).astype("uint8")
                 tf.save(imdat)
         print("Done")
 
@@ -229,7 +229,7 @@ def cli_extract_roi(path=None, ret_data=False):
                                     rois=rois,
                                     path=imio)
                 imio.seek(0)
-                imdat = np.array(Image.open(imio))
+                imdat = (mpimg.imread(imio) * 255).astype("uint8")
                 tf.save(imdat)
         print("Done")
 
