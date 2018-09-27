@@ -16,7 +16,7 @@ Prerequisites
 -------------
 For this tutorial, you need:
 
-- Python 3.5 or above and DryMass version 0.1.4 or above (see :ref:`section_install`)
+- Python 3.6 or above and DryMass version 0.1.4 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
 - Experimental data set: `DHM_HL60_cells.zip <https://github.com/RI-imaging/QPI-data/raw/master/DHM_HL60_cells.zip>`_
 

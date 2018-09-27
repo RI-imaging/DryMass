@@ -1,3 +1,5 @@
+0.4.2
+ - fix: setting dist border px to 0 still removed objects from border
 0.4.1:
  - fix: extracted wrong phase image from SID4Bio data (qpformat 0.3.5) 
 0.4.0
