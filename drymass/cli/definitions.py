@@ -139,7 +139,7 @@ config = {
         "image fit range refractive index":  # nrel
             (0.10, float, "Fit interpolation range for refractive index"),
         "image fix phase offset":  # fix_pha_offset
-            (False, fbool, "Fix the simulation background phase to zero"),
+            (True, fbool, "Fix the simulation background phase to zero"),
         "image iter":  # max_iter
             (100, int, "Maximum number of iterations for image fitting"),
         "image stop delta position":  # stop_dc

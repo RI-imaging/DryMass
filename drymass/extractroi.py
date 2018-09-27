@@ -29,7 +29,7 @@ FILE_SLICES = "roi_slices.txt"
 def _bg_correct(qpi, which_data, bg_kw={}, bg_mask_thresh=np.nan,
                 bg_mask_sphere_kw={}):
     if bg_kw:
-        if not np.isnan(bg_mask_thresh):  # binary threshold mask
+        if isinstance(bg_mask_thresh, str) or not np.isnan(bg_mask_thresh):
             if which_data == "phase":
                 image = qpi.pha
             else:
