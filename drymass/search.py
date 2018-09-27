@@ -100,7 +100,9 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
 
     # remove artifacts connected to image border
     if dist_border:
-        clear_border(object_labels, buffer_size=int(dist_border), in_place=True)
+        clear_border(object_labels,
+                     buffer_size=int(dist_border),
+                     in_place=True)
     used_regions = []
     # Filter/draw regions
     ignored_regions = []

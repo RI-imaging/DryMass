@@ -3,6 +3,7 @@ import functools
 import pathlib
 
 import numpy as np
+import qpformat
 
 from .._version import version
 
@@ -11,6 +12,11 @@ from . import config
 
 #: DryMass analysis output suffix (appended to data path)
 OUTPUT_SUFFIX = "_dm"
+
+META_MAPPER = {"medium index": ("medium index", 1),
+               "pixel size um": ("pixel size", 1e6),
+               "wavelength nm": ("wavelength", 1e9),
+               }
 
 
 @functools.lru_cache(maxsize=32)
@@ -35,7 +41,9 @@ def main(path=None, req_meta=[]):
     path_out.mkdir(exist_ok=True)
     # print directories (wrapped with functools so only executed once)
     print_info(path_in, path_out)
-    # user input meta data keyword values
+    # get known meta data kwargs from dataset
+    transfer_meta_data(path_in, path_out)
+    # user input missing meta data keyword values
     for mm in sorted(req_meta):
         input_setting(path=path_out,
                       section="meta",
@@ -56,6 +64,17 @@ def parse():
     jpath = " ".join(args.path)
     path_in = pathlib.Path(jpath).resolve()
     return path_in
+
+
+def transfer_meta_data(path_in, path_out):
+    """Read input meta data and write it to the configuration file"""
+    ds = qpformat.load_data(path=path_in)
+    cfg = config.ConfigFile(path_out)
+    sec = cfg["meta"]
+    for key in sorted(META_MAPPER):
+        dskey, mult = META_MAPPER[key]
+        if (key not in sec or np.isnan(sec[key])) and dskey in ds.meta_data:
+            cfg.set_value("meta", key, ds.meta_data[dskey] * mult)
 
 
 @functools.lru_cache(maxsize=32)  # cached to avoid multiple prints
