@@ -22,7 +22,8 @@ list of artifacts:
 8. A bead that is cut at the image border.
 
 Please note that these are designed examples, i.e. the methods described
-here to fix these artifacts might not always work for all cases.
+here to fix these artifacts might not always work and their combination
+might not work for heterogeneous samples.
 
 
 Prerequisites
@@ -31,19 +32,23 @@ For this tutorial, you need:
 
 - Python 3.6 or above and DryMass version 0.5.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
-- Experimental data set: `XXXXXXXXXX.zip <https://github.com/RI-imaging/QPI-data/raw/master/XXXXXXXXXX.zip>`_
+- Experimental data set: `QLSR_PAA_beads_bg-modified.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads_bg-modified.zip>`_
 
 
 Take a glimpse at the data
 --------------------------
 For this tutorial, the downloaded zip archive has to be extracted prior
 to the analysis. The extracted archive contains a readme file and the
-experimental data *XXXXXXXX.h5* in the qpimage file format. DryMass can
-extract all relevant metadata from this file format (in contrast to the
-file formats used in tutorials 1 and 2), such that no manual
-intervention is required whenn running :ref:`section_dm_analyze_sphere`.
+experimental data *QLSR_PAA_beads_bg-modified.h5* in the qpimage file format.
+DryMass can extract all relevant metadata from this file format (in contrast to
+the file formats used in tutorials 1 and 2), such that no manual
+intervention is required when running :ref:`section_dm_analyze_sphere`:
 
-Please open the output folder (*XXXXX.h5_dm*) and
+.. code-block:: none
+
+    dm_analyze_sphere C:\\path\to\QLSR_PAA_beads_bg-modified.h5
+
+Please open the output folder (*QLSR_PAA_beads_bg-modified.h5_dm*) and
 take a look at the file *sensor_roi_images.tif*. You can see
 the different artifacts discussed above (offset, tilt, etc.). In the file
 *sphere_edge_projection_images.tif*, you see that the default
@@ -66,7 +71,17 @@ file *drymass.cfg* (located in the output folder), edit the *[bg]* section:
   [bg]
   phase profile = poly2o
 
-Now the background is sufficiently flat in all ROIs.
+Now the background is sufficiently flat for the first five ROIs.
+
+.. figure:: t03_quadratic_correction.jpg
+
+    Comparison of tilt correction and poly2o correction. The first row
+    shows a bead with a quadratic background phase along one axis and
+    a phase tilt along the other. The second row shows a quadratic
+    background phase along both coordinate axes. The first column
+    shows the raw input phase, and the second and third columns show
+    the phase error when using the tilt and poly2o correction for
+    a sphere analysis based on the edge-detection algorithm.
 
 
 Include beads that are close to each other
@@ -98,9 +113,19 @@ in scikit-image that works well for this example: `threshold_triangle
 Now we have established a robust background correction pipeline that
 includes all but one bead.
 
+.. figure:: t03_bead_overlap.jpg
 
-Include beads at the border of the image
-----------------------------------------
+    Phase binarization for background correction. Each row shows
+    one exemplary bead in close proximity to another bead. A simple
+    background correction using the pixels at the border of the image
+    (second column) does not work because of the second bead. To
+    resolve this issue, triangle thresholding is used to use only
+    those pixels for background correction that do not belong to
+    a bead (third column).
+
+
+Include beads at the border of the sensor image
+-----------------------------------------------
 By default, all ROIs that are within ten pixels of the border of the
 sensor image are removed from the analysis. We can inlcude all ROIs
 by setting this distance to zero:
@@ -113,6 +138,11 @@ by setting this distance to zero:
 The bead in the final measurement is now included in the analysis.
 
 
+.. figure:: t03_bead_border.jpg
+
+    Objects at the image border can be included in the analysis.
+
+
 Exact determination of radius and refractive index
 --------------------------------------------------
 The edge-detection algorithm, as implemented in DryMass, causes an
@@ -121,10 +151,15 @@ refractive index. To retrieve more reliable results, we modify the
 *[sphere]* section to use the systematically-corrected Rytov
 approximation (see :cite:`Mueller2018`):
 
-
 .. code-block:: none
 
   [sphere]
   method = image
   model = rytov-sc
 
+.. figure:: t03_summary_rytov-sc.jpg
+
+    Phase errors when fitting with the Rytov approximation. The plots
+    correspond to the different cases presented in the introduction.
+    The residuals are reduced signigicantly when compared to the
+    edge-detection approach (all figures above).

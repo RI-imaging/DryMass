@@ -5,6 +5,8 @@
  - fix: scikit-image methods could not be used for "binary threshold"
  - fix: set "image fix phase offset" to True by default, otherwise
    objects in the background cause a false offset
+ - improvement: optimize cli plots
+ - docs: add tutorial for background correction (#3)
 0.4.1:
  - fix: extracted wrong phase image from SID4Bio data (qpformat 0.3.5) 
 0.4.0

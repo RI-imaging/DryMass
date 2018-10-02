@@ -8,8 +8,8 @@ import numpy as np
 
 CM_PHASE = "viridis"
 CM_PHASE_ERROR = copy.copy(plt.get_cmap("seismic"))
-CM_PHASE_ERROR.set_over("g", 1)
-CM_PHASE_ERROR.set_under("g", 1)
+CM_PHASE_ERROR.set_over("#37FF32")
+CM_PHASE_ERROR.set_under("#05C500")
 CM_INTENSITY = "gray"
 CM_REFRACTIVE_INDEX = "gnuplot2"
 
@@ -21,21 +21,24 @@ except TypeError:  # building the docs
     pass
 
 
-def add_cbar(ax, mapper, cbformat="%.2f", label="",
-             loc="right", size="5%", labelloc=None):
+def add_cbar(ax, mapper, fmt="%.2f", units="",
+             loc="right", size="5%", labelloc=None,
+             extend="neither"):
     """Add a colorbar to a plot"""
     if labelloc is None:
         labelloc = loc
     divider = make_axes_locatable(ax)
     cax = divider.append_axes(loc, size=size, pad=0.05)
-    acbar = plt.colorbar(mapper, cax=cax, format=cbformat, label=label)
+    if units:
+        cax.text(1.2, 1.05, units, ha="left", va="bottom")
+    acbar = plt.colorbar(mapper, cax=cax, format=fmt, extend=extend)
     acbar.ax.yaxis.set_ticks_position(labelloc)
     acbar.ax.yaxis.set_label_position(labelloc)
     return acbar
 
 
 def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
-               ret_cbar=False, **kwargs):
+               ret_cbar=False, cbformat=None, **kwargs):
     """Plot an image
 
     Parameters
@@ -45,7 +48,7 @@ def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
     ax: matplotlib.Axes
         Axis to plot to
     imtype: str
-        One of ["intensity", "phase", "phase_error",
+        One of ["intensity", "phase", "phase error",
         "refractive index"].
     cbar: bool
         Whether to add a colorbar.
@@ -64,16 +67,22 @@ def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
     if ax is None:
         ax = plt.subplot(111)
 
+    cbkw = {}
+    if cbformat is None:
+        cbkw["fmt"] = "%.3f"
+    else:
+        cbkw["fmt"] = cbformat
+
     if imtype == "phase":
         cmap = CM_PHASE
         gridcolor = "w"
-        cbformat = "%.1f"
-        cblabel = "[rad]"
+        if cbformat is None:
+            cbkw["fmt"] = "%.1f"
+        cbkw["units"] = "[rad]"
     elif imtype == "intensity":
         cmap = CM_INTENSITY
         gridcolor = "k"
-        cbformat = "%.3f"
-        cblabel = "[a.u.]"
+        cbkw["units"] = "[a.u.]"
         # Make sure gray is at 1 in the colormap
         if "vmin" in kwargs and "vmax" in kwargs:
             vmin = kwargs["vmin"]
@@ -85,8 +94,7 @@ def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
     elif imtype == "refractive index":
         cmap = CM_REFRACTIVE_INDEX
         gridcolor = "w"
-        cbformat = "%.3f"
-        cblabel = ""
+        cbkw["units"] = ""
     elif imtype == "phase error":
         cmap = CM_PHASE_ERROR
         gridcolor = "k"
@@ -94,8 +102,8 @@ def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
             vmax = np.max(np.abs(data))
             kwargs["vmax"] = vmax
             kwargs["vmin"] = -vmax
-        cbformat = "%.3f"
-        cblabel = "[rad]"
+        cbkw["units"] = "[rad]"
+        cbkw["extend"] = "both"
     else:
         raise ValueError("Unknown image type: {}".format(imtype))
 
@@ -122,8 +130,7 @@ def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
     if cbar:
         acbar = add_cbar(ax=ax,
                          mapper=mapper,
-                         cbformat=cbformat,
-                         label=cblabel)
+                         **cbkw)
 
         if ret_cbar:
             retval.append(acbar)
@@ -194,8 +201,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
                 "vmax": real_inten.max(),
                 }
     # real phase
-    ax1 = plt.subplot(
-        231, title="data (phase)")
+    ax1 = plt.subplot(231, title="data (phase)")
     plot_image(data=real_phase, ax=ax1, **kw_phase)
 
     # simulated phase
@@ -222,7 +228,15 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
     plot_image(data=real_inten, ax=ax4, **kw_inten)
 
     # computed intensity
-    ax5 = plt.subplot(235, title=simtype + " (intensity)")
+    ax5 = plt.subplot(235)
+    if len(simtype) > 9:
+        # sometimes the title is too long and is printed on top of the units
+        kw5 = {"loc": "right",
+               "ha": "right"}
+    else:
+        kw5 = {}
+    ax5.set_title(simtype + " (intensity)", **kw5)
+        
     plot_image(data=qpi_sim.amp**2, ax=ax5, **kw_inten)
 
     # plot detected radius
@@ -245,7 +259,13 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
     ax6.set_xlabel("[µm]")
     ax6.legend(loc="center right")
 
-    plt.tight_layout(rect=(0, 0, 1, .95))
+    # remove unused labels
+    for ax in [ax1, ax2, ax3]:
+        ax.set_xlabel("")
+    for ax in [ax2, ax3, ax5]:
+        ax.set_ylabel("")
+
+    plt.tight_layout(rect=(0, 0, 1, .95), pad=.1, h_pad=.6)
 
     # add identifier
     fig.text(x=.5, y=.99, s=qpi_sim["identifier"],
