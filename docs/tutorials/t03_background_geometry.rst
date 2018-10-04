@@ -34,23 +34,23 @@ For this tutorial, you need:
 
 - Python 3.6 or above and DryMass version 0.5.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
-- Experimental data set: `QLSR_PAA_beads_bg-modified.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads_bg-modified.zip>`_
+- Experimental data set: `QLSR_PAA_beads_modified.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads_modified.zip>`_
 
 
 Take a glimpse at the data
 --------------------------
 For this tutorial, the downloaded zip archive has to be extracted prior
 to the analysis. The extracted archive contains a readme file and the
-experimental data *QLSR_PAA_beads_bg-modified.h5* in the qpimage file format.
+experimental data *QLSR_PAA_beads_modified.h5* in the qpimage file format.
 DryMass can extract all relevant metadata from this file format (in contrast to
 the file formats used in tutorials 1 and 2), such that no manual
 intervention is required when running :ref:`section_dm_analyze_sphere`:
 
 .. code-block:: none
 
-    dm_analyze_sphere C:\\path\to\QLSR_PAA_beads_bg-modified.h5
+    dm_analyze_sphere QLSR_PAA_beads_modified.h5
 
-Please open the output folder (*QLSR_PAA_beads_bg-modified.h5_dm*) and
+Please open the output folder (*QLSR_PAA_beads_modified.h5_dm*) and
 take a look at the file *sensor_roi_images.tif*. You can see
 the different artifacts discussed above (offset, tilt, etc.). In the file
 *sphere_edge_projection_images.tif*, you see that the default

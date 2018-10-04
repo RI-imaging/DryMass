@@ -84,15 +84,14 @@ the phase images.
 Note that the modeled intensity image is all-one, because the projection
 model only models the optical thickness and thus only affects the phase data.
 Also, note that the phase-difference image between data and model only has
-small deviations in the background phase. If there were large ramp-like
-structures or offsets, we would have to modify the
-:ref:`background correction <config_bg>`.
+small deviations in the background phase. If the background phase was
+not flat, we would have to modify the :ref:`background correction <config_bg>`.
 
 Post-processing
 ---------------
 A closer examination of the phase-difference images shows that there seem to
 be either deformed beads or imaging artifacts in the images with the identifiers
-(prepend *85449:*): *3.0, 6.0, 23.0, 25.0, 26.0, 34.0, 35.0, 38.0, 39.0, 50.0,
+(prepend *e8717:*): *3.0, 6.0, 23.0, 25.0, 26.0, 34.0, 35.0, 38.0, 39.0, 50.0,
 51.0, 54.0, 57.0, 59.0, 63.0, 66.0,* and *70.0*. Due to their asymmetry
 we ignore these images in our analysis by removing the respective rows
 from *sphere_edge_projection_statistics.txt* (Note that this file will be

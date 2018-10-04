@@ -242,7 +242,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
     else:
         kw5 = {}
     ax5.set_title(simtype + " (intensity)", **kw5)
-        
+
     plot_image(data=qpi_sim.amp**2, ax=ax5, **kw_inten)
 
     # plot detected radius

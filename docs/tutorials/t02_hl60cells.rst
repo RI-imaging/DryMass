@@ -33,7 +33,13 @@ Find regions of interest
 We proceed slightly different than in :ref:`tutorial 1<tutorial01>`. Before
 we use the command  :ref:`section_dm_analyze_sphere` to extract the RI
 values of the HL60 cells, we have to modify our configuration.
-We start by executing ``dm_extract_roi DHM_HL60_cells.zip`` which prompts
+We start by executing
+
+.. code::
+
+    dm_extract_roi DHM_HL60_cells.zip
+
+which prompts
 us for the *pixel size* (0.107µm), and the *wavelength* (633nm),
 which can be found in the *readme.txt* file inside the zip archive.
 This command imports the raw data and searches for cells in the phase
@@ -49,12 +55,12 @@ following configuration keys in *drymass.cfg*:
 .. code-block:: none
 
   [specimen]
-  size um = 13           # approximate cell diameter we are looking for [µm]
+  size um = 13              # approximate cell diameter we are looking for [µm]
 
   [roi]
-  pad border = 80        # increase border size around cells
-  size variation = 0.2   # do not allow large variations of specimen size
-  exclude overlap = 100  # exclude ROIs with an overlap > 100px
+  pad border px = 80        # increase border size around cells
+  size variation = 0.2      # do not allow large variations of specimen size
+  exclude overlap px = 100  # exclude ROIs with an overlap > 100px
 
 With the new configuration, we run ``dm_extract_roi DHM_HL60_cells.zip`` again.
 Now all cells are detected. However, we want to exclude a few due to artifacts
@@ -64,7 +70,7 @@ in *drymass.cfg*
 .. code-block:: none
 
   [roi]
-  enabled = False        # use existing roi_slices.txt
+  enabled = False           # use existing roi_slices.txt
 
 and remove the undesired ROIs from *roi_slices.txt*, which are
 *7.3, 14.1, 17.1, 17.2* and *34.1*. There should now be a total of 87 ROIs.
@@ -88,7 +94,13 @@ border width to 30 pixels. These are the updated lines in the
 
 Perform sphere analysis
 -----------------------
-We now run ``dm_analyze_sphere DHM_HL60_cells.zip`` and are asked to enter
+We now run
+
+.. code::
+
+    dm_analyze_sphere DHM_HL60_cells.zip
+
+and are asked to enter
 the RI of the medium (1.335). By default, the RI of the cells is computed
 according to :cite:`Schuermann2015`. The following files are created during
 this step:
@@ -200,7 +212,7 @@ To plot the results, we use the
     :language: python
     :linenos:
 
-.. figure:: t02_reproduced_5d.jpg
+.. figure:: t02_reproduced_5d.png
 
 
 Discussion
