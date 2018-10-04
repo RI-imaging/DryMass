@@ -37,7 +37,7 @@ the refractive index of the surrounding medium (1.335), the
 detector pixel size in microns (0.14), and the wavelength in
 nanometers (647). Simply type in these values (press the `Enter`
 key to let DryMass acknowledge each input). On Windows, this
-will look similar to this (2.5x time lapse):
+will look similar to this:
 
 .. figure:: t01_analyze_sphere.gif
 

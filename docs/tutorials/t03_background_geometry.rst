@@ -6,17 +6,19 @@ T3: Correcting for background and geometry (CLI)
 
 Introduction
 ------------
-Often, the input data are not optimal, for instance due to limitations
-of the measuring setup. DryMass offers several ways of dealing with
-the resulting artifacts. This tutorial uses polyacrylamide (PAA) bead
-measurements that were artificially altered to reproduce the following
-list of artifacts:
+In practice, recorded phase data is often subject to a non-linear
+background phase due to limitations of the measuring setup.
+Furthermore, the measured objects (e.g. cells, beads, liquid droplets)
+might be positioned too close to each other or the imaged region. 
+DryMass offers several ways of dealing with the resulting artifacts.
+This tutorial uses polyacrylamide (PAA) bead measurements that were
+artificially altered to simulate the following cases:
 
-1. A constant offset in the phase image.
-2. A linear tilt in the phase image along one coordinate axis.
-3. A linear tilt in the phase image along both coordinate axes.
-4. A quadradic phase distortion along one axis and a phase tilt along the other axis.
-5. Quadradic phase distortions along both coordinate axes.
+1. A constant offset in the phase background.
+2. A linear tilt in the phase background along one coordinate axis.
+3. A linear tilt in the phase background along both coordinate axes.
+4. A quadratic phase distortion along one axis and a phase tilt along the other axis.
+5. Quadratic phase distortions along both coordinate axes.
 6. Two beads that are close to each other.
 7. All of the above.
 8. A bead that is cut at the image border.
@@ -52,7 +54,8 @@ Please open the output folder (*QLSR_PAA_beads_bg-modified.h5_dm*) and
 take a look at the file *sensor_roi_images.tif*. You can see
 the different artifacts discussed above (offset, tilt, etc.). In the file
 *sphere_edge_projection_images.tif*, you see that the default
-background correction strategy does not work for all measurements.
+background correction strategy works for the offset and tilt artifacts,
+but fails when the background phase has quadratic components.
 Furthermore, notice that for the last three measurements no regions of interest
 (ROIs) were detected with the default parameters. As a result, these
 three measurements are not represented in *sphere_edge_projection_images.tif*.
@@ -80,13 +83,13 @@ Now the background is sufficiently flat for the first five ROIs.
     a phase tilt along the other. The second row shows a quadratic
     background phase along both coordinate axes. The first column
     shows the raw input phase, and the second and third columns show
-    the phase error when using the tilt and poly2o correction for
+    the phase residuals when using the tilt and poly2o correction for
     a sphere analysis based on the edge-detection algorithm.
 
 
 Include beads that are close to each other
 ------------------------------------------
-DryMass automatically removes ROIs that are very close to each other, as
+DryMass automatically removes ROIs that are close to each other, as
 this might have a negative effect on the subsequent analysis steps. To include
 these beads, we lift this restriction by modifying the *[roi]* section:
 
@@ -99,7 +102,7 @@ In *sensor_roi_images.tif*, you can see that the ROIs of the beads
 are now included in the analysis. However, in
 *sphere_edge_projection_images.tif* you observe that the second bead
 seems to have a negative effect on the background correction. To resolve
-this issue, we set a binary threshold in the original image above which
+this issue, we set a binary threshold in the original ROI above which
 no data is used for background correction. Since it is difficult to set
 such a threshold manually, we use one of the threshold filters implemented
 in scikit-image that works well for this example: `threshold_triangle
@@ -127,7 +130,7 @@ includes all but one bead.
 Include beads at the border of the sensor image
 -----------------------------------------------
 By default, all ROIs that are within ten pixels of the border of the
-sensor image are removed from the analysis. We can inlcude all ROIs
+sensor image are removed from the analysis. We can include all ROIs
 by setting this distance to zero:
 
 .. code-block:: none
@@ -135,8 +138,8 @@ by setting this distance to zero:
   [roi]
   dist border px = 0
 
-The bead in the final measurement is now included in the analysis.
-
+The bead in the final measurement is now included in the analysis,
+yielding values for refractive index and radius.
 
 .. figure:: t03_bead_border.jpg
 
@@ -145,6 +148,10 @@ The bead in the final measurement is now included in the analysis.
 
 Exact determination of radius and refractive index
 --------------------------------------------------
+At this point, the tutorial is already complete in the sense that all
+cases given in the introduction have been covered. However, the residuals
+of the sphere model are still large, which can be attributed to the
+default analysis method of `dm_analyze_sphere`:
 The edge-detection algorithm, as implemented in DryMass, causes an
 underestimation of the beads radii and thus an overestimation of the
 refractive index. To retrieve more reliable results, we modify the
@@ -157,9 +164,14 @@ approximation (see :cite:`Mueller2018`):
   method = image
   model = rytov-sc
 
+In addition to the previously achieved flat phase background for each ROI,
+this approach minimizes phase residuals and results in more accurate values
+for refractive index and size of the PAA beads. 
+
 .. figure:: t03_summary_rytov-sc.jpg
 
-    Phase errors when fitting with the Rytov approximation. The plots
-    correspond to the different cases presented in the introduction.
-    The residuals are reduced signigicantly when compared to the
-    edge-detection approach (all figures above).
+    Phase residuals when fitting with the Rytov approximation. The plots
+    correspond to the different cases presented in the introduction,
+    demonstrating correct background correction and object identification.
+    The residuals are reduced significantly when compared to the
+    edge-detection approach (compare figures above).

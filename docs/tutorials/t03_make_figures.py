@@ -64,8 +64,8 @@ cli.plot.plot_image(qe2[1], ax=axes[1, 2], **kwerr)
 
 for ii in range(axes.shape[0]):
     axes[ii, 0].set_title("input phase")
-    axes[ii, 1].set_title("tilt error")
-    axes[ii, 2].set_title("poly2o error")
+    axes[ii, 1].set_title("tilt residuals")
+    axes[ii, 2].set_title("poly2o residuals")
 
     axes[ii, 1].set_ylabel("")
     axes[ii, 2].set_ylabel("")
@@ -112,8 +112,8 @@ cli.plot.plot_image(te2[1], ax=axes[1, 2], **kwerr)
 
 for ii in range(axes.shape[0]):
     axes[ii, 0].set_title("input phase")
-    axes[ii, 1].set_title("error without mask")
-    axes[ii, 2].set_title("error with mask")
+    axes[ii, 1].set_title("residuals, no mask")
+    axes[ii, 2].set_title("residuals, with mask")
     axes[ii, 1].set_ylabel("")
     axes[ii, 2].set_ylabel("")
 
@@ -147,7 +147,7 @@ cli.plot.plot_image(bd, ax=axes[0], **kwplt)
 cli.plot.plot_image(be, ax=axes[1], **kwerr)
 
 axes[0].set_title("input phase")
-axes[1].set_title("phase error")
+axes[1].set_title("phase residuals")
 axes[1].set_ylabel("")
 
 plt.tight_layout(pad=0)

@@ -144,7 +144,7 @@ def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
 def plot_qpi_phase(qpi, rois=None, path=None):
     """Plot phase data"""
     fig = plt.figure(figsize=(6, 4))
-    ax1 = plt.subplot(111, title="sensor phase image")
+    ax1 = plt.subplot(111)
     px_um = qpi["pixel size"] * 1e6
     plot_image(data=qpi.pha,
                ax=ax1,
@@ -169,7 +169,13 @@ def plot_qpi_phase(qpi, rois=None, path=None):
                      horizontalalignment="left",
                      verticalalignment="bottom",
                      color="w")
-    plt.tight_layout()
+    plt.tight_layout(rect=(0, 0, 1, .93), pad=.1)
+
+    fig.text(x=.5, y=.99, s="sensor phase image",
+             verticalalignment="top",
+             horizontalalignment="center",
+             fontsize=14)
+
     if path:
         fig.savefig(path)
         plt.close()
@@ -216,8 +222,8 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
              transform=ax2.transAxes,
              )
 
-    # phase difference
-    ax3 = plt.subplot(233, title="phase difference")
+    # phase residuals
+    ax3 = plt.subplot(233, title="phase residuals")
     errmax = qpi_sim.pha.max() * .2
     plot_image(data=qpi_sim.pha - real_phase, ax=ax3,
                imtype="phase error", vmax=errmax, vmin=-errmax,
@@ -265,7 +271,7 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
     for ax in [ax2, ax3, ax5]:
         ax.set_ylabel("")
 
-    plt.tight_layout(rect=(0, 0, 1, .95), pad=.1, h_pad=.6)
+    plt.tight_layout(rect=(0, 0, 1, .93), pad=.1, h_pad=.6)
 
     # add identifier
     fig.text(x=.5, y=.99, s=qpi_sim["identifier"],
