@@ -150,4 +150,4 @@ def h5series2tif(h5in, tifout):
             dataa = np.array(qpi.amp, dtype=np.float32).reshape(*dshape)
             datap = np.array(qpi.pha, dtype=np.float32).reshape(*dshape)
             data = np.vstack((datap, dataa))
-            tf.save(data=data, resolution=(res, res, None))
+            tf.save(data=data, resolution=(res, res, None), compress=9)

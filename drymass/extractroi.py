@@ -140,7 +140,7 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                 sx, sy = qpir.shape
                 dummy[0, :sx, :sy] = qpir.pha
                 dummy[1, :sx, :sy] = qpir.amp
-                tf.save(data=dummy, resolution=(res, res, None))
+                tf.save(data=dummy, resolution=(res, res, None), compress=9)
     return rmgr
 
 

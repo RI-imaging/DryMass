@@ -88,7 +88,7 @@ def cli_analyze_sphere(path=None, ret_data=False):
                                      simtype=cfg["sphere"]["model"])
                 imio.seek(0)
                 imdat = (mpimg.imread(imio) * 255).astype("uint8")
-                tf.save(imdat)
+                tf.save(imdat, compress=9)
         print("Done")
 
     if ret_data:
@@ -230,7 +230,7 @@ def cli_extract_roi(path=None, ret_data=False):
                                     path=imio)
                 imio.seek(0)
                 imdat = (mpimg.imread(imio) * 255).astype("uint8")
-                tf.save(imdat)
+                tf.save(imdat, compress=9)
         print("Done")
 
     if ret_data:
