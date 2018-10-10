@@ -54,7 +54,7 @@ def test_base():
     # check existence of files
     pathtif = path_out / FILE_ROI_DATA_TIF
     assert pathtif.exists()
-    assert pathtif.stat().st_size > 10000
+    assert pathtif.stat().st_size > 1500
 
     pathsl = path_out / FILE_SLICES
     assert pathsl.exists()
