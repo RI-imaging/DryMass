@@ -5,6 +5,8 @@ import matplotlib.pylab as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import numpy as np
 
+from ..import extractroi
+
 
 CM_PHASE = "viridis"
 CM_PHASE_ERROR = copy.copy(plt.get_cmap("seismic"))
@@ -141,7 +143,7 @@ def plot_image(data, ax=None, imtype="phase", cbar=True, px_um=None,
         return retval
 
 
-def plot_qpi_phase(qpi, rois=None, path=None):
+def plot_qpi_phase(qpi, rois=None, path=None, labels_excluded=[]):
     """Plot phase data"""
     fig = plt.figure(figsize=(6, 4))
     ax1 = plt.subplot(111)
@@ -153,22 +155,34 @@ def plot_qpi_phase(qpi, rois=None, path=None):
                px_um=px_um)
     if rois:
         for roi in rois:
+            slnum = roi[0].split(":")[-1]
+            imid, roid = slnum.split(".")
             slx, sly = roi[1]
             x0 = slx.start * px_um
             x1 = slx.stop * px_um
             y0 = sly.start * px_um
             y1 = sly.stop * px_um
+
+            if extractroi.is_ignored_roi(imid=imid, roid=roid,
+                                         ignore_data=labels_excluded):
+                color = "r"
+                ax1.text(y1, x1, "excluded",
+                         horizontalalignment="right",
+                         verticalalignment="top",
+                         color=color)
+            else:
+                color = "w"
             box = mpl.patches.Rectangle(xy=(y0, x0),
                                         width=y1 - y0,
                                         height=x1 - x0,
                                         facecolor="none",
-                                        edgecolor="w",
+                                        edgecolor=color,
                                         )
             ax1.add_patch(box)
             ax1.text(y0, x0, roi[0],
                      horizontalalignment="left",
                      verticalalignment="bottom",
-                     color="w")
+                     color=color)
     plt.tight_layout(rect=(0, 0, 1, .93), pad=.1)
 
     fig.text(x=.5, y=.99, s="sensor phase image",

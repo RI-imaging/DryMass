@@ -216,7 +216,7 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
                           (rr.centroid[1] - bb.centroid[1])**2
                           )
             olap = (rr.equivalent_diameter + bb.equivalent_diameter) / 2 - dst
-            if olap + exclude_overlap > 0:
+            if olap + exclude_overlap > 0 and rr not in delregs:
                 delregs.append(rr)
     for dd in delregs:
         regs.remove(dd)

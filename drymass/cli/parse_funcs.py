@@ -107,25 +107,31 @@ def lcstr(astr):
     return astr.lower()
 
 
+def strlist(alist):
+    """List of strings, comma- or space-separated"""
+    if isinstance(alist, str):
+        for s in "()[]'"+'"':
+            alist = alist.replace(s, "")
+        alist = alist.replace(",", " ")
+        alist = alist.split(" ")
+    alist = [a for a in alist if a.strip()]
+    alist = sorted(alist)
+    return alist
+
+
 def tupletupleint(items):
     """A tuple containing x- and y- slice tuples from a string or tuple"""
     if isinstance(items, str):
         for s in " ()[]":
             items = items.replace(s, "")
-        if items.strip():
-            # we have a string representation of the slices
-            x1, x2, y1, y2 = items.split(",")
-            out = ((int(float(x1)), int(float(x2))),
-                   (int(float(y1)), int(float(y2))))
-        else:
-            out = ()
+        # we have a string representation of the slices
+        x1, x2, y1, y2 = items.split(",")
+        out = ((int(float(x1)), int(float(x2))),
+               (int(float(y1)), int(float(y2))))
     else:
-        if items:
-            (x1, x2), (y1, y2) = items
-            out = ((int(float(x1)), int(float(x2))),
-                   (int(float(y1)), int(float(y2))))
-        else:
-            out = ()
+        (x1, x2), (y1, y2) = items
+        out = ((int(float(x1)), int(float(x2))),
+               (int(float(y1)), int(float(y2))))
     return out
 
 

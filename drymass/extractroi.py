@@ -65,7 +65,7 @@ def _bg_correct(qpi, which_data, bg_kw={}, bg_mask_thresh=np.nan,
 
 
 def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
-                 dist_border, pad_border, exclude_overlap,
+                 dist_border, pad_border, exclude_overlap, ignore_data,
                  bg_amp_kw, bg_amp_bin, bg_amp_mask_sphere_kw,
                  bg_pha_kw, bg_pha_bin, bg_pha_mask_sphere_kw,
                  search_enabled):
@@ -102,6 +102,9 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
             # available ROIs
             rois = rmgr.get_from_image_index(ii)
             for jj, (rid, sl) in enumerate(rois):
+                if is_ignored_roi(imid=ii, roid=jj, ignore_data=ignore_data):
+                    # ignore data
+                    continue
                 # Extract the ROI
                 qpisl = qpi.__getitem__(sl)
                 # amplitude bg correction
@@ -146,6 +149,7 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
 
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dist_border=10, pad_border=40, exclude_overlap=30.,
+                ignore_data=None,
                 bg_amp_kw=BG_DEFAULT_KW, bg_amp_bin=np.nan,
                 bg_amp_mask_radial_clearance=np.nan,
                 bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=np.nan,
@@ -172,6 +176,10 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         Padding of object regions [px]
     exclude_overlap: float
         Allowed distance between two objects [px]
+    ignore_data: list of str
+        Identifiers for sensor images or ROIs to be excluded from
+        further analysis. These will be labeled in the output
+        tiff file and not written to the output qpseries file.
     bg_amp_kw: dict or None
         Amplitude image background correction keyword arguments
         (see :func:`qpimage.QPImage.compute_bg`), defaults
@@ -233,6 +241,7 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                                   dist_border,
                                   pad_border,
                                   exclude_overlap,
+                                  ignore_data,
                                   bg_amp_kw,
                                   bg_amp_bin,
                                   bg_amp_mask_radial_clearance,
@@ -276,6 +285,7 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
             dist_border=dist_border,
             pad_border=pad_border,
             exclude_overlap=exclude_overlap,
+            ignore_data=ignore_data,
             bg_amp_kw=bg_amp_kw,
             bg_amp_bin=bg_amp_bin,
             bg_amp_mask_sphere_kw=bg_amp_mask_sphere_kw,
@@ -320,3 +330,25 @@ def image2mask(image, value_or_method):
         return image < method(image)
     else:
         return image < value_or_method
+
+
+def is_ignored_roi(imid, roid, ignore_data):
+    """Determine whether a specific ROI should be ignored
+
+    Parameters
+    ----------
+    imid: int or str
+        Integer identifying the image index of the series
+    roid: int or str
+        Integer identifying the ROI in the image
+    ignore_data: list of str
+        List of strings of the form "imid" or "imid.roid" that
+        identify ROIs that should be ignored. For instance
+        ["1.0", "2.1", "3"].
+    """
+    if (ignore_data
+        and (str(imid) in ignore_data
+             or "{}.{}".format(imid, roid) in ignore_data)):
+        return True
+    else:
+        return False

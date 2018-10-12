@@ -85,12 +85,21 @@ class ConfigFile(object):
             raise ValueError("Unknown section title: {}".format(section))
         if key not in definitions.config[section]:
             raise ValueError("Unknown key: {}: {}".format(section, key))
-        type_func = definitions.config[section][key][1]
-        try:
-            type_func(value)
-        except BaseException:
-            raise ValueError("Wrong dtype: {}: {}={}".format(section,
-                                                             key, value))
+        if value in [None, "none", "None", "()", "[]"]:
+            if definitions.config[section][key][0] is not None:
+                msg = "Value 'None' not allowed for [{}]: {}!".format(
+                      section, key)
+                raise ValueError(msg)
+            ret_value = None
+        else:
+            type_func = definitions.config[section][key][1]
+            try:
+                type_func(value)
+            except BaseException:
+                raise ValueError("Wrong dtype: {}: {}={}".format(section,
+                                                                 key, value))
+            ret_value = type_func(value)
+        return ret_value
 
     def _parse_compat(self, section, key, value):
         if section == "bg":
@@ -135,16 +144,7 @@ class ConfigFile(object):
                 val = val.strip()
                 # backwards compatibility:
                 key, val = self._parse_compat(sec, key, val)
-                key_func = definitions.config[sec][key][1]
-                try:
-                    val = key_func(val)
-                except ValueError as e:
-                    # This means that the `key_func` has a problem with this
-                    # value. To make things transparent, we append information
-                    # to the error message.
-                    e.args += ('Invalid value in "[{}]: {} = {}"'.format(
-                               sec, key, val),)
-                    raise
+                val = self._check_value(sec, key, val)
                 outdict[sec][key] = val
         # Insert default variables where missing
         must_write = False
@@ -184,8 +184,10 @@ class ConfigFile(object):
             subkeys = sorted(list(datadict[kk].keys()))
             for sk in subkeys:
                 value = datadict[kk][sk]
-                typefunc = definitions.config[kk][sk][1]
-                lines.append("{} = {}".format(sk, typefunc(value)))
+                if value is not None:
+                    typefunc = definitions.config[kk][sk][1]
+                    value = typefunc(value)
+                lines.append("{} = {}".format(sk, value))
         for ii in range(len(lines)):
             lines[ii] += "\n"
         with self.path.open("w") as fd:

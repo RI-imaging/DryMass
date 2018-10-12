@@ -123,12 +123,9 @@ def test_lcstr():
 
 
 def test_tupletupleint():
-    assert parse_funcs.tupletupleint("") == ()
     assert parse_funcs.tupletupleint("[(1, 2), (3, 4)]") == ((1, 2), (3, 4))
     assert parse_funcs.tupletupleint("1, 2, 3, 4") == ((1, 2), (3, 4))
     assert parse_funcs.tupletupleint("1.1, 2.1, 3.1, 4.1") == ((1, 2), (3, 4))
-    assert parse_funcs.tupletupleint(()) == ()
-    assert parse_funcs.tupletupleint([]) == ()
     assert parse_funcs.tupletupleint([(1, 2), (3, 4)]) == ((1, 2), (3, 4))
     assert parse_funcs.tupletupleint([(1.1, 2.), (3.0, 4)]) == ((1, 2), (3, 4))
 

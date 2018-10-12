@@ -146,6 +146,7 @@ def cli_extract_roi(path=None, ret_data=False):
     # get the configuration after cli_convert was run
     cfg = config.ConfigFile(path_out)
     print("Extracting ROIs... ", end="", flush=True)
+    # background correction
     if cfg["bg"]["enabled"]:
         bg_amp_kw = {"fit_offset": cfg["bg"]["amplitude offset"],
                      "fit_profile": cfg["bg"]["amplitude profile"],
@@ -185,6 +186,7 @@ def cli_extract_roi(path=None, ret_data=False):
         dist_border=cfg["roi"]["dist border px"],
         pad_border=cfg["roi"]["pad border px"],
         exclude_overlap=cfg["roi"]["exclude overlap px"],
+        ignore_data=cfg["roi"]["ignore data"],
         bg_amp_kw=bg_amp_kw,
         bg_amp_bin=cfg["bg"]["amplitude binary threshold"],
         bg_amp_mask_radial_clearance=cfg["bg"]["amplitude mask sphere"],
@@ -227,7 +229,8 @@ def cli_extract_roi(path=None, ret_data=False):
                 imio = io.BytesIO()
                 plot.plot_qpi_phase(qps[ii],
                                     rois=rois,
-                                    path=imio)
+                                    path=imio,
+                                    labels_excluded=cfg["roi"]["ignore data"])
                 imio.seek(0)
                 imdat = (mpimg.imread(imio) * 255).astype("uint8")
                 tf.save(imdat, compress=9)
@@ -239,9 +242,7 @@ def cli_extract_roi(path=None, ret_data=False):
 
 def parse_bg_value(bg, reldir):
     """Determine the background to use from the configuration key"""
-    if bg == "none":
-        bg = None
-    elif isinstance(bg, numbers.Integral):
+    if isinstance(bg, numbers.Integral):
         # indexing starts at 1
         bg -= 1
     elif isinstance(bg, str):

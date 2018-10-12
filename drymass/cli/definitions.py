@@ -1,7 +1,7 @@
 import numpy as np
 
 from .parse_funcs import fbool, float01, float_or_str, int_or_path, lcstr, \
-    floattuple_or_one, tupletupleint
+    floattuple_or_one, strlist, tupletupleint
 
 config = {
     "bg": {
@@ -16,7 +16,7 @@ config = {
             (5, int, "Amplitude bg border region to analyze [px]"),
             # Set to 0 to disable.
         "amplitude data":
-            ("none", int_or_path, "Amplitude bg correction file or index"),
+            (None, int_or_path, "Amplitude bg correction file or index"),
             # Image indexing starts with 1.
             # If a file, either specify the full path or the relative
             # path to the directory containing the input data.
@@ -52,7 +52,7 @@ config = {
             (5, int, "Phase bg border region to analyze [px]"),
             # Set to 0 to disable.
         "phase data":
-            ("none", int_or_path, "Phase bg correction file or index"),
+            (None, int_or_path, "Phase bg correction file or index"),
             # Image indexing starts with 1.
             # If a file, either specify the full path or the relative
             # path to the directory containing the input data.
@@ -110,7 +110,13 @@ config = {
         "exclude overlap px":
             (30.0, float, "Allowed distance between two objects [px]"),
         "force":
-            ((), tupletupleint, "Force ROI coordinates (x1,x2,y1,y2) [px]"),
+            (None, tupletupleint, "Force ROI coordinates (x1,x2,y1,y2) [px]"),
+        "ignore data":
+            (None, strlist, "Exclude images and ROIs from the analysis"),
+            # To exclude individual ROIs found in a previous run, simply
+            # type the ROI index, i.e. 'exclude = 1.0, 2.2'. You may
+            # additionally exclude a full sensor image (e.g. image 3) with
+            # 'exclude = 1.0, 2.2, 3'.
         "pad border px":
             (40, int, "Padding of object regions [px]"),
         "size variation":

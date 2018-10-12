@@ -67,6 +67,39 @@ def test_base():
     shutil.rmtree(path_out, ignore_errors=True)
 
 
+def test_exclude_roi():
+    _, path_in, path_out = setup_test_data(num=2)
+    cli_extract_roi(path=path_in)
+    cfg = config.ConfigFile(path_out)
+    h5data = cli_extract_roi(path=path_in, ret_data=True)
+    with qpimage.QPSeries(h5file=h5data) as qps:
+        assert len(qps) == 2
+
+    # remove first image
+    cfg.set_value(section="roi", key="ignore data", value="0.0")
+    h5data = cli_extract_roi(path=path_in, ret_data=True)
+    with qpimage.QPSeries(h5file=h5data) as qps:
+        assert len(qps) == 1
+
+    # remove second image
+    cfg.set_value(section="roi", key="ignore data", value="1")
+    h5data = cli_extract_roi(path=path_in, ret_data=True)
+    with qpimage.QPSeries(h5file=h5data) as qps:
+        assert len(qps) == 1
+
+    # remove all
+    cfg.set_value(section="roi", key="ignore data", value=["0", "1"])
+    h5data = cli_extract_roi(path=path_in, ret_data=True)
+    with qpimage.QPSeries(h5file=h5data) as qps:
+        assert len(qps) == 0
+
+    try:
+        path_in.unlink()
+    except OSError:
+        pass
+    shutil.rmtree(path_out, ignore_errors=True)
+
+
 def test_reuse():
     _, path_in, path_out = setup_test_data(num=2)
     cfg = config.ConfigFile(path_out)
