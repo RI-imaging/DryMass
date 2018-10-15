@@ -17,7 +17,7 @@ class ROI(object):
                 and len(roi_slice) == 2
                 and isinstance(roi_slice[0], slice)
                 and isinstance(roi_slice[1], slice)):
-            raise ValueError("`roislice` must be a tuple of two slices!")
+            raise ValueError("`roi_slice` must be a tuple of two slices!")
 
         self.identifier = identifier
         self.image_index = image_index
