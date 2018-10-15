@@ -1,6 +1,7 @@
 import pathlib
 
 from . import definitions
+from . import parse_funcs
 from .._version import version
 
 #: DryMass configuration file name
@@ -184,9 +185,12 @@ class ConfigFile(object):
             subkeys = sorted(list(datadict[kk].keys()))
             for sk in subkeys:
                 value = datadict[kk][sk]
+                typefunc = definitions.config[kk][sk][1]
                 if value is not None:
-                    typefunc = definitions.config[kk][sk][1]
                     value = typefunc(value)
+                    if typefunc is parse_funcs.strlist:
+                        # cosmetics for e.g. '[roi]: ignore data'
+                        value = ", ".join(value)
                 lines.append("{} = {}".format(sk, value))
         for ii in range(len(lines)):
             lines[ii] += "\n"
