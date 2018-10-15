@@ -74,6 +74,8 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
         rmgr = ROIManager(qps.identifier)
         if search_enabled:
             for ii in range(len(qps)):
+                # new indexing convention in drymass 0.6.0
+                image_index = ii + 1
                 qpi = qps[ii]
                 # find objects
                 slices = search.search_phase_objects(
@@ -85,23 +87,49 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                     pad_border=pad_border,
                     exclude_overlap=exclude_overlap)
                 for jj, sl in enumerate(slices):
-                    slident = "{}.{}".format(qpi["identifier"], jj)
-                    rmgr.add(roi_slice=sl, image_index=ii,
-                             roi_index=jj, identifier=slident)
+                    # new indexing convention in drymass 0.6.0
+                    roi_index = jj + 1
+                    slident = "{}.{}".format(qpi["identifier"], roi_index)
+                    rmgr.add(roi_slice=sl,
+                             image_index=image_index,
+                             roi_index=roi_index,
+                             identifier=slident)
             rmgr.save(slout)
         else:
             rmgr.load(slout)
+
+    # Verify ignore_data parameter
+    if ignore_data:
+        bad_ignore = []
+        for item in ignore_data:
+            if item.count("."):
+                roims = rmgr.get_from_image_index(int(item.split(".")[0]))
+                roims = ["{}.{}".format(r.image_index,
+                                        r.roi_index) for r in roims]
+                if item not in roims:
+                    bad_ignore.append(item)
+            else:
+                if not rmgr.get_from_image_index(int(item)):
+                    bad_ignore.append(item)
+        if bad_ignore:
+            msg = "The following ROIs are not present but are set in " \
+                  + "`ignore_data`: {}".format(", ".join(bad_ignore))
+            raise ValueError
 
     # Extract ROI images
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps, \
             qpimage.QPSeries(h5file=h5out, h5mode="w") as qps_roi, \
             tifffile.TiffWriter(fspath(imout), imagej=True) as tf:
         for ii in range(len(qps)):
+            # new indexing convention in drymass 0.6.0
+            image_index = ii + 1
             # image to analyze
             qpi = qps[ii]
             # available ROIs
-            rois = rmgr.get_from_image_index(ii)
+            rois = rmgr.get_from_image_index(image_index)
             for jj, roi in enumerate(rois):
+                # new indexing convention in drymass 0.6.0
+                roi_index = jj + 1
                 if is_ignored_roi(roi=roi, ignore_data=ignore_data):
                     # ignore data
                     continue
@@ -119,7 +147,7 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                             bg_kw=bg_pha_kw,
                             bg_mask_thresh=bg_pha_bin,
                             bg_mask_sphere_kw=bg_pha_mask_sphere_kw)
-                slident = "{}.{}".format(qpi["identifier"], jj)
+                slident = "{}.{}".format(qpi["identifier"], roi_index)
                 if roi.identifier != slident:
                     # This might happen if the user does not know the
                     # image identifier and builds his own `FILE_SLICES`.

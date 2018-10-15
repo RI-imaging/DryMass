@@ -35,8 +35,8 @@ def test_bg_correction_index():
 
     path_out = drymass.convert(path_in=path,
                                dir_out=dout,
-                               bg_data_amp=0,
-                               bg_data_pha=0)
+                               bg_data_amp=1,
+                               bg_data_pha=1)
     with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
         # background correction with same input image will result
         # in a flat QPImage.
@@ -53,8 +53,8 @@ def test_bg_correction_index():
 
     path_out = drymass.convert(path_in=path,
                                dir_out=dout,
-                               bg_data_amp=2,
-                               bg_data_pha=2)
+                               bg_data_amp=3,
+                               bg_data_pha=3)
     with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
         # background correction with same input image will result
         # in a flat QPImage.
@@ -72,7 +72,7 @@ def test_bg_correction_index_bad():
     _qpi, path, dout = setup_test_data(num=2)
 
     try:
-        drymass.convert(path_in=path, dir_out=dout, bg_data_amp=-1)
+        drymass.convert(path_in=path, dir_out=dout, bg_data_amp=0)
     except ValueError:
         pass
     else:
@@ -86,14 +86,14 @@ def test_bg_correction_index_bad():
         assert False
 
     try:
-        drymass.convert(path_in=path, dir_out=dout, bg_data_amp=2)
+        drymass.convert(path_in=path, dir_out=dout, bg_data_amp=3)
     except ValueError:
         pass
     else:
         assert False
 
     try:
-        drymass.convert(path_in=path, dir_out=dout, bg_data_pha=2)
+        drymass.convert(path_in=path, dir_out=dout, bg_data_pha=3)
     except ValueError:
         pass
     else:
@@ -133,14 +133,14 @@ def test_bg_correction_invalid():
 def test_bg_correction_none_bad():
     _qpi, path, dout = setup_test_data(num=2)
 
-    path_out = drymass.convert(path_in=path, dir_out=dout, bg_data_amp=0)
+    path_out = drymass.convert(path_in=path, dir_out=dout, bg_data_amp=1)
     with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
         # background correction with same input image will result
         # in a flat QPImage.
         assert not np.all(qps[0].pha == 0)
         assert np.all(qps[0].amp == 1)
 
-    path_out = drymass.convert(path_in=path, dir_out=dout, bg_data_pha=0)
+    path_out = drymass.convert(path_in=path, dir_out=dout, bg_data_pha=1)
     with qpimage.QPSeries(h5file=path_out, h5mode="r") as qps:
         # background correction with same input image will result
         # in a flat QPImage.
@@ -206,13 +206,13 @@ def test_reuse():
 
     _po, changed1 = drymass.convert(path_in=path,
                                     dir_out=dout,
-                                    bg_data_amp=0,
-                                    bg_data_pha=0,
+                                    bg_data_amp=1,
+                                    bg_data_pha=1,
                                     ret_changed=True)
     _po, changed2 = drymass.convert(path_in=path,
                                     dir_out=dout,
-                                    bg_data_amp=0,
-                                    bg_data_pha=0,
+                                    bg_data_amp=1,
+                                    bg_data_pha=1,
                                     ret_changed=True)
     assert changed1
     assert not changed2

@@ -76,22 +76,64 @@ def test_exclude_roi():
         assert len(qps) == 2
 
     # remove first image
-    cfg.set_value(section="roi", key="ignore data", value="0.0")
+    cfg.set_value(section="roi", key="ignore data", value="1.1")
     h5data = cli_extract_roi(path=path_in, ret_data=True)
     with qpimage.QPSeries(h5file=h5data) as qps:
         assert len(qps) == 1
 
     # remove second image
-    cfg.set_value(section="roi", key="ignore data", value="1")
+    cfg.set_value(section="roi", key="ignore data", value="2")
     h5data = cli_extract_roi(path=path_in, ret_data=True)
     with qpimage.QPSeries(h5file=h5data) as qps:
         assert len(qps) == 1
 
     # remove all
-    cfg.set_value(section="roi", key="ignore data", value=["0", "1"])
+    cfg.set_value(section="roi", key="ignore data", value=["1", "2"])
     h5data = cli_extract_roi(path=path_in, ret_data=True)
     with qpimage.QPSeries(h5file=h5data) as qps:
         assert len(qps) == 0
+
+    try:
+        path_in.unlink()
+    except OSError:
+        pass
+    shutil.rmtree(path_out, ignore_errors=True)
+
+
+def test_exclude_roi_bad():
+    _, path_in, path_out = setup_test_data(num=2)
+    cli_extract_roi(path=path_in)
+    cfg = config.ConfigFile(path_out)
+    h5data = cli_extract_roi(path=path_in, ret_data=True)
+    with qpimage.QPSeries(h5file=h5data) as qps:
+        assert len(qps) == 2
+
+    # bad image
+    cfg.set_value(section="roi", key="ignore data", value="3")
+    try:
+        cli_extract_roi(path=path_in, ret_data=True)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    # bad roi
+    cfg.set_value(section="roi", key="ignore data", value="1.2")
+    try:
+        cli_extract_roi(path=path_in, ret_data=True)
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    # bad image and roi
+    cfg.set_value(section="roi", key="ignore data", value="4.2")
+    try:
+        cli_extract_roi(path=path_in, ret_data=True)
+    except ValueError:
+        pass
+    else:
+        assert False
 
     try:
         path_in.unlink()

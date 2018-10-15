@@ -4,6 +4,7 @@
  - feat: allow to exclude individual ROIs in drymass.cfg (#5)
  - enh: use compression for TIFF output
  - enh: use new class for handling ROIs internally (#9)
+ - enh: start counting of ROIs and sensor images at 1 instead of 0 (#11)
  - ref: handle 'None' values directly in config.ConfigFile
 0.5.0
  - feat: automatically extract meta data from QPImage/QPSeries data

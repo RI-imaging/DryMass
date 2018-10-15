@@ -26,7 +26,7 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
         - `None`:
           No background data
         - `int`:
-          Image index (starting at 0) of the input data set
+          Image index (starting at 1) of the input data set
           to use as background data
         - `str`, `pathlib.Path`:
           Path to a separate file that is used for background
@@ -92,7 +92,7 @@ def get_background(bg_data, dataset, which="phase"):
         Represents the background data:
 
         - None: no background data
-        - int: image with this index in `dataset` is used
+        - int: image with index `bg_data - 1` in `dataset` is used
           for background correction
         - str, pathlib.Path: An external file will be used for background
           correction.
@@ -112,14 +112,14 @@ def get_background(bg_data, dataset, which="phase"):
     if bg_data is None:
         bg = np.ones(dataset.get_qpimage(0).shape)
     elif isinstance(bg_data, numbers.Integral):
-        if bg_data < 0 or bg_data > (len(dataset)-1):
-            msg = "Background {} index must be between 0 and {}!"
-            raise ValueError(msg.format(which, len(dataset)-1))
-        # indexing in configuration file starts at 0
+        if bg_data < 1 or bg_data > len(dataset):
+            msg = "Background {} index must be between 1 and {}!"
+            raise ValueError(msg.format(which, len(dataset)))
+        # indexing in configuration file starts at 1
         if which == "phase":
-            bg = dataset.get_qpimage(bg_data).pha
+            bg = dataset.get_qpimage(bg_data - 1).pha
         else:
-            bg = dataset.get_qpimage(bg_data).amp
+            bg = dataset.get_qpimage(bg_data - 1).amp
     elif isinstance(bg_data, (str, pathlib.Path)):
         bgpath = pathlib.Path(bg_data)
         dsbg = qpformat.load_data(path=bgpath,

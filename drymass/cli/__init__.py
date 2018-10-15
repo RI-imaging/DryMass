@@ -1,5 +1,4 @@
 import io
-import numbers
 from os import fspath
 import pathlib
 import sys
@@ -225,7 +224,9 @@ def cli_extract_roi(path=None, ret_data=False):
         with qpimage.QPSeries(h5file=h5series, h5mode="r") as qps, \
                 tifffile.TiffWriter(fspath(tifout), imagej=True) as tf:
             for ii in range(len(qps)):
-                rois = rmgr.get_from_image_index(ii)
+                # new indexing convention in drymass 0.6.0
+                image_index = ii + 1
+                rois = rmgr.get_from_image_index(image_index)
                 imio = io.BytesIO()
                 plot.plot_qpi_phase(qps[ii],
                                     rois=rois,
@@ -242,10 +243,7 @@ def cli_extract_roi(path=None, ret_data=False):
 
 def parse_bg_value(bg, reldir):
     """Determine the background to use from the configuration key"""
-    if isinstance(bg, numbers.Integral):
-        # indexing starts at 1
-        bg -= 1
-    elif isinstance(bg, str):
+    if isinstance(bg, str):
         # can be a file name relative to the input directory
         # or an absolute path.
         reldir = pathlib.Path(reldir)
