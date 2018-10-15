@@ -10,17 +10,17 @@ def test_basic():
     rmg = roi.ROIManager(identifier="test")
     assert len(rmg) == 0
 
-    roislice = slice(4, 10), slice(5, 10)
+    roi_slice = slice(4, 10), slice(5, 10)
     image_index = 2
     roi_index = 5
     identifier = "test_2_5"
-    rmg.add(roislice, image_index, roi_index, identifier)
+    rmg.add(roi_slice, image_index, roi_index, identifier)
     assert len(rmg) == 1
 
     regions = rmg.get_from_image_index(image_index)
     reg = regions[0]
-    assert reg[0] == identifier
-    assert reg[1] == roislice
+    assert reg.identifier == identifier
+    assert reg.roi_slice == roi_slice
 
 
 def test_save_load():

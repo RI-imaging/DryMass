@@ -155,16 +155,13 @@ def plot_qpi_phase(qpi, rois=None, path=None, labels_excluded=[]):
                px_um=px_um)
     if rois:
         for roi in rois:
-            slnum = roi[0].split(":")[-1]
-            imid, roid = slnum.split(".")
-            slx, sly = roi[1]
+            slx, sly = roi.roi_slice
             x0 = slx.start * px_um
             x1 = slx.stop * px_um
             y0 = sly.start * px_um
             y1 = sly.stop * px_um
 
-            if extractroi.is_ignored_roi(imid=imid, roid=roid,
-                                         ignore_data=labels_excluded):
+            if extractroi.is_ignored_roi(roi=roi, ignore_data=labels_excluded):
                 color = "r"
                 ax1.text(y1, x1, "excluded",
                          horizontalalignment="right",
@@ -179,7 +176,7 @@ def plot_qpi_phase(qpi, rois=None, path=None, labels_excluded=[]):
                                         edgecolor=color,
                                         )
             ax1.add_patch(box)
-            ax1.text(y0, x0, roi[0],
+            ax1.text(y0, x0, roi.identifier,
                      horizontalalignment="left",
                      verticalalignment="bottom",
                      color=color)

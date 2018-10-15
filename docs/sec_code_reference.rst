@@ -99,7 +99,7 @@ The :class:`ROIManager` class is used to manage and save/load ROI positions.
     
     In [1]: rmg = ROIManager(identifier="example")
     
-    In [2]: rmg.add(roislice=(slice(10, 100), slice(50, 140)),
+    In [2]: rmg.add(roi_slice=(slice(10, 100), slice(50, 140)),
        ...:         image_index=2,
        ...:         roi_index=0,
        ...:         identifier="example_subroi_2.0")

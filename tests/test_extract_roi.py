@@ -151,6 +151,7 @@ def test_no_search():
                                    size_m=2*radius*pxsize,
                                    search_enabled=False,
                                    ret_roimgr=True,)
+
     assert rm1.rois == rm2.rois
     assert rm1.identifier == identifier
     assert rm2.identifier == identifier

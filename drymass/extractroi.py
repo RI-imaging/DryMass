@@ -86,7 +86,7 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                     exclude_overlap=exclude_overlap)
                 for jj, sl in enumerate(slices):
                     slident = "{}.{}".format(qpi["identifier"], jj)
-                    rmgr.add(roislice=sl, image_index=ii,
+                    rmgr.add(roi_slice=sl, image_index=ii,
                              roi_index=jj, identifier=slident)
             rmgr.save(slout)
         else:
@@ -101,12 +101,12 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
             qpi = qps[ii]
             # available ROIs
             rois = rmgr.get_from_image_index(ii)
-            for jj, (rid, sl) in enumerate(rois):
-                if is_ignored_roi(imid=ii, roid=jj, ignore_data=ignore_data):
+            for jj, roi in enumerate(rois):
+                if is_ignored_roi(roi=roi, ignore_data=ignore_data):
                     # ignore data
                     continue
                 # Extract the ROI
-                qpisl = qpi.__getitem__(sl)
+                qpisl = qpi.__getitem__(roi.roi_slice)
                 # amplitude bg correction
                 _bg_correct(qpi=qpisl,
                             which_data="amplitude",
@@ -120,14 +120,14 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                             bg_mask_thresh=bg_pha_bin,
                             bg_mask_sphere_kw=bg_pha_mask_sphere_kw)
                 slident = "{}.{}".format(qpi["identifier"], jj)
-                if rid != slident:
+                if roi.identifier != slident:
                     # This might happen if the user does not know the
                     # image identifier and builds his own `FILE_SLICES`.
                     msg = "Mismatch of slice and QPImage identifiers: " \
-                          + "{} vs {}!".format(rid, slident)
+                          + "{} vs {}!".format(roi.identifier, slident)
                     warnings.warn(msg)
                     # override `slident` with user identifier
-                    slident = rid
+                    slident = roi.identifier
                 qps_roi.add_qpimage(qpisl, identifier=slident)
 
         if len(qps_roi):
@@ -332,20 +332,21 @@ def image2mask(image, value_or_method):
         return image < value_or_method
 
 
-def is_ignored_roi(imid, roid, ignore_data):
+def is_ignored_roi(roi, ignore_data):
     """Determine whether a specific ROI should be ignored
 
     Parameters
     ----------
-    imid: int or str
-        Integer identifying the image index of the series
-    roid: int or str
-        Integer identifying the ROI in the image
+    roi: drymass.roi.ROI
+        ROI instance
     ignore_data: list of str
-        List of strings of the form "imid" or "imid.roid" that
-        identify ROIs that should be ignored. For instance
+        List of strings of the form "image_index" or
+        "image_index.roi_index" that identify ROIs that
+        should be ignored. For instance
         ["1.0", "2.1", "3"].
     """
+    imid = roi.image_index
+    roid = roi.roi_index
     if (ignore_data
         and (str(imid) in ignore_data
              or "{}.{}".format(imid, roid) in ignore_data)):

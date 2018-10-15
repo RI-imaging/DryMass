@@ -1,8 +1,9 @@
-0.5.1
+0.6.0
  - fix: error when removing ROIs that overlap with two ROIs in the
    background image
  - feat: allow to exclude individual ROIs in drymass.cfg (#5)
  - enh: use compression for TIFF output
+ - enh: use new class for handling ROIs internally (#9)
  - ref: handle 'None' values directly in config.ConfigFile
 0.5.0
  - feat: automatically extract meta data from QPImage/QPSeries data
