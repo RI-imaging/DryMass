@@ -112,9 +112,9 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                 if not rmgr.get_from_image_index(int(item)):
                     bad_ignore.append(item)
         if bad_ignore:
-            msg = "The following ROIs are not present but are set in " \
+            msg = "The following ROIs/images are not present but are set in " \
                   + "`ignore_data`: {}".format(", ".join(bad_ignore))
-            raise ValueError
+            raise ValueError(msg)
 
     # Extract ROI images
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps, \
