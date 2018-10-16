@@ -96,9 +96,11 @@ class ConfigFile(object):
             type_func = definitions.config[section][key][1]
             try:
                 type_func(value)
-            except BaseException:
-                raise ValueError("Wrong dtype: {}: {}={}".format(section,
-                                                                 key, value))
+            except BaseException as e:
+                msg = "Failed to parse: '[{}]: {}={}'".format(section, key,
+                                                              value)
+                e.args = ("{}; {}".format(msg, ", ".join(e.args)),)
+                raise
             ret_value = type_func(value)
         return ret_value
 

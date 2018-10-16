@@ -86,6 +86,10 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
         # phase images are zero
         # no regions can be found
         return []
+    if size_var >= 1 or size_var <= 0:
+        msg = "Parameter 'size_var' must be in interval (0, 1), " \
+              + "got '{}'!".format(size_var)
+        raise ValueError(msg)
 
     # apply local threshold
     block_size = ((3*size) // 2) * 2 + 1  # odd block size

@@ -2,6 +2,7 @@
  - fix: error when removing ROIs that overlap with two ROIs in the
    background image
  - feat: allow to exclude individual ROIs in drymass.cfg (#5)
+ - enh: improve error message verbosity
  - enh: use compression for TIFF output
  - enh: use new class for handling ROIs internally (#9)
  - enh: start counting of ROIs and sensor images at 1 instead of 0 (#11)
