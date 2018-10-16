@@ -16,7 +16,7 @@ Prerequisites
 -------------
 For this tutorial, you need:
 
-- Python 3.6 or above and DryMass version 0.1.4 or above (see :ref:`section_install`)
+- Python 3.6 or above and DryMass version 0.6.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
 - Experimental data set: `DHM_HL60_cells.zip <https://github.com/RI-imaging/QPI-data/raw/master/DHM_HL60_cells.zip>`_
 
@@ -64,16 +64,16 @@ following configuration keys in *drymass.cfg*:
 
 With the new configuration, we run ``dm_extract_roi DHM_HL60_cells.zip`` again.
 Now all cells are detected. However, we want to exclude a few due to artifacts
-or shape issues. To achieve that, we disable the automatic search for ROIs
-in *drymass.cfg*
+or shape issues. To achieve that, we tell DryMass to ignore the corresponding
+ROIs in *drymass.cfg*
 
 .. code-block:: none
 
   [roi]
-  enabled = False           # use existing roi_slices.txt
+  ignore data = 8.4, 15.2, 18.2, 18.3, 35.2
 
-and remove the undesired ROIs from *roi_slices.txt*, which are
-*7.3, 14.1, 17.1, 17.2* and *34.1*. There should now be a total of 87 ROIs.
+After executing ``dm_extract_roi`` again, these ROIs are labeled red in
+*sensor_roi_images.tif*. There should now be a total of 87 ROIs.
 
 
 Set 2nd order polynomial background correction
@@ -116,7 +116,7 @@ this step:
     Since we have fixed the ROIs, the identifiers do not match anymore,
     but the enumeration is still correct.
 
-Let's have a look at the visualization of ROI 23.0 in
+Let's have a look at the visualization of ROI 24.1 in
 *sphere_edge_projection_images.tif*. 
 
 .. figure:: t02_edge_projection.jpg
@@ -194,7 +194,7 @@ with a modified ``[sphere]`` section (note that this may take a while).
 
 
 To verify that the full-phase-image-based approaches indeed yield lower
-residuals than the edge-detection approach, let's have a look at ROI 23.0
+residuals than the edge-detection approach, let's have a look at ROI 24.1
 of *sphere_image_rytov-sc_images.tif*.
 
 .. figure:: t02_image_rytov-sc.jpg

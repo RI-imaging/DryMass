@@ -1,5 +1,4 @@
 from drymass import cli
-from drymass.extractroi import FILE_SLICES
 import imageio
 import matplotlib.pylab as plt
 import numpy as np
@@ -33,23 +32,8 @@ cfg.set_value("roi", "size variation", .2)
 cfg.set_value("roi", "exclude overlap px", 100)
 cli.cli_extract_roi(path=path_in)
 
-cfg.set_value("roi", "enabled", False)
 # remove ROI slices
-psl = path_out / FILE_SLICES
-pslo = psl.with_name(psl.name + "_original")
-if not pslo.exists():
-    rois = psl.read_text().split("\n")
-    newrois = []
-    ignore = ["7.3", "14.1", "17.1", "17.2", "34.1"]
-    for line in rois:
-        if line.strip():
-            if line.split("\t")[0].split(":")[1] not in ignore:
-                newrois.append(line)
-    assert len(newrois) == 87
-    # rename original ROI file
-    psl.rename(pslo)
-    # create new ROI file
-    psl.write_text("\n".join(newrois))
+cfg.set_value("roi", "ignore data", ["8.4", "15.2", "18.2", "18.3", "35.2"])
 
 # bg correction
 cfg.set_value("bg", "phase border px", 30)
