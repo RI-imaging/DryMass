@@ -1,3 +1,6 @@
+0.6.2
+ - fix: regression in 0.6.0 ImageJ cannot open compressed hyperstack data;
+   disabling compression for now
 0.6.1
  - fix: MetaDataMissingError for some data types (qpformat 0.4.3)
 0.6.0
