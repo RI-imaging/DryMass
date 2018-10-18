@@ -20,6 +20,21 @@ and dry mass of pure phase objects. Features include
   such as liquid droplets, microgel beads, or cells. 
 
 
+What is quantitative phase imaging?
+-----------------------------------
+Quantitative phase imaging (QPI) is a 2D imaging technique that quantifies
+the phase retardation of a wave traveling through a specimen.
+For instance, digital holographic microscopy (DHM) :cite:`Kemper2007a` can be
+used to record the quantitative phase image of biological cells, yielding the
+optical density from which the :ref:`dry mass <section_theory_dry_mass>` or
+the refractive index (RI) can be computed. Another example is electron holography
+:cite:`Lehmann2002` which can be used to visualize
+`p-n junctions <https://en.wikipedia.org/wiki/P%E2%80%93n_junction>`_
+due to the different electronic potentials in the doped semiconductors. 
+DryMass was designed for the analysis of single cells (typical units for distance [µm]
+and wavelength [nm]), but the concepts used apply to both methods.
+
+
 What are typical use cases of DryMass?
 --------------------------------------
 The focus of DryMass is the analysis of large
@@ -45,21 +60,6 @@ data sets (e.g. > 10 cells). Here are a few examples:
   addition, the cells are spherical (e.g. suspended cells), then
   DryMass can also compute accurate values for mean refractive index
   and cell size.
-
-
-What is quantitative phase imaging?
------------------------------------
-Quantitative phase imaging (QPI) is a 2D imaging technique that quantifies
-the phase retardation of a wave traveling through a specimen.
-For instance, digital holographic microscopy (DHM) :cite:`Kemper2007a` can be
-used to record the quantitative phase image of biological cells, yielding the
-optical density from which the :ref:`dry mass <section_theory_dry_mass>` or
-the refractive index (RI) can be computed. Another example is electron holography
-:cite:`Lehmann2002` which can be used to visualize
-`p-n junctions <https://en.wikipedia.org/wiki/P%E2%80%93n_junction>`_
-due to the different electronic potentials in the doped semiconductors. 
-DryMass was designed for the analysis of single cells (typical units for distance [µm]
-and wavelength [nm]), but the concepts used apply to both methods.
 
 
 How should I cite DryMass?
