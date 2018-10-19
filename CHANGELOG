@@ -1,3 +1,6 @@
+0.7.0
+ - feat: support recursive analysis with the "--recursive" command-line
+   argument (#15)
 0.6.2
  - fix: regression in 0.6.0 ImageJ cannot open compressed hyperstack data;
    disabling compression for now (see #14) 

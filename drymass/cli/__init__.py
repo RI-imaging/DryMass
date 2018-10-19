@@ -22,12 +22,23 @@ FILE_SENSOR_WITH_ROI_IMAGE = "sensor_roi_images.tif"
 FILE_SPHERE_ANALYSIS_IMAGE = "sphere_{}_{}_images.tif"
 
 
-def cli_analyze_sphere(path=None, ret_data=False):
+def cli_analyze_sphere(path=None, ret_data=False, verbose=1):
     """Perform sphere analysis"""
+    description = "Determine integral refractive index, radius, and " \
+                  + "related parameters by inferring spherical symmetry " \
+                  + "for each phase object found."
     path_in, path_out = dialog.main(path=path,
                                     req_meta=["medium index",
                                               "pixel size um",
-                                              "wavelength nm"])
+                                              "wavelength nm"],
+                                    description=description)
+    if isinstance(path_in, list):
+        # recursive analysis
+        for ii, pi in enumerate(path_in):
+            print("Analyzing dataset {}/{}.".format(ii+1, len(path_in)))
+            cli_analyze_sphere(path=pi, verbose=0)
+        # nothing else to do
+        return
     cfg = config.ConfigFile(path_out)
     h5roi = cli_extract_roi(path=path_in, ret_data=True)
     print("Performing sphere analysis... ", end="", flush=True)
@@ -96,9 +107,20 @@ def cli_analyze_sphere(path=None, ret_data=False):
 
 def cli_convert(path=None, ret_data=False):
     """Convert input data to QPSeries data"""
+    description = "Convert raw quantitative phase microscopy data to " \
+                  + "the qpimage file format for further analysis in " \
+                  + "DryMass."
     path_in, path_out = dialog.main(path=path,
                                     req_meta=["pixel size um",
-                                              "wavelength nm"])
+                                              "wavelength nm"],
+                                    description=description)
+    if isinstance(path_in, list):
+        # recursive analysis
+        for ii, pi in enumerate(path_in):
+            print("Analyzing dataset {}/{}.".format(ii+1, len(path_in)))
+            cli_convert(path=pi)
+        # nothing else to do
+        return
     cfg = config.ConfigFile(path_out)
     print("Converting input data... ", end="", flush=True)
     meta_data = {"pixel size": cfg["meta"]["pixel size um"] * 1e-6,
@@ -139,7 +161,16 @@ def cli_convert(path=None, ret_data=False):
 
 def cli_extract_roi(path=None, ret_data=False):
     """Extract regions of interest"""
-    path_in, path_out = dialog.main(path=path)
+    description = "Extract reqions of interest in quantitative phase" \
+                  + "microscopy data for further analysis in DryMass."
+    path_in, path_out = dialog.main(path=path, description=description)
+    if isinstance(path_in, list):
+        # recursive analysis
+        for ii, pi in enumerate(path_in):
+            print("Analyzing dataset {}/{}.".format(ii+1, len(path_in)))
+            cli_extract_roi(path=pi)
+        # nothing else to do
+        return
     # cli_convert will ask for the required meta data
     h5series = cli_convert(path=path_in, ret_data=True)
     # get the configuration after cli_convert was run
