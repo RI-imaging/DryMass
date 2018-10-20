@@ -128,7 +128,7 @@ def recursive_search(path):
     path = pathlib.Path(path).resolve()
     path_in = []
     # Get all candidates
-    cands1 = list(path.rglob("*"))
+    cands1 = list(path.rglob("*")) + [path]
     # Exclude all directories with the suffix _dm that contain drymass.cfg
     cands2 = []
     for c1 in cands1:

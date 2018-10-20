@@ -6,6 +6,7 @@ import numpy as np
 import qpimage
 
 from drymass.cli import config, dialog
+import qpformat
 
 
 def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
@@ -116,6 +117,37 @@ def test_complex_folder_with_unused_qpseries():
     ps = dialog.recursive_search(path)
     for ii, pi in enumerate(ps):
         assert pi == paths[ii]
+    shutil.rmtree(path, ignore_errors=True)
+
+
+def test_recursive_root_include1():
+    qpi, path_in, path_out = setup_test_data(num=2)
+    ps = dialog.recursive_search(path_in)
+    assert len(ps) == 1
+    assert ps[0] == path_in
+    try:
+        path_in.unlink()
+    except OSError:
+        pass
+    shutil.rmtree(path_out, ignore_errors=True)
+
+
+def test_recursive_root_include2():
+    path = tempfile.mkdtemp(prefix="drymass_test_cli_recurse2_")
+    path = pathlib.Path(path)
+    # this file will be ignored
+    qpi, ignored_path, _ = setup_test_data(num=1, path_in=path / "test.h5")
+
+    for ii in range(4):
+        qpi.copy(h5file=path / "test_{}.h5".format(ii))
+
+    ps = dialog.recursive_search(path)
+    assert len(ps) == 1
+    assert ignored_path not in ps
+
+    ds = qpformat.load_data(path=path)
+    assert len(ds) == 4
+
     shutil.rmtree(path, ignore_errors=True)
 
 
