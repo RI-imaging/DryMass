@@ -134,6 +134,7 @@ def test_write_complete():
     cfg.path.write_text("[bg]\nenabled = True\n")
     # This triggers a completion of the configuration section [bg]
     assert cfg["bg"]["phase profile"] == "tilt"
+    shutil.rmtree(path, ignore_errors=True)
 
 
 if __name__ == "__main__":

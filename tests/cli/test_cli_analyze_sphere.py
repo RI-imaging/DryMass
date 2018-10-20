@@ -23,7 +23,7 @@ def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
                           meta_data={"pixel size": pxsize,
                                      "medium index": medium_index,
                                      "wavelength": wavelength})
-    path_in = tempfile.mktemp(suffix=".h5", prefix="drymass_test_cli_convert")
+    path_in = tempfile.mktemp(suffix=".h5", prefix="drymass_test_cli_sphere")
     path_in = pathlib.Path(path_in)
     with qpimage.QPSeries(h5file=path_in, h5mode="w", identifier="tt") as qps:
         for ii in range(num):

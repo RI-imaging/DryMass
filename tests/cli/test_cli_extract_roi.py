@@ -24,7 +24,7 @@ def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
                           meta_data={"pixel size": pxsize,
                                      "medium index": medium_index,
                                      "wavelength": wavelength})
-    path_in = tempfile.mktemp(suffix=".h5", prefix="drymass_test_cli_convert")
+    path_in = tempfile.mktemp(suffix=".h5", prefix="drymass_test_cli_roi")
     path_in = pathlib.Path(path_in)
     with qpimage.QPSeries(h5file=path_in, h5mode="w", identifier="tt") as qps:
         for ii in range(num):
@@ -169,13 +169,19 @@ def test_reuse():
 
 @pytest.mark.filterwarnings('ignore::RuntimeWarning')
 def test_no_roi_found():
-    _, path_in, _ = setup_test_data(radius_px=0)
+    _, path_in, path_out = setup_test_data(radius_px=0)
 
     with pytest.raises(SystemExit) as pytest_wrapped_e:
         # catches sys.exit() calls
         cli_extract_roi(path=path_in, ret_data=True)
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
+
+    try:
+        path_in.unlink()
+    except OSError:
+        pass
+    shutil.rmtree(path_out, ignore_errors=True)
 
 
 if __name__ == "__main__":
