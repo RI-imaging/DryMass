@@ -128,7 +128,7 @@ def recursive_search(path):
     path = pathlib.Path(path).resolve()
     path_in = []
     # Get all candidates
-    cands1 = path.rglob("*")
+    cands1 = list(path.rglob("*"))
     # Exclude all directories with the suffix _dm that contain drymass.cfg
     cands2 = []
     for c1 in cands1:
@@ -147,7 +147,8 @@ def recursive_search(path):
                 ds = qpformat.load_data(path=c2, fmt="SeriesFolder")
             except (NotImplementedError,
                     qpformat.file_formats.UnknownFileFormatError,
-                    qpformat.file_formats.MultipleFormatsNotSupportedError):
+                    qpformat.file_formats.MultipleFormatsNotSupportedError,
+                    qpformat.file_formats.WrongFileFormatError):
                 pass
             else:
                 path_in.append(c2)
