@@ -21,7 +21,7 @@ if version.count("dev") or sys.argv.count("test"):
                     "qpsphere"]
 else:
     release_deps = ["qpformat==0.6.2",
-                    "qpimage==0.4.3",
+                    "qpimage==0.4.4",
                     "qpsphere==0.4.0",
                     ]
 

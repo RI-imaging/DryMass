@@ -1,5 +1,5 @@
-DryMass
-========
+|DryMass|
+=========
 
 |PyPI Version| |Tests Status Linux| |Tests Status Win| |Coverage Status| |Docs Status|
 
@@ -31,6 +31,7 @@ Testing
     python setup.py test
     
 
+.. |DryMass| image:: https://raw.github.com/RI-imaging/DryMass/master/docs/logo/drymass.png
 .. |PyPI Version| image:: http://img.shields.io/pypi/v/DryMass.svg
    :target: https://pypi.python.org/pypi/DryMass
 .. |Tests Status Linux| image:: http://img.shields.io/travis/RI-imaging/DryMass.svg?label=tests_linux

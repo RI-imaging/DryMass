@@ -22,7 +22,7 @@ FILE_SENSOR_WITH_ROI_IMAGE = "sensor_roi_images.tif"
 FILE_SPHERE_ANALYSIS_IMAGE = "sphere_{}_{}_images.tif"
 
 
-def cli_analyze_sphere(path=None, ret_data=False, verbose=1):
+def cli_analyze_sphere(path=None, ret_data=False):
     """Perform sphere analysis"""
     description = "Determine integral refractive index, radius, and " \
                   + "related parameters by inferring spherical symmetry " \
