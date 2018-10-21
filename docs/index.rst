@@ -23,6 +23,10 @@ Documentation
    sec_tutorials
    sec_examples
    sec_code_reference
+
+.. toctree::
+   :maxdepth: 1
+
    sec_changelog
    zsec_bib
 
