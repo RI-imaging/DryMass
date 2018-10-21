@@ -1,7 +1,5 @@
 .. _index:
 
-|
-
 .. image:: logo/drymass.png
 
 |
