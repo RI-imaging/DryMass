@@ -1,15 +1,21 @@
 .. _index:
 
+|
+
 .. image:: logo/drymass.png
 
+|
 
 DryMass is a user-friendly quantitative phase imaging
 analysis software.
 This is the documentation of DryMass version |release|.
 
+
+Documentation
+=============
+
 .. toctree::
    :maxdepth: 4
-   :caption: Contents:
 
    sec_introduction
    sec_theory_notes
