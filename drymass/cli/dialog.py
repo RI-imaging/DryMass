@@ -73,19 +73,29 @@ def main(path=None, req_meta=[], description="DryMass analysis.",
         # perform recursive analysis
         # path_in is now a list
         print("Recursing into directory tree... ", end="", flush=True)
-        path_in = recursive_search(path=path_in)
-        print("Done.")
-        if not path_in:
-            msg = "No supported data found in '{}'!".format(path_in)
+        path_list = recursive_search(path=path_in)
+        if not path_list:
+            msg = "Recursive search did not find any series data in " \
+                  + "'{}'!".format(path_in)
             raise IOError(msg)
+        print("Done.")
         # path_out is set to None when recursive search is used
         path_out = None
-        for ii, pi in enumerate(path_in):
+        for ii, pi in enumerate(path_list):
             # request necessary metadata for each measurement
             # before the actual analysis is done.
-            print("Input {}/{}: {}".format(ii+1, len(path_in), pi))
+            print("Input {}/{}: {}".format(ii+1, len(path_list), pi))
             main(path=pi, req_meta=req_meta)
+        path_in = path_list
     else:
+        # verify data set
+        try:
+            qpformat.load_data(path_in)
+        except qpformat.BadFileFormatError as e:
+            msg = "For a recursive search, please pass the " \
+                  + "command line parameter '-r'."
+            e.args = ("; ".join(list(e.args) + [msg]),)
+            raise
         # perform regular analysis
         path_out = path_in.with_name(path_in.name + OUTPUT_SUFFIX)
         path_out.mkdir(exist_ok=True)
@@ -120,6 +130,10 @@ def parse(description="DryMass analysis."):
     # spaces in path names.
     jpath = " ".join(args.path)
     path_in = pathlib.Path(jpath).resolve()
+    if args.recursive and not path_in.is_dir():
+        msg = "Given path must be directory in recursive mode; " \
+              + "got '{}'!".format(path_in)
+        raise ValueError(msg)
     return path_in, args.recursive
 
 
@@ -145,13 +159,11 @@ def recursive_search(path):
         if c2.is_dir():
             try:
                 ds = qpformat.load_data(path=c2, fmt="SeriesFolder")
-            except (NotImplementedError,
-                    qpformat.file_formats.UnknownFileFormatError,
-                    qpformat.file_formats.MultipleFormatsNotSupportedError,
-                    qpformat.file_formats.WrongFileFormatError):
+            except (NotImplementedError, qpformat.BadFileFormatError):
                 pass
             else:
-                path_in.append(c2)
+                if len(ds) > 1:
+                    path_in.append(c2)
     if not path_in:
         # If we have found SeriesFolder measurements, then we probably do not
         # want to analyze any other files lying around, especially

@@ -4,7 +4,8 @@
 |PyPI Version| |Tests Status Linux| |Tests Status Win| |Coverage Status| |Docs Status|
 
 
-**DryMass** is a user-friendly quantitative phase imaging analysis software
+**DryMass** is a Python library and a command-line tool for manipulating
+and analyzing quantitative phase microscopy images of cell-sized objects.
 
 
 Documentation

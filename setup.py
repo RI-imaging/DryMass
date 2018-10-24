@@ -5,7 +5,7 @@ import sys
 
 author = u"Paul Müller"
 authors = [author]
-description = 'user-friendly quantitative phase imaging analysis'
+description = 'manipulation and analysis of phase microscopy data'
 name = 'drymass'
 year = "2017"
 
@@ -20,7 +20,7 @@ if version.count("dev") or sys.argv.count("test"):
                     "qpimage",
                     "qpsphere"]
 else:
-    release_deps = ["qpformat==0.6.2",
+    release_deps = ["qpformat==0.6.3",
                     "qpimage==0.4.4",
                     "qpsphere==0.4.0",
                     ]

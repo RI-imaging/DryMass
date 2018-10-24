@@ -36,7 +36,7 @@ def cli_analyze_sphere(path=None, ret_data=False):
         # recursive analysis
         for ii, pi in enumerate(path_in):
             print("Analyzing dataset {}/{}.".format(ii+1, len(path_in)))
-            cli_analyze_sphere(path=pi, verbose=0)
+            cli_analyze_sphere(path=pi)
         # nothing else to do
         return
     cfg = config.ConfigFile(path_out)
