@@ -126,7 +126,7 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
             if "time" in qpi:
                 qptime = qpi["time"]
             else:
-                qptime = 0
+                qptime = np.nan
             data = {
                 "identifier": qpi["identifier"],
                 "index": n,

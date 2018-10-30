@@ -1,9 +1,14 @@
-0.7.2
+0.7.4
+ - fix: if time is unknown, write "nan" instead of "0" to the output
+   statistics file
+0.7.3
  - fix: do not create "_dm" results directory for root directory in
    recursive analysis mode (#19)
  - docs:
    - add DryMass logo
    - update software description
+0.7.2
+ - skipped
 0.7.1
  - maintenance release
 0.7.0
