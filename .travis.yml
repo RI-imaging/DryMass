@@ -1,8 +1,8 @@
+notifications:
+  email: false
 language: python
 python:
 - '3.6'
-notifications:
-  email: false
 env:
   matrix:
   - TEST="PYTEST"
