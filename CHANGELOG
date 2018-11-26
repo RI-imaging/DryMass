@@ -4,6 +4,8 @@
    in the command-line interface (#20)
  - fix: if time is unknown, write "nan" instead of "0" to the output
    statistics file
+ - ref: explicitly use row-column coordinates in skimage's regionprops
+   (bump skimage version to 0.14.1)
 0.7.3
  - fix: do not create "_dm" results directory for root directory in
    recursive analysis mode (#19)

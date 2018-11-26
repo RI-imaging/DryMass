@@ -110,7 +110,7 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
     used_regions = []
     # Filter/draw regions
     ignored_regions = []
-    for region in regionprops(object_labels):
+    for region in regionprops(object_labels, coordinates='rc'):
         ds = size * size_var
         if (region.eccentricity > max_ecc or
             region.equivalent_diameter > size + ds or

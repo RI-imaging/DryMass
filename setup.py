@@ -40,7 +40,7 @@ setup(
     install_requires=["appdirs",
                       "matplotlib",
                       "numpy>=1.12.0",
-                      "scikit-image>=0.13.1",
+                      "scikit-image>=0.14.1",
                       ] + release_deps,
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
