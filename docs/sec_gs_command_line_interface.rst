@@ -164,10 +164,11 @@ Profile management with dm_profile
 ----------------------------------
 If some of the parameters (e.g. pixel size or wavelength) are not stored
 with the experimental data, DryMass will ask the user to enter these
-in the command prompt. This can be time-consuming, especially if a
+in the command prompt. This process can be time-consuming, especially if a
 recursive analysis is performed (see below). To simplify the analysis
 in such cases, DryMass has the command ``dm_profile``, which allows
-to store existing DryMass configuration files in a local library.
+to store existing DryMass configuration files in a local library and
+use them to analyze data.
 
 .. code-block:: bat
 
@@ -181,7 +182,7 @@ to store existing DryMass configuration files in a local library.
     dm_profile export "d:\\exported_profiles"
 
 To use a profile stored in the local library for an analysis, simply pass
-it with the command-line parameter ``--profile``:
+its name with the command-line parameter ``--profile``:
 
 .. code-block:: bat
 
