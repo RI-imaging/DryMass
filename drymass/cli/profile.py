@@ -58,11 +58,10 @@ def get_profile_path(name):
     returned. If `name` is a name in the local profile library,
     then the path to that profile is returned.
     """
-    pname = APP_DIR / "profile_{}.cfg".format(name)
-    if pname.exists():
-        path = pname
-    else:
-        path = pathlib.Path(name)
+    path = pathlib.Path(name)
+    if not path.exists():
+        # name from local library
+        path = APP_DIR / "profile_{}.cfg".format(name)
     return path
 
 
