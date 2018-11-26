@@ -22,7 +22,7 @@ FILE_SENSOR_WITH_ROI_IMAGE = "sensor_roi_images.tif"
 FILE_SPHERE_ANALYSIS_IMAGE = "sphere_{}_{}_images.tif"
 
 
-def cli_analyze_sphere(path=None, ret_data=False):
+def cli_analyze_sphere(path=None, ret_data=False, profile=None):
     """Perform sphere analysis"""
     description = "Determine integral refractive index, radius, and " \
                   + "related parameters by inferring spherical symmetry " \
@@ -31,7 +31,8 @@ def cli_analyze_sphere(path=None, ret_data=False):
                                     req_meta=["medium index",
                                               "pixel size um",
                                               "wavelength nm"],
-                                    description=description)
+                                    description=description,
+                                    profile=profile)
     if isinstance(path_in, list):
         # recursive analysis
         for ii, pi in enumerate(path_in):
@@ -105,7 +106,7 @@ def cli_analyze_sphere(path=None, ret_data=False):
         return h5sim
 
 
-def cli_convert(path=None, ret_data=False):
+def cli_convert(path=None, ret_data=False, profile=None):
     """Convert input data to QPSeries data"""
     description = "Convert raw quantitative phase microscopy data to " \
                   + "the qpimage file format for further analysis in " \
@@ -113,7 +114,8 @@ def cli_convert(path=None, ret_data=False):
     path_in, path_out = dialog.main(path=path,
                                     req_meta=["pixel size um",
                                               "wavelength nm"],
-                                    description=description)
+                                    description=description,
+                                    profile=profile)
     if isinstance(path_in, list):
         # recursive analysis
         for ii, pi in enumerate(path_in):
@@ -159,11 +161,13 @@ def cli_convert(path=None, ret_data=False):
         return h5series
 
 
-def cli_extract_roi(path=None, ret_data=False):
+def cli_extract_roi(path=None, ret_data=False, profile=None):
     """Extract regions of interest"""
     description = "Extract reqions of interest in quantitative phase" \
                   + "microscopy data for further analysis in DryMass."
-    path_in, path_out = dialog.main(path=path, description=description)
+    path_in, path_out = dialog.main(path=path,
+                                    description=description,
+                                    profile=profile)
     if isinstance(path_in, list):
         # recursive analysis
         for ii, pi in enumerate(path_in):

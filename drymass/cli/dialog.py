@@ -1,6 +1,7 @@
 import argparse
 import functools
 import pathlib
+import shutil
 
 import numpy as np
 import qpformat
@@ -9,6 +10,7 @@ from .._version import version
 
 from . import definitions
 from . import config
+from .profile import get_profile_path
 
 #: DryMass analysis output suffix (appended to data path)
 OUTPUT_SUFFIX = "_dm"
@@ -31,14 +33,14 @@ def input_setting(path, section, key):
 
 
 def main(path=None, req_meta=[], description="DryMass analysis.",
-         recursive=False):
+         profile=None, recursive=False):
     """Main user dialog with optional "meta" kwargs required
 
     Parameters
     ----------
     path: str, pathlib.Path, or None
-        Path to the measurement data. If set to `None`, the command
-        line will be parsed.
+        Path to the measurement data. If set to `None`, the
+        command-line will be parsed.
     req_meta: list of str
         Keyword arguments of the [meta] section in drymass.cfg that
         are required by the current task.
@@ -46,6 +48,11 @@ def main(path=None, req_meta=[], description="DryMass analysis.",
         Description of the current task. The description is
         displayed when the user executes a console_script
         entry-point with the `--help` argument.
+    profile: str, pathlib.Path, or None
+        A path to a 'drymass.cfg' file or a name of a profile in
+        the local library (see :mod:`nanite.cli.profile`). If set
+        to `None`, the default profile is used and the user is asked
+        for missing values.
     recursive: bool
         Perform recursive search in `path`. If `path` is None, then
         `recursive` must be False. Instead, the `recursive` argument
@@ -66,7 +73,7 @@ def main(path=None, req_meta=[], description="DryMass analysis.",
         if recursive:
             msg = "'recursive' must not be set when 'path' is 'None'!"
             raise ValueError(msg)
-        path_in, recursive = parse(description)
+        path_in, profile, recursive = parse(description)
     else:
         path_in = pathlib.Path(path).resolve()
     if recursive:
@@ -85,7 +92,7 @@ def main(path=None, req_meta=[], description="DryMass analysis.",
             # request necessary metadata for each measurement
             # before the actual analysis is done.
             print("Input {}/{}: {}".format(ii+1, len(path_list), pi))
-            main(path=pi, req_meta=req_meta)
+            main(path=pi, profile=profile, req_meta=req_meta)
         path_in = path_list
     else:
         # verify data set
@@ -103,6 +110,10 @@ def main(path=None, req_meta=[], description="DryMass analysis.",
             # print directories only if taken from command line
             print("Input:  {}".format(path_in))
             print("Output: {}".format(path_out))
+        if profile:
+            # use a user-specified profile
+            ppath = get_profile_path(profile)
+            shutil.copy(ppath, path_out / config.FILE_CONFIG)
         # get known meta data kwargs from dataset
         transfer_meta_data(path_in, path_out)
         # user input missing meta data keyword values
@@ -120,8 +131,15 @@ def parse(description="DryMass analysis."):
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('path', metavar='path', nargs='+', type=str,
                         help='Data path')
+    parser.add_argument("-p", "--profile",
+                        help="Use an existing profile for data analysis. "
+                             + "The profile can be either a path to a "
+                             + "'drymass.cfg' file or profile in the "
+                             + "local library (see `dm_profile` command).",
+                        default=None,
+                        type=str)
     parser.add_argument("-r", "--recursive",
-                        help="recursively search for measurement data "
+                        help="Recursively search for measurement data "
                              + "and run DryMass separately for each folder.",
                         default=False,
                         action='store_true')
@@ -134,7 +152,7 @@ def parse(description="DryMass analysis."):
         msg = "Given path must be directory in recursive mode; " \
               + "got '{}'!".format(path_in)
         raise ValueError(msg)
-    return path_in, args.recursive
+    return path_in, args.profile, args.recursive
 
 
 def recursive_search(path):
