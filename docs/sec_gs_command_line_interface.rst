@@ -1,7 +1,7 @@
 .. _section_command_line_interface:
 
 ======================
-Command line interface
+Command-line interface
 ======================
 
 .. toctree::
@@ -16,6 +16,12 @@ Please note that if DryMass is installed in a
 `virtual environment <https://docs.python.org/3/tutorial/venv.html>`_, then the
 DryMass CLI is only available if this environment is activated.
 
+
+
+.. _section_cli_basic:
+
+Basic commands
+==============
 
 .. _section_dm_convert:
 
@@ -147,3 +153,69 @@ scattering model defined in *drymass.cfg*):
 *sphere_METHOD_MODEL_statistics.txt*
   the analysis results, including refractive index, radius, and :ref:`relative and
   absolute dry mass <section_theory_dry_mass>` as a text file.
+
+
+.. _section_cli_advanced:
+
+Advanced usage
+==============
+
+Profile management with dm_profile
+----------------------------------
+If some of the parameters (e.g. pixel size or wavelength) are not stored
+with the experimental data, DryMass will ask the user to enter these
+in the command prompt. This can be time-consuming, especially if a
+recursive analysis is performed (see below). To simplify the analysis
+in such cases, DryMass has the command ``dm_profile``, which allows
+to store existing DryMass configuration files in a local library.
+
+.. code-block:: bat
+
+    # add a profile named "preset2018a"
+    dm_profile add preset2018a "d:\\data\path\to\experiment_dm\drymass.cfg"
+    # list all profiles within the local library (name and path will be shown)
+    dm_profile list
+    # remove the profile "preset2018a"
+    dm_profile remove preset2018a
+    # export all local profiles to a folder
+    dm_profile export "d:\\exported_profiles"
+
+To use a profile stored in the local library for an analysis, simply pass
+it with the command-line parameter ``--profile``:
+
+.. code-block:: bat
+
+  dm_extract_roi --profile preset2018a "d:\\data\path\to\another\experiment"
+
+Alternatively, a configuration file may also be specified without adding
+it to the local library:
+
+.. code-block:: bat
+
+  dm_extract_roi --profile "d:\\data\path\to\experiment_dm\drymass.cfg" "d:\\data\path\to\another\experiment"
+
+
+Recursive analysis
+------------------
+By default, the basic analysis commands only accept a single measurement
+as an argument. If there are several measurements, e.g.
+
+- ``d:\\data\path\to\experiments\1``
+- ``d:\\data\path\to\experiments\2``
+- ``d:\\data\path\to\experiments\3``
+- ``d:\\data\path\to\experiments\4``
+- ``d:\\data\path\to\experiments\5``
+- ...
+
+then the command-line parameter ``--recursive`` can be used:
+
+.. code-block:: bat
+
+  dm_extract_roi --recursive "d:\\data\path\to\experiments"
+
+The ``--recursive`` parameter can also be combined with the ``--profile``
+parameter, which allows for a largely automated analysis pipeline:
+
+.. code-block:: bat
+
+  dm_extract_roi --recursive --profile preset2018a "d:\\data\path\to\experiments"
