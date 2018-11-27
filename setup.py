@@ -38,7 +38,7 @@ setup(
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["appdirs",
-                      "matplotlib",
+                      "matplotlib>=2.2.0",
                       "numpy>=1.12.0",
                       "scikit-image>=0.14.1",
                       ] + release_deps,
