@@ -50,7 +50,7 @@ setup(
            "dm_analyze_sphere = drymass.cli:cli_analyze_sphere",
            "dm_convert = drymass.cli:cli_convert",
            "dm_extract_roi = drymass.cli:cli_extract_roi",
-           "dm_profile = drymass.cli.profile:cli_profile",
+           "dm_profile = drymass.cli:cli_profile",
             ],
        },
     keywords=["digital holographic microscopy",
