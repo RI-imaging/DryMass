@@ -1,3 +1,6 @@
+0.8.1
+ - fix: replaced hack for plotting units with better solution due
+   to incompatibility with tight_layout in matplotilb 3.0.2
 0.8.0
  - feat: implement profile management via `dm_profile` command and
    allow to select profiles via the "--profile" command-line argument

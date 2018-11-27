@@ -32,7 +32,7 @@ def add_cbar(ax, mapper, fmt="%.2f", units="",
     divider = make_axes_locatable(ax)
     cax = divider.append_axes(loc, size=size, pad=0.05)
     if units:
-        cax.text(1.2, 1.05, units, ha="left", va="bottom")
+        cax.set_title(units, ha="left", loc="center", fontsize=11)
     acbar = plt.colorbar(mapper, cax=cax, format=fmt, extend=extend)
     acbar.ax.yaxis.set_ticks_position(labelloc)
     acbar.ax.yaxis.set_label_position(labelloc)
