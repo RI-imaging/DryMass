@@ -177,7 +177,7 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
 
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dist_border=10, pad_border=40, exclude_overlap=30.,
-                ignore_data=None,
+                ignore_data=None, force_roi=None,
                 bg_amp_kw=BG_DEFAULT_KW, bg_amp_bin=np.nan,
                 bg_amp_mask_radial_clearance=np.nan,
                 bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=np.nan,
@@ -208,6 +208,11 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         Identifiers for sensor images or ROIs to be excluded from
         further analysis. These will be labeled in the output
         tiff file and not written to the output qpseries file.
+    force_roi: tuple
+        A tuple describing the slice of the ROI to be extracted
+        ((x1, x2), (y1, y2)). This option invalidates all other keyword
+        arguments. If set to `None` (default) an automated search for
+        ROIs is performed.
     bg_amp_kw: dict or None
         Amplitude image background correction keyword arguments
         (see :func:`qpimage.QPImage.compute_bg`), defaults
@@ -270,6 +275,7 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                                   pad_border,
                                   exclude_overlap,
                                   ignore_data,
+                                  force_roi,
                                   bg_amp_kw,
                                   bg_amp_bin,
                                   bg_amp_mask_radial_clearance,
@@ -293,6 +299,30 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         create = True
 
     if create:
+        if force_roi:
+            # Setting `search_enabled` to false will cause `_extract_roi`
+            # to use the existing slices in the file `slout`. The
+            # `ignore_data` parameter is still honored in `extract_roi`.
+            search_enabled = False
+            # sanity checks
+            assert len(force_roi) == 2
+            assert len(force_roi[0]) == 2
+            assert len(force_roi[1]) == 2
+            # manually generate the slices file
+            with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps:
+                rmgr = ROIManager(qps.identifier)
+                for ii in range(len(qps)):
+                    image_index = ii + 1
+                    qpi = qps[ii]
+                    sl = (slice(*force_roi[0]), slice(*force_roi[1]))
+                    roi_index = 1
+                    slident = "{}.{}".format(qpi["identifier"], roi_index)
+                    rmgr.add(roi_slice=sl,
+                             image_index=image_index,
+                             roi_index=roi_index,
+                             identifier=slident)
+                rmgr.save(slout)
+
         bg_amp_mask_sphere_kw = {
             "r0": size_m / 2,
             "edgekw": bg_sphere_edge_kw,

@@ -142,6 +142,23 @@ def test_exclude_roi_bad():
     shutil.rmtree(path_out, ignore_errors=True)
 
 
+def test_force_roi():
+    qpi, path_in, path_out = setup_test_data(num=2)
+    cfg = config.ConfigFile(path_out)
+    cfg.set_value(section="meta", key="pixel size um", value=1)
+    cfg.set_value(section="roi", key="force", value=((10, 160), (24, 178)))
+    h5data = cli_extract_roi(path=path_in, ret_data=True)
+    with qpimage.QPSeries(h5file=h5data) as qps:
+        assert qps[0].shape == (150, 154)
+        assert np.allclose(qpi.pha[10:160, 24:178], qps[0].pha)
+        assert np.all(qps[0].pha == qps[1].pha)
+    try:
+        path_in.unlink()
+    except OSError:
+        pass
+    shutil.rmtree(path_out, ignore_errors=True)
+
+
 def test_reuse():
     _, path_in, path_out = setup_test_data(num=2)
     cfg = config.ConfigFile(path_out)

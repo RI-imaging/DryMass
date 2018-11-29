@@ -78,6 +78,7 @@ def cli_extract_roi(path=None, ret_data=False, profile=None):
         pad_border=cfg["roi"]["pad border px"],
         exclude_overlap=cfg["roi"]["exclude overlap px"],
         ignore_data=cfg["roi"]["ignore data"],
+        force_roi=cfg["roi"]["force"],
         bg_amp_kw=bg_amp_kw,
         bg_amp_bin=cfg["bg"]["amplitude binary threshold"],
         bg_amp_mask_radial_clearance=cfg["bg"]["amplitude mask sphere"],
