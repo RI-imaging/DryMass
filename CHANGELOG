@@ -1,6 +1,7 @@
 0.8.2
  - enh: implement "roi" configuration option "force" (#8)
  - ref: replace default config values of `nan` with `None` (#13)
+ - ref: turn comments in definitions.py into real strings (#23)
 0.8.1
  - fix: replaced hack for plotting units with better solution due
    to incompatibility with tight_layout in matplotilb 3.0.2
