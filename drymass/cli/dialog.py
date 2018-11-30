@@ -3,7 +3,6 @@ import functools
 import pathlib
 import shutil
 
-import numpy as np
 import qpformat
 
 from .._version import version
@@ -27,7 +26,7 @@ def input_setting(path, section, key):
     cfg = config.ConfigFile(path)
     sec = cfg[section]
     description = definitions.config[section][key][2]
-    if key not in sec or np.isnan(sec[key]):
+    if key not in sec or sec[key] is None:
         val = input("Please enter '{}' ({}): ".format(key, description))
         cfg.set_value("meta", key, val)
 
@@ -50,7 +49,7 @@ def main(path=None, req_meta=[], description="DryMass analysis.",
         entry-point with the `--help` argument.
     profile: str, pathlib.Path, or None
         A path to a 'drymass.cfg' file or a name of a profile in
-        the local library (see :mod:`nanite.cli.profile`). If set
+        the local library (see :mod:`drymass.cli.profile`). If set
         to `None`, the default profile is used and the user is asked
         for missing values.
     recursive: bool
@@ -210,5 +209,5 @@ def transfer_meta_data(path_in, path_out):
     sec = cfg["meta"]
     for key in sorted(META_MAPPER):
         dskey, mult = META_MAPPER[key]
-        if (key not in sec or np.isnan(sec[key])) and dskey in ds.meta_data:
+        if (key not in sec or sec[key] is None) and dskey in ds.meta_data:
             cfg.set_value("meta", key, ds.meta_data[dskey] * mult)

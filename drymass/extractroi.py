@@ -26,19 +26,18 @@ FILE_ROI_DATA_TIF = "roi_data.tif"
 FILE_SLICES = "roi_slices.txt"
 
 
-def _bg_correct(qpi, which_data, bg_kw={}, bg_mask_thresh=np.nan,
+def _bg_correct(qpi, which_data, bg_kw={}, bg_mask_thresh=None,
                 bg_mask_sphere_kw={}):
     if bg_kw:
-        if isinstance(bg_mask_thresh, str) or not np.isnan(bg_mask_thresh):
+        if isinstance(bg_mask_thresh, str) or bg_mask_thresh is not None:
             if which_data == "phase":
                 image = qpi.pha
             else:
                 image = qpi.amp
-            mask1 = image2mask(image,
-                               value_or_method=bg_mask_thresh)
+            mask1 = image2mask(image, value_or_method=bg_mask_thresh)
         else:
             mask1 = None
-        if not np.isnan(bg_mask_sphere_kw["radial_clearance"]):  # sphere mask
+        if bg_mask_sphere_kw["radial_clearance"] is not None:  # sphere mask
             mask2 = qpsphere.cnvnc.bg_phase_mask_for_qpi(
                 qpi=qpi,
                 r0=bg_mask_sphere_kw["r0"],
@@ -178,10 +177,10 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dist_border=10, pad_border=40, exclude_overlap=30.,
                 ignore_data=None, force_roi=None,
-                bg_amp_kw=BG_DEFAULT_KW, bg_amp_bin=np.nan,
-                bg_amp_mask_radial_clearance=np.nan,
-                bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=np.nan,
-                bg_pha_mask_radial_clearance=np.nan,
+                bg_amp_kw=BG_DEFAULT_KW, bg_amp_bin=None,
+                bg_amp_mask_radial_clearance=None,
+                bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=None,
+                bg_pha_mask_radial_clearance=None,
                 bg_sphere_edge_kw={}, search_enabled=True,
                 ret_roimgr=False, ret_changed=False):
     """Extract ROIs from a qpimage.QPSeries hdf5 file
@@ -217,26 +216,26 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         Amplitude image background correction keyword arguments
         (see :func:`qpimage.QPImage.compute_bg`), defaults
         to `BG_DEFAULT_KW`, set to `None` to disable correction
-    bg_amp_bin: float or str
+    bg_amp_bin: float, str, or None
         The amplitude binary threshold value or the method for binary
         threshold determination; see :mod:`skimage.filters`
-        `threshold_*` methods
-    bg_amp_mask_radial_clearance: float
+        `threshold_*` methods. Disabled if set to `None`.
+    bg_amp_mask_radial_clearance: float or None
         If not NaN, use :func:`qpsphere.cnvnc.bg_phase_mask_for_qpi`
         to compute a mask image and use it for amplitude
-        background correction.
+        background correction. Disabled if set to `None`.
     bg_pha_kw: dict or None
         Phase image background correction keyword arguments
         (see :func:`qpimage.QPImage.compute_bg`), defaults
         to `BG_DEFAULT_KW`, set to `None` to disable correction
-    bg_pha_bin: float or str
+    bg_pha_bin: float, str, or None
         The phase binary threshold value or the method for binary
         threshold determination; see :mod:`skimage.filters`
-        `threshold_*` methods
-    bg_pha_mask_radial_clearance: float
+        `threshold_*` methods. Disabled if set to `None`.
+    bg_pha_mask_radial_clearance: float or None
         If not NaN, use :func:`qpsphere.cnvnc.bg_phase_mask_for_qpi`
         to compute a mask image and use it for phase
-        background correction.
+        background correction. Disabled if set to `None`.
     search_enabled: bool
         If True, perform automated search for ROIs using the
         parameters above. If False, extract the ROIs from `FILE_SLICES`

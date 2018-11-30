@@ -3,7 +3,6 @@ from os import fspath
 import sys
 
 import matplotlib.image as mpimg
-import numpy as np
 import qpimage
 from skimage.external import tifffile
 
@@ -50,8 +49,8 @@ def cli_extract_roi(path=None, ret_data=False, profile=None):
                      "border_px": cfg["bg"]["phase border px"],
                      }
         # Only get the Canny edge detection parameters if needed
-        if not (np.isnan(cfg["bg"]["phase mask sphere"])
-                and np.isnan(cfg["bg"]["amplitude mask sphere"])):
+        if not (cfg["bg"]["phase mask sphere"] is None
+                and cfg["bg"]["amplitude mask sphere"] is None):
             dialog.main(path=path, req_meta=["medium index"])
             # This will generate the [sphere] section in drymass.cfg
             edge_kw = {

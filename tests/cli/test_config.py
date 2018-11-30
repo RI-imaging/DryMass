@@ -53,6 +53,22 @@ def test_compat_015():
     shutil.rmtree(path, ignore_errors=True)
 
 
+def test_compat_081():
+    path = tempfile.mkdtemp(prefix="drymass_test_config_")
+    cfg = config.ConfigFile(path=path)
+    # initialize config
+    cfg.set_value("meta", "medium index", 1.3365)
+    filepath = cfg.path
+    # simulate old behavior
+    data = filepath.open().read()
+    data = data.replace("medium index = 1.3365", "medium index = nan")
+    filepath.write_text(data)
+    # check fix
+    cfg2 = config.ConfigFile(path=path)
+    assert cfg2["meta"]["medium index"] is None
+    shutil.rmtree(path, ignore_errors=True)
+
+
 def test_dtype():
     path = tempfile.mkdtemp(prefix="drymass_test_config_")
     cfg = config.ConfigFile(path=path)

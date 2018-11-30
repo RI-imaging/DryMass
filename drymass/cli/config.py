@@ -86,10 +86,13 @@ class ConfigFile(object):
             raise ValueError("Unknown section title: {}".format(section))
         if key not in definitions.config[section]:
             raise ValueError("Unknown key: {}: {}".format(section, key))
-        if value in [None, "none", "None", "()", "[]"]:
+        # For versions > 0.8.1, unknown configuration keys are `None`.
+        # Prior versions also used `np.nan`. Keep "nan" in the list
+        # below for backwards compatibility.
+        if value in [None, "nan", "none", "None", "()", "[]"]:
             if definitions.config[section][key][0] is not None:
-                msg = "Value 'None' not allowed for [{}]: {}!".format(
-                      section, key)
+                msg = "Unset value '{}' not allowed for [{}]: {}!".format(
+                      value, section, key)
                 raise ValueError(msg)
             ret_value = None
         else:

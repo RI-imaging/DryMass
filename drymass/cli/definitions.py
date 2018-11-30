@@ -1,13 +1,11 @@
-import numpy as np
-
 from .parse_funcs import fbool, float01, float_or_str, int_or_path, lcstr, \
     floattuple_or_one, strlist, tupletupleint
 
 config = {
     "bg": {
         "amplitude binary threshold":
-            (np.nan, float_or_str, "Binary image threshold value or method"),
-            # If not *nan*, defines either a threshold for background
+            (None, float_or_str, "Binary image threshold value or method"),
+            # If not `None`, defines either a threshold for background
             # segmentation or a method in :mod:`skimage.filters`.
         "amplitude border perc":
             (10, float, "Amplitude bg border region to analyze [%]"),
@@ -21,8 +19,8 @@ config = {
             # If a file, either specify the full path or the relative
             # path to the directory containing the input data.
         "amplitude mask sphere":
-            (np.nan, float, "Circular mask for amplitude bg correction"),
-            # If not *nan*, a mask is used for background correction.
+            (None, float, "Circular mask for amplitude bg correction"),
+            # If not `None`, a mask is used for background correction.
             # A value of "1.0" results in a mask with the radius as
             # determined with the edge-detection approach from phase [sic].
             # Set this to "1.1" to exclude peripheral phase values.
@@ -42,8 +40,8 @@ config = {
             (True, fbool, "Enable bg correction globally"),
             # Set to *False* to disable background correction.
         "phase binary threshold":
-            (np.nan, float_or_str, "Binary image threshold value or method"),
-            # If not *nan*, defines either a threshold for background
+            (None, float_or_str, "Binary image threshold value or method"),
+            # If not `None`, defines either a threshold for background
             # segmentation or a method in :mod:`skimage.filters`.
         "phase border perc":
             (10, float, "Phase bg border region to analyze [%]"),
@@ -57,8 +55,8 @@ config = {
             # If a file, either specify the full path or the relative
             # path to the directory containing the input data.
         "phase mask sphere":
-            (np.nan, float, "Circular mask for phase bg correction"),
-            # If not *nan*, a mask is used for background correction.
+            (None, float, "Circular mask for phase bg correction"),
+            # If not `None`, a mask is used for background correction.
             # A value of "1.0" results in a mask with the radius as
             # determined with the edge-detection approach from phase.
             # Set this to "1.1" to exclude peripheral phase values.
@@ -85,11 +83,11 @@ config = {
     },
     "meta": {
         "medium index":
-            (np.nan, float, "Refractive index of the surrounding medium"),
+            (None, float, "Refractive index of the surrounding medium"),
         "pixel size um":
-            (np.nan, float, "Detector pixel size [µm]"),
+            (None, float, "Detector pixel size [µm]"),
         "wavelength nm":
-            (np.nan, float, "Imaging wavelength [nm]"),
+            (None, float, "Imaging wavelength [nm]"),
     },
     "output": {
         "roi images":

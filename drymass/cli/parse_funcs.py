@@ -2,8 +2,6 @@ import numbers
 from os import fspath
 import pathlib
 
-import numpy as np
-
 
 def fbool(value):
     """Boolean value from string or number"""
@@ -46,15 +44,12 @@ def float_or_str(flt_or_str):
     """Float value from string or number"""
     if isinstance(flt_or_str, str):
         flt_or_str = flt_or_str.strip()
-        if flt_or_str == "nan":
-            return np.nan
+        try:
+            value = float(flt_or_str)
+        except ValueError:
+            return flt_or_str
         else:
-            try:
-                value = float(flt_or_str)
-            except ValueError:
-                return flt_or_str
-            else:
-                return value
+            return value
     else:
         return float(flt_or_str)
 
