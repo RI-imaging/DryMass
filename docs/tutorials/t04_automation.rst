@@ -7,8 +7,9 @@ T4: Automating the analysis of large datasets (CLI)
 Introduction
 ------------
 This tutorial showcases the command-line parameters ``--recursive``
-and ``--profile`` to automate the analysis of large datasets,
-exemplarily the analysis pipeline of :ref:`tutorial 2 <tutorial02>`.
+and ``--profile`` (see :ref:`section_cli_advanced`) to automate the
+analysis of large datasets, exemplarily the analysis pipeline of
+:ref:`tutorial 2 <tutorial02>`.
 
 Prerequisites
 -------------
@@ -19,16 +20,14 @@ For this tutorial, you need:
 
 Setup example measurements
 --------------------------
-To simulate the presence of several datasets, create three copies of
-``DHM_HL60_cells.zip`` in a designated folder. You may also create
-subfolders and put copies of the dataset there. The content of your
-folder might look like this:
+To simulate the presence of several datasets, create a few copies of
+``DHM_HL60_cells.zip`` in a designated folder (e.g. ``C:\\Path\to\data\``).
+You may also create subfolders and put copies of the dataset there.
+The contents of the folder could be three copies:
 
-.. code::
-
-    DHM_HL60_cells_01.zip
-    DHM_HL60_cells_02.zip
-    DHM_HL60_cells_03.zip
+- ``DHM_HL60_cells_01.zip``
+- ``DHM_HL60_cells_02.zip``
+- ``DHM_HL60_cells_03.zip``
 
 Create and import analysis profiles
 -----------------------------------
