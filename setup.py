@@ -40,7 +40,8 @@ setup(
     install_requires=["appdirs",
                       "matplotlib>=2.2.0",
                       "numpy>=1.12.0",
-                      "scikit-image>=0.14.1",
+                      # https://github.com/scikit-image/scikit-image/issues/3605
+                      "scikit-image==0.14.0",
                       ] + release_deps,
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
