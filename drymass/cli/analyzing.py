@@ -38,6 +38,7 @@ def cli_analyze_sphere(path=None, ret_data=False, profile=None):
     cfg = config.ConfigFile(path_out)
     h5roi = cli_extract_roi(path=path_in, ret_data=True)
     print("Performing sphere analysis... ", end="", flush=True)
+
     # canny edge detection parameters
     edgekw = {
         "clip_rmin": cfg["sphere"]["edge clip radius min"],
@@ -71,7 +72,10 @@ def cli_analyze_sphere(path=None, ret_data=False, profile=None):
         ret_changed=True,
         )
 
-    print("Done.")
+    if changed:
+        print("Done.")
+    else:
+        print("Done (reused previous results).")
 
     if changed and cfg["output"]["sphere images"]:
         print("Plotting sphere images... ", end="", flush=True)
