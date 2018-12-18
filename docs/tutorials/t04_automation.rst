@@ -160,7 +160,7 @@ extension (e.g. ``analysis.cmd``, with the following content:
     dm_analyze_sphere --recursive --profile t4rytov $1
     dm_analyze_sphere --recursive --profile t4rytov-sc $1
 
-Linux and MacOS users can create a bash script (``analysis.cmd``), with
+Linux and MacOS users can create a bash script (``analysis.sh``), with
 the following content:
 
 .. code::
