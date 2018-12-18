@@ -34,7 +34,7 @@ For this tutorial, you need:
 
 - Python 3.6 or above and DryMass version 0.5.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
-- Experimental data set: `QLSR_PAA_beads_modified.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads_modified.zip>`_
+- Experimental dataset: `QLSR_PAA_beads_modified.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads_modified.zip>`_
 
 
 Take a glimpse at the data
