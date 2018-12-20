@@ -7,9 +7,11 @@ T4: Automating the analysis of large datasets (CLI)
 Introduction
 ------------
 This tutorial showcases the command-line parameters ``--recursive``
-and ``--profile`` (see :ref:`section_cli_advanced`) to automate the
-analysis of large datasets, exemplarily the analysis pipeline of
-:ref:`tutorial 2 <tutorial02>`.
+and ``--profile`` (see :ref:`section_cli_advanced`) to automate data
+analysis, exemplarily the analysis pipeline of :ref:`tutorial 2 <tutorial02>`.
+After this tutorial, you will be able to automate the application of
+multiple analysis pipelines with additional, custom analysis steps to
+large datasets. 
 
 Prerequisites
 -------------
@@ -21,7 +23,7 @@ For this tutorial, you need:
 Setup example measurements
 --------------------------
 To simulate the presence of several datasets, create a few copies of
-``DHM_HL60_cells.zip`` in a designated folder (e.g. ``C:\\Path\to\data\``).
+``DHM_HL60_cells.zip`` in a designated folder (here ``C:\\Path\to\data\``).
 You may also create subfolders and put copies of the dataset there.
 The contents of the folder could be three copies:
 
@@ -80,7 +82,7 @@ and then import them into the local library via:
 
 Once imported in the local library, the downloaded profiles may safely
 be removed. You can list the available profile with the command
-``dm_profile list``, which should yield the following output:
+``dm_profile list``, which should yield an output similar to this:
 
 .. code::
 
@@ -109,7 +111,7 @@ the above command should be similar to:
 
 .. code::
 
-    DryMass version 0.8.1
+    DryMass version 0.8.0
     Recursing into directory tree... Done.
     Input 1/3: C:\\Path\to\data\DHM_HL60_cells_01.zip
     Input 2/3: C:\\Path\to\data\DHM_HL60_cells_02.zip
