@@ -33,9 +33,9 @@ Testing
     
 
 .. |DryMass| image:: https://raw.github.com/RI-imaging/DryMass/master/docs/logo/drymass.png
-.. |PyPI Version| image:: http://img.shields.io/pypi/v/DryMass.svg
+.. |PyPI Version| image:: https://img.shields.io/pypi/v/DryMass.svg
    :target: https://pypi.python.org/pypi/DryMass
-.. |Tests Status Linux| image:: http://img.shields.io/travis/RI-imaging/DryMass.svg?label=tests_linux
+.. |Tests Status Linux| image:: https://img.shields.io/travis/RI-imaging/DryMass.svg?label=tests_linux
    :target: https://travis-ci.org/RI-imaging/DryMass
 .. |Tests Status Win| image:: https://img.shields.io/appveyor/ci/paulmueller/drymass/master.svg?label=tests_win
    :target: https://ci.appveyor.com/project/paulmueller/drymass
