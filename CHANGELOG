@@ -1,4 +1,7 @@
 0.8.3
+ - enh: when using incomplete profile files, they are now merged with
+   (instead of overriding) existing profiles (drymass.cfg) in the
+   respective output directories (#27)
  - docs: minor update
 0.8.2
  - fix: pin scikit-image version to 0.14.0 because threshold_li has

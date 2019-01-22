@@ -195,6 +195,11 @@ it to the local library:
 
   dm_extract_roi --profile "d:\\data\path\to\experiment_dm\drymass.cfg" "d:\\data\path\to\another\experiment"
 
+Note that the parameters in the profile are merged with the parameters
+in the configuration file of the analyzed data. In other words, if a
+parameter is missing in the profile, the parameter of the existing
+`drymass.cfg` is used. If it is not in `drymass.cfg` the default
+value is used.
 
 Recursive analysis
 ------------------

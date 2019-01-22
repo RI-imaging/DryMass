@@ -1,7 +1,6 @@
 import argparse
 import functools
 import pathlib
-import shutil
 
 import qpformat
 
@@ -112,7 +111,9 @@ def main(path=None, req_meta=[], description="DryMass analysis.",
         if profile:
             # use a user-specified profile
             ppath = get_profile_path(profile)
-            shutil.copy(ppath, path_out / config.FILE_CONFIG)
+            cfg_profile = config.ConfigFile(ppath)
+            cfg_out = config.ConfigFile(path_out)
+            cfg_out.update(cfg_profile)
         # get known meta data kwargs from dataset
         transfer_meta_data(path_in, path_out)
         # user input missing meta data keyword values

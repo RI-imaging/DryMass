@@ -143,6 +143,23 @@ def test_invalid_2():
     shutil.rmtree(path, ignore_errors=True)
 
 
+def test_update():
+    path1 = tempfile.mkdtemp(prefix="drymass_test_config_")
+    cfg1 = config.ConfigFile(path=path1)
+
+    path2 = tempfile.mkdtemp(prefix="drymass_test_config_")
+    cfg2 = config.ConfigFile(path=path2)
+
+    cfg1.path.write_text("[sphere]\nrefraction increment = 1.1\n")
+    assert cfg2["sphere"]["refraction increment"] == .18,  "defaults"
+
+    cfg2.update(cfg1)
+    assert cfg2["sphere"]["refraction increment"] == 1.1
+
+    shutil.rmtree(path1, ignore_errors=True)
+    shutil.rmtree(path2, ignore_errors=True)
+
+
 def test_write_complete():
     path = tempfile.mkdtemp(prefix="drymass_test_config_")
     cfg = config.ConfigFile(path=path)

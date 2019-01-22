@@ -19,7 +19,8 @@ class ConfigFile(object):
         Parameters
         ----------
         path: str
-            path to the configuration file
+            path to the configuration file or a folder containing the
+            configuration file :data:`FILE_CONFIG`.
         """
         path = pathlib.Path(path).resolve()
         if path.is_dir():
@@ -119,19 +120,30 @@ class ConfigFile(object):
                 key += " px"
         return key, value
 
-    def _parse(self):
-        """Return full documentation
+    def _parse(self, autocomplete=True):
+        """Return configuration dictionary
+
+        Parameters
+        ----------
+        autocomplete: bool
+            whether to fill in default configuration values when
+            the corresponding keys are missing in a given section.
+            Note that missing sections are not added. If missing
+            keys are found, the original configuration file is
+            overridden with the new data. Disabling autocompletion
+            also prevents writing to the configuration file.
 
         Returns
         -------
         datadict: dict of dicts
-            Full configuration
+            configuration dictionary
 
         Notes
         -----
-        If a configuration section in self.path is incomplete,
-        then the defaults are be inserted and self.path is
-        overridden.
+        This function is private, because the autocomplete feature is
+        actually a desired behavior to keep the configuration file
+        human-readable. Normal users should not be able to use it,
+        because the concept could be considered confusing.
         """
         with self.path.open() as fd:
             data = fd.readlines()
@@ -152,16 +164,17 @@ class ConfigFile(object):
                 key, val = self._parse_compat(sec, key, val)
                 val = self._check_value(sec, key, val)
                 outdict[sec][key] = val
-        # Insert default variables where missing
-        must_write = False
-        for sec in outdict:
-            for key in definitions.config[sec]:
-                if key not in outdict[sec]:
-                    outdict[sec][key] = definitions.config[sec][key][0]
-                    must_write = True
-        if must_write:
-            # Update the configuration file
-            self._write(outdict)
+        if autocomplete:
+            # Insert default variables where missing
+            must_write = False
+            for sec in outdict:
+                for key in definitions.config[sec]:
+                    if key not in outdict[sec]:
+                        outdict[sec][key] = definitions.config[sec][key][0]
+                        must_write = True
+            if must_write:
+                # Update the configuration file
+                self._write(outdict)
         return outdict
 
     def _write(self, datadict):
@@ -204,7 +217,7 @@ class ConfigFile(object):
 
     def remove_section(self, section):
         """Remove a section from the configuration file"""
-        datadict = self._parse()
+        datadict = self._parse(autocomplete=False)
         datadict.pop(section)
         self._write(datadict)
 
@@ -228,3 +241,25 @@ class ConfigFile(object):
         sec = self[section]
         sec[key] = value
         self[section] = sec
+
+    def update(self, other):
+        """Update the current configuration with data from another
+
+        Parameters
+        ----------
+        other: ConfigFile
+            the configuration file from which data is imported into
+            the current configuration
+
+        Notes
+        -----
+        None-valued keys are ignored.
+        """
+        other_dict = other._parse(autocomplete=False)
+        for sec in other_dict:
+            for key in other_dict[sec]:
+                value = other_dict[sec][key]
+                if value is not None:
+                    self.set_value(section=sec,
+                                   key=key,
+                                   value=value)
