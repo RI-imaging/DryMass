@@ -20,8 +20,8 @@ if version.count("post") or sys.argv.count("test"):
                     "qpimage",
                     "qpsphere"]
 else:
-    release_deps = ["qpformat==0.8.0",
-                    "qpimage==0.4.6",
+    release_deps = ["qpformat==0.9.0",
+                    "qpimage==0.5.0",
                     "qpsphere==0.5.0",
                     ]
 
