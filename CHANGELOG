@@ -1,3 +1,9 @@
+0.8.4
+ - enh: bump dependencies on qpformat, qpimage, and qpsphere
+   - improved file format support
+   - improved speed of in-memory operations
+   - several other minor fixes
+ - docs: minor cleanup
 0.8.3
  - enh: when using incomplete profile files, they are now merged with
    (instead of overriding) existing profiles (drymass.cfg) in the
