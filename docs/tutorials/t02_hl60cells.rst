@@ -55,12 +55,16 @@ following configuration keys in *drymass.cfg*:
 .. code-block:: none
 
   [specimen]
-  size um = 13              # approximate cell diameter we are looking for [µm]
+  # approximate cell diameter we are looking for [µm]
+  size um = 13
 
   [roi]
-  pad border px = 80        # increase border size around cells
-  size variation = 0.2      # do not allow large variations of specimen size
-  exclude overlap px = 100  # exclude ROIs with an overlap > 100px
+  # increase border size around cells
+  pad border px = 80
+  # do not allow large variations of specimen size
+  size variation = 0.2
+  # exclude ROIs with an overlap > 100px
+  exclude overlap px = 100
 
 With the new configuration, we run ``dm_extract_roi DHM_HL60_cells.zip`` again.
 Now all cells are detected. However, we want to exclude a few due to artifacts

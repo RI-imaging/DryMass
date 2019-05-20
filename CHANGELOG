@@ -1,3 +1,7 @@
+0.8.6
+ - docs: minor improvements
+ - setup: pin scikit-image version again to 0.14.0 until the threshold_li
+   issue is resolved once and for all
 0.8.5
  - docs: minor update
 0.8.4
