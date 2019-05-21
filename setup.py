@@ -39,7 +39,10 @@ setup(
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["appdirs",
                       "matplotlib>=2.2.0",
-                      "numpy>=1.12.0",
+                      # When forcing scikit-image to 0.14.0, we need to
+                      # keep an older version of numpy.
+                      # https://github.com/scikit-image/scikit-image/issues/3586
+                      "numpy>=1.12.0,<1.16.0",
                       # https://github.com/scikit-image/scikit-image/issues/3605
                       "scikit-image==0.14.0",
                       ] + release_deps,
