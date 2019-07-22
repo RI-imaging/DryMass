@@ -194,8 +194,8 @@ class ConfigFile(object):
         keys = sorted(list(datadict.keys()))
         lines = ["# DryMass version {}".format(version),
                  "# Configuration file documented at: ",
-                 "# https://drymass.readthedocs.io/en/stable/configuration"
-                 + "_file.html",
+                 "# https://drymass.readthedocs.io/en/stable/"
+                 + "sec_gs_configuration_file.html",
                  ]
         for kk in keys:
             lines.append("")
