@@ -39,7 +39,7 @@ cfg.set_value("roi", "exclude overlap px", 100)
 cli.cli_extract_roi(path=path_in)
 
 # remove ROI slices
-cfg.set_value("roi", "ignore data", ["8.4", "15.2", "18.2", "18.3", "35.2"])
+cfg.set_value("roi", "ignore data", ["8.4", "18.2", "18.3", "35.2"])
 
 # bg correction
 cfg.set_value("bg", "phase border px", 30)
@@ -69,7 +69,6 @@ cli.cli_analyze_sphere(path=path_in)
 cfg.set_value("sphere", "method", "image")
 cfg.set_value("sphere", "model", "rytov-sc")
 cli.cli_analyze_sphere(path=path_in)
-
 
 senpath = path_out / cli.analyzing.FILE_SPHERE_ANALYSIS_IMAGE.format(
     "image", "rytov-sc")

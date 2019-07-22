@@ -74,7 +74,7 @@ ROIs in *drymass.cfg*
 .. code-block:: none
 
   [roi]
-  ignore data = 8.4, 15.2, 18.2, 18.3, 35.2
+  ignore data = 8.4, 18.2, 18.3, 35.2
 
 After executing ``dm_extract_roi`` again, these ROIs are labeled red in
 *sensor_roi_images.tif*. There should now be a total of 87 ROIs.
