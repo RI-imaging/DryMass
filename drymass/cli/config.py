@@ -25,7 +25,8 @@ class ConfigFile(object):
         path = pathlib.Path(path).resolve()
         if path.is_dir():
             path = path / FILE_CONFIG
-        path.touch()
+        if not path.exists():
+            path.touch()
         self.path = path
 
     def __getitem__(self, section):
