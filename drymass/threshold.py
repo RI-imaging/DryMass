@@ -1,3 +1,14 @@
+"""
+There are two types of thresholding done in DryMass.
+
+1. Thresholding of the `sensor image` which is required by the
+   detection of the phase object ROIs
+   (``[roi]: threshold`` configuration parameter)
+2. Thresholding of the `individual ROIs` for determining the masked
+   area used for ROI background correction
+   (``[bg]: amplitude binary threshold``
+   and ``[bg]: phase binary threshold`` configuration parameters)
+"""
 import warnings
 
 import numpy as np
@@ -27,7 +38,7 @@ def image2mask(image, value_or_method, invert=False):
                           "from skimage is deprecated. Please use "
                           " '{}' instead!".format(value_or_method),
                           DeprecationWarning)
-        method = available_thresholds[value_or_method]
+        method = threshold_dict[value_or_method]
         bw = image >= method(image)
     else:
         bw = image >= value_or_method
@@ -66,9 +77,8 @@ def threshold_drymass_nuclei(image):
     return thresh
 
 
-#: Available threshold methods
-#: (see :mod:`skimage.filters.thresholding`)
-available_thresholds = {
+#: Dictionary containing all thresholding methods available in DryMass
+threshold_dict = {
     'dm-nuclei': threshold_drymass_nuclei,
     'isodata': skfilters.threshold_isodata,
     'li': skfilters.threshold_li,
@@ -78,3 +88,8 @@ available_thresholds = {
     'triangle': skfilters.threshold_triangle,
     'yen': skfilters.threshold_yen,
     }
+
+#: Available thresholding method names;
+#: The thresholding methods are either defined in this module
+#: (see `threshold_*` methods) or taken from :mod:`skimage.filters`.
+available_thresholds = sorted(threshold_dict.keys())

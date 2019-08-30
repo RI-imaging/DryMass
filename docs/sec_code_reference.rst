@@ -83,6 +83,12 @@ search
     :members:
 
 
+threshold
+---------
+.. automodule:: drymass.threshold
+    :members:
+
+
 util
 ----
 .. automodule:: drymass.util

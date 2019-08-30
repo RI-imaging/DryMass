@@ -102,7 +102,7 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
         locthr = skfilters.threshold_local(image, block_size=block_size)
         image = image - locthr
         # threshold image
-        threshold_func = thr.available_thresholds[threshold]
+        threshold_func = thr.threshold_dict[threshold]
         thresh = threshold_func(image)
     else:
         # It is assumed that the user wants to define the threshold

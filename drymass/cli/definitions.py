@@ -6,7 +6,8 @@ config = {
         "amplitude binary threshold":
             (None, float_or_str, "Binary image threshold value or method",
              "If not `None`, defines either a threshold for background "
-             "segmentation or a method in :mod:`skimage.filters`."),
+             "segmentation or a method name in "
+             ":const:`drymass.threshold.available_thresholds`."),
         "amplitude border perc":
             (10, float, "Amplitude bg border region to analyze [%]",
              "Set to 0 to disable."),
@@ -42,7 +43,8 @@ config = {
         "phase binary threshold":
             (None, float_or_str, "Binary image threshold value or method",
              "If not `None`, defines either a threshold for background ",
-             "segmentation or a method in :mod:`skimage.filters`."),
+             "segmentation or a method name in "
+             ":const:`drymass.threshold.available_thresholds`."),
         "phase border perc":
             (10, float, "Phase bg border region to analyze [%]",
              "Set to 0 to disable."),
@@ -123,8 +125,8 @@ config = {
         "threshold":
             ("li", float_or_str, "Threshold for phase data segmentation",
              "The threshold is defined via a name or as a number in [rad]. "
-             "Valid names are dm-nuclei, isodata, li, mean, minimum, otsu, "
-             "triangle, or yen."),
+             "Valid names are given in "
+             ":const:`drymass.threshold.available_thresholds`."),
     },
     "specimen": {
         "size um":
