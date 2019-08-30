@@ -1,5 +1,5 @@
 import numpy as np
-from skimage.filters import threshold_li, threshold_local
+import skimage.filters as skfilters
 from skimage.segmentation import clear_border
 from skimage.morphology import label
 from skimage.measure import regionprops
@@ -40,7 +40,7 @@ def approx_bg(data, filter_size=None):
 
 
 def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
-                        dist_border=10, verbose=False):
+                        dist_border=10, threshold="li", verbose=False):
     """Search objects in images
 
     The wrapper :func:`search_phase_objects` implements
@@ -68,6 +68,9 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
     dist_border: float
         Minimum distance of detected regions to the borders of the
         image in pixels
+    threshold: float or str
+        Thresholding value or method used;
+        see :const:`available_thresholds`
     verbose: bool
         If `True`, print information about ignored regions
 
@@ -91,13 +94,18 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
               + "got '{}'!".format(size_var)
         raise ValueError(msg)
 
-    # apply local threshold
-    block_size = ((3*size) // 2) * 2 + 1  # odd block size
-    locthr = threshold_local(image, block_size=block_size)
-    image = image - locthr
-
-    # threshold image
-    thresh = threshold_li(image)
+    if isinstance(threshold, str):
+        # apply local threshold
+        block_size = ((3*size) // 2) * 2 + 1  # odd block size
+        locthr = skfilters.threshold_local(image, block_size=block_size)
+        image = image - locthr
+        # threshold image
+        threshold_func = available_thresholds[threshold]
+        thresh = threshold_func(image)
+    else:
+        # It is assumed that the user wants to define the threshold
+        # based on the sensor images, so we don't apply a local threshold.
+        thresh = threshold
     bw = image > thresh
     # label image regions
     object_labels = label(bw)
@@ -134,7 +142,8 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
 
 def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
                          dist_border=10, pad_border=40,
-                         exclude_overlap=30., verbose=False):
+                         exclude_overlap=30., threshold="li",
+                         verbose=False):
     """Search phase objects in quantitative phase images
 
     Parameters
@@ -164,6 +173,9 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
     exclude_overlap: float
         Allowed distance in pixels between two detected regions
         (without `pad_border`)
+    threshold: float or str
+        Thresholding value or method used;
+        see :const:`available_thresholds`
     verbose: bool
         If `True`, print information about ignored regions
 
@@ -191,6 +203,7 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
               "size_var": size_var,
               "max_ecc": max_ecc,
               "dist_border": dist_border,
+              "threshold": threshold,
               "verbose": verbose,
               }
 
@@ -249,3 +262,16 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
         y2 = min(qpi.shape[1], y2 + pad_border)
         slices.append((slice(x1, x2), slice(y1, y2)))
     return slices
+
+
+#: Available threshold methods
+#: (see :mod:`skimage.filters.thresholding`)
+available_thresholds = {
+    'isodata': skfilters.threshold_isodata,
+    'li': skfilters.threshold_li,
+    'mean': skfilters.threshold_mean,
+    'minimum': skfilters.threshold_minimum,
+    'otsu': skfilters.threshold_otsu,
+    'triangle': skfilters.threshold_triangle,
+    'yen': skfilters.threshold_yen,
+    }

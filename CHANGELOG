@@ -1,6 +1,8 @@
+0.9.0
+ - feat: allow to change the thresholding filter or use a manual threshold
 0.8.8
- - bump qpformat from 0.10.2 to 0.10.3 (changes dataset identifiers)
- - bump qpsphere from 0.5.1 to 0.5.2
+ - setup: bump qpformat from 0.10.2 to 0.10.3 (changes dataset identifiers)
+ - setup: bump qpsphere from 0.5.1 to 0.5.2
 0.8.7
  - setup: pin numpy<1.16.0 because of pinned scikit-image==0.14.0
 0.8.6

@@ -89,6 +89,30 @@ def test_padding():
     assert slice3[1].start == 0
 
 
+def test_threshold_float():
+    size = 200
+    image = np.zeros((size, size), dtype=float)
+    x = np.arange(size).reshape(-1, 1)
+    y = np.arange(size).reshape(1, -1)
+    cx = 80
+    cy = 120
+    radius = 30
+    r = np.sqrt((x - cx)**2 + (y - cy)**2)
+    image[r < radius] = 1.3
+    # test with correct threshold
+    rois = search.search_objects_base(image=image,
+                                      size=2*radius,
+                                      threshold=1)
+    roi = rois[0]
+    assert np.allclose(roi.equivalent_diameter, 2 * radius, atol=.2, rtol=0)
+    assert np.allclose(roi.centroid, (cx, cy))
+    # test with bad threshold
+    rois2 = search.search_objects_base(image=image,
+                                       size=2*radius,
+                                       threshold=2)
+    assert len(rois2) == 0
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()

@@ -120,6 +120,11 @@ config = {
             (40, int, "Padding of object regions [px]"),
         "size variation":
             (0.5, float01, "Allowed variation relative to specimen size"),
+        "threshold":
+            ("li", float_or_str, "Threshold for phase data segmentation",
+             "The threshold is defined via a name or as a number in [rad]. "
+             "Valid names are isodata, li, mean, minimum, otsu, triangle, "
+             "or yen."),
     },
     "specimen": {
         "size um":

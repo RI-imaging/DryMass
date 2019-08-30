@@ -67,7 +67,7 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                  dist_border, pad_border, exclude_overlap, ignore_data,
                  bg_amp_kw, bg_amp_bin, bg_amp_mask_sphere_kw,
                  bg_pha_kw, bg_pha_bin, bg_pha_mask_sphere_kw,
-                 search_enabled):
+                 search_enabled, threshold):
     # Determine ROI location
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps:
         rmgr = ROIManager(qps.identifier)
@@ -84,7 +84,8 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                     max_ecc=max_ecc,
                     dist_border=dist_border,
                     pad_border=pad_border,
-                    exclude_overlap=exclude_overlap)
+                    exclude_overlap=exclude_overlap,
+                    threshold=threshold)
                 for jj, sl in enumerate(slices):
                     # new indexing convention in drymass 0.6.0
                     roi_index = jj + 1
@@ -176,7 +177,7 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
 
 def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 dist_border=10, pad_border=40, exclude_overlap=30.,
-                ignore_data=None, force_roi=None,
+                threshold="li", ignore_data=None, force_roi=None,
                 bg_amp_kw=BG_DEFAULT_KW, bg_amp_bin=None,
                 bg_amp_mask_radial_clearance=None,
                 bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=None,
@@ -203,6 +204,9 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         Padding of object regions [px]
     exclude_overlap: float
         Allowed distance between two objects [px]
+    threshold: float or str
+        Thresholding value or method used;
+        see :const:`drymass.search.available_thresholds`
     ignore_data: list of str
         Identifiers for sensor images or ROIs to be excluded from
         further analysis. These will be labeled in the output
@@ -273,6 +277,7 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                                   dist_border,
                                   pad_border,
                                   exclude_overlap,
+                                  threshold,
                                   ignore_data,
                                   force_roi,
                                   bg_amp_kw,
@@ -342,6 +347,7 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
             dist_border=dist_border,
             pad_border=pad_border,
             exclude_overlap=exclude_overlap,
+            threshold=threshold,
             ignore_data=ignore_data,
             bg_amp_kw=bg_amp_kw,
             bg_amp_bin=bg_amp_bin,
