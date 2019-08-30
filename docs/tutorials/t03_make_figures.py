@@ -93,7 +93,7 @@ with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qproi, \
     te1 = [qproi[5].pha - qpsim[5].pha,
            qproi[7].pha - qpsim[7].pha]
 
-cfg.set_value("bg", "phase binary threshold", "threshold_triangle")
+cfg.set_value("bg", "phase binary threshold", "triangle")
 cli.cli_analyze_sphere(path=path_in)
 with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qproi, \
         qpimage.QPSeries(h5file=h5sim, h5mode="r") as qpsim:

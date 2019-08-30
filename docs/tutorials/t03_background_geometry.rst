@@ -105,13 +105,13 @@ seems to have a negative effect on the background correction. To resolve
 this issue, we set a binary threshold in the original ROI above which
 no data is used for background correction. Since it is difficult to set
 such a threshold manually, we use one of the threshold filters implemented
-in scikit-image that works well for this example: `threshold_triangle
+in scikit-image that works well for this example: `triangle
 <http://scikit-image.org/docs/stable/api/skimage.filters.html#threshold-triangle>`_
 
 .. code-block:: none
 
   [bg]
-  phase binary threshold = threshold_triangle
+  phase binary threshold = triangle
 
 Now we have established a robust background correction pipeline that
 includes all but one bead.
