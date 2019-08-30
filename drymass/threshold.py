@@ -4,7 +4,6 @@ import numpy as np
 import skimage.filters as skfilters
 
 
-
 def image2mask(image, value_or_method, invert=False):
     """Convert an image to a binary mask for background correction
 

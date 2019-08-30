@@ -1,5 +1,4 @@
 import numpy as np
-import qpimage
 
 from drymass import threshold as thr
 

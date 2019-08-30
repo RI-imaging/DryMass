@@ -264,4 +264,3 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
         y2 = min(qpi.shape[1], y2 + pad_border)
         slices.append((slice(x1, x2), slice(y1, y2)))
     return slices
-
