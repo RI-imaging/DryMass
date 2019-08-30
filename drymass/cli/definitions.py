@@ -123,8 +123,8 @@ config = {
         "threshold":
             ("li", float_or_str, "Threshold for phase data segmentation",
              "The threshold is defined via a name or as a number in [rad]. "
-             "Valid names are isodata, li, mean, minimum, otsu, triangle, "
-             "or yen."),
+             "Valid names are dm-nuclei, isodata, li, mean, minimum, otsu, "
+             "triangle, or yen."),
     },
     "specimen": {
         "size um":

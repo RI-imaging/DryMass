@@ -4,6 +4,8 @@ from skimage.segmentation import clear_border
 from skimage.morphology import label
 from skimage.measure import regionprops
 
+from . import threshold as thr
+
 
 def approx_bg(data, filter_size=None):
     """Approximate the image background with Gaussian convolution
@@ -70,7 +72,7 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
         image in pixels
     threshold: float or str
         Thresholding value or method used;
-        see :const:`available_thresholds`
+        see :const:`drymass.threshold.available_thresholds`
     verbose: bool
         If `True`, print information about ignored regions
 
@@ -100,7 +102,7 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
         locthr = skfilters.threshold_local(image, block_size=block_size)
         image = image - locthr
         # threshold image
-        threshold_func = available_thresholds[threshold]
+        threshold_func = thr.available_thresholds[threshold]
         thresh = threshold_func(image)
     else:
         # It is assumed that the user wants to define the threshold
@@ -175,7 +177,7 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
         (without `pad_border`)
     threshold: float or str
         Thresholding value or method used;
-        see :const:`available_thresholds`
+        see :const:`drymass.threshold.available_thresholds`
     verbose: bool
         If `True`, print information about ignored regions
 
@@ -263,15 +265,3 @@ def search_phase_objects(qpi, size_m, size_var=.5, max_ecc=.7,
         slices.append((slice(x1, x2), slice(y1, y2)))
     return slices
 
-
-#: Available threshold methods
-#: (see :mod:`skimage.filters.thresholding`)
-available_thresholds = {
-    'isodata': skfilters.threshold_isodata,
-    'li': skfilters.threshold_li,
-    'mean': skfilters.threshold_mean,
-    'minimum': skfilters.threshold_minimum,
-    'otsu': skfilters.threshold_otsu,
-    'triangle': skfilters.threshold_triangle,
-    'yen': skfilters.threshold_yen,
-    }

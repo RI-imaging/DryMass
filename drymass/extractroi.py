@@ -6,11 +6,10 @@ import numpy as np
 import qpimage
 import qpsphere
 from skimage.external import tifffile
-import skimage.filters
 
-from . import search, util
 from .roi import ROIManager
-
+from . import search, util
+from . import threshold as thr
 
 #: Default background correction keyword arguments
 BG_DEFAULT_KW = {"fit_offset": "mean",
@@ -34,7 +33,9 @@ def _bg_correct(qpi, which_data, bg_kw={}, bg_mask_thresh=None,
                 image = qpi.pha
             else:
                 image = qpi.amp
-            mask1 = image2mask(image, value_or_method=bg_mask_thresh)
+            mask1 = thr.image2mask(image,
+                                   value_or_method=bg_mask_thresh,
+                                   invert=True)
         else:
             mask1 = None
         if bg_mask_sphere_kw["radial_clearance"] is not None:  # sphere mask
@@ -375,24 +376,6 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
     if len(ret) == 1:
         ret = ret[0]
     return ret
-
-
-def image2mask(image, value_or_method):
-    """Convert an image to a binary mask
-
-    Parameters
-    ----------
-    image: 2d np.ndarray
-        Input image
-    value_or_method: float or str
-        Either a threshold value or a string naming a
-        filter method in :mod:`skimage.filters`.
-    """
-    if isinstance(value_or_method, str):
-        method = getattr(skimage.filters, value_or_method)
-        return image < method(image)
-    else:
-        return image < value_or_method
 
 
 def is_ignored_roi(roi, ignore_data):
