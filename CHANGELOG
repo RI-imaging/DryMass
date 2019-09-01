@@ -1,3 +1,5 @@
+0.9.1
+ - tests: fix failed test due to previous refactorization
 0.9.0
  - feat: allow to change the thresholding filter or use a manual threshold
  - feat: new thresholding filter "dm-nuclei" designed for HL60 cell

@@ -5,6 +5,7 @@ import shutil
 import numpy as np
 import pytest
 import qpimage
+import qpsphere
 
 import drymass
 
@@ -51,15 +52,16 @@ def test_basic():
 @pytest.mark.filterwarnings('ignore::drymass.anasphere.'
                             + 'EdgeDetectionFailedWarning',
                             'ignore::RuntimeWarning')
-def test_radius_exceeds_image_size_warning():
+def test_radius_exceeds_image_size_error():
     pxsize = 1e-6
     size = 200
     _qpi, path, dout = setup_test_data(pxsize=pxsize, size=size)
-    path_out = drymass.analyze_sphere(path, dir_out=dout,
-                                      r0=size*pxsize*2)
-    with qpimage.QPSeries(h5file=path_out, h5mode="r") as qpso:
-        assert np.all(qpso[0].amp == 1)
-        assert np.all(qpso[0].pha == 0)
+    try:
+        drymass.analyze_sphere(path, dir_out=dout, r0=size*pxsize*2)
+    except qpsphere.edgefit.RadiusExceedsImageSizeError:
+        pass
+    else:
+        assert False
 
     try:
         os.remove(path)
