@@ -1,5 +1,4 @@
 import pathlib
-import warnings
 
 import numpy as np
 import qpimage
@@ -104,21 +103,11 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                                                         imagekw=imagekw,
                                                         ret_center=True,
                                                         ret_qpi=True)
-                except qpsphere.edgefit.RadiusExceedsImageSizeError:
-                    # Edge detection cannot proceed because the presumed
-                    # object radius exceeds the image size. This might be
-                    # the result of a "size variation" set too large.
-                    msg = "Edge detection failed for ROI " \
-                          + "{}! Try ".format(qpi["identifier"]) \
-                          + "reducing the value of [roi]: 'size variation'."
-                    warnings.warn(msg, EdgeDetectionFailedWarning)
-                    # use dummy data
-                    n = np.nan
-                    r = np.nan
-                    c = (np.nan, np.nan)
-                    qpi_sim = qpsphere.simulate(radius=0,
-                                                sphere_index=1,
-                                                grid_size=qpi.shape)
+                except BaseException as exc:
+                    # Be more verbose
+                    exc.args = ("ROI {}: ".format(qpi["identifier"])
+                                + exc.args[0],)
+                    raise
                 # write simulation results
                 with qpimage.QPSeries(h5file=h5out, h5mode="a") as qps_out:
                     qps_out.add_qpimage(qpi=qpi_sim, identifier=simident)

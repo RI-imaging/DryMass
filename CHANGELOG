@@ -3,6 +3,9 @@
  - feat: new thresholding filter "dm-nuclei" designed for HL60 cell
    nuclei segmentation
  - fix: configuration file was "touched" even though it was only read
+ - setup: bump qpsphere from 0.5.2 to 0.5.3
+ - ref: increase verbosity of error messages when edge detection step
+   fails
  - ref: new `threshold` submodule for all thresholding operations
 0.8.8
  - setup: bump qpformat from 0.10.2 to 0.10.3 (changes dataset identifiers)
