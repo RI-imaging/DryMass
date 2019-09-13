@@ -1,4 +1,6 @@
 0.9.1
+ - fix: skip sphere analysis when bad model parameters are detected
+ - setup: bump qpsphere from 0.5.3 to 0.5.4
  - tests: fix failed test due to previous refactorization
 0.9.0
  - feat: allow to change the thresholding filter or use a manual threshold
