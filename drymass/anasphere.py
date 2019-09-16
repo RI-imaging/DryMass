@@ -104,8 +104,8 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                                                         ret_center=True,
                                                         ret_qpi=True)
                 except qpsphere.models.excpt.UnsupportedModelParametersError:
-                    print("\rSkipping object {} ".format(qpi["identifier"])
-                          + "because unsupported model paramters were "
+                    print("Skipping object {} ".format(qpi["identifier"])
+                          + "because unsupported model parameters were "
                           + "encountered.")
                     continue
                 except BaseException as exc:

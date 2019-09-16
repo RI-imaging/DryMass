@@ -270,9 +270,10 @@ def plot_qpi_sphere(qpi_real, qpi_sim, path=None, simtype="simulation"):
 
     # line plot through center
     ax6 = plt.subplot(236, title="phase line plot")
-    x = np.arange(qpi_real.shape[1]) * px_um
-    ax6.plot(x, qpi_sim.pha[int(center[0])], label=simtype)
-    ax6.plot(x, qpi_real.pha[int(center[0])], label="data")
+    if int(center[0]) >= 0 and int(center[0]) < qpi_sim.shape[0]:
+        x = np.arange(qpi_real.shape[1]) * px_um
+        ax6.plot(x, qpi_sim.pha[int(center[0])], label=simtype)
+        ax6.plot(x, qpi_real.pha[int(center[0])], label="data")
     ax6.set_xlabel("[µm]")
     ax6.legend(loc="center right")
 

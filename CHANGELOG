@@ -1,5 +1,9 @@
 0.9.1
  - fix: skip sphere analysis when bad model parameters are detected
+ - fix: allow to force-regenerate the sphere analysis images file by
+   deleting it prior to running "dm_analyze_sphere"
+ - fix: do not plot profile in sphere analysis when the center position
+   not within the image data area
  - setup: bump qpsphere from 0.5.3 to 0.5.4
  - tests: fix failed test due to previous refactorization
 0.9.0

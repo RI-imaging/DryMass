@@ -77,29 +77,56 @@ def cli_analyze_sphere(path=None, ret_data=False, profile=None):
     else:
         print("Done (reused previous results).")
 
-    if changed and cfg["output"]["sphere images"]:
+    tifout = path_out / FILE_SPHERE_ANALYSIS_IMAGE.format(
+        cfg["sphere"]["method"],
+        cfg["sphere"]["model"]
+    )
+    if (changed and cfg["output"]["sphere images"]) or not tifout.exists():
         print("Plotting sphere images... ", end="", flush=True)
-        tifout = path_out / FILE_SPHERE_ANALYSIS_IMAGE.format(
-            cfg["sphere"]["method"],
-            cfg["sphere"]["model"]
-        )
         # plot h5series and rmgr with matplotlib
         with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_roi, \
                 qpimage.QPSeries(h5file=h5sim, h5mode="r") as qps_sim, \
                 tifffile.TiffWriter(fspath(tifout), imagej=True) as tf:
-            for ii in range(len(qps_roi)):
-                qpi_real = qps_roi[ii]
-                qpi_sim = qps_sim[ii]
-                assert qpi_real["identifier"] in qpi_sim["identifier"]
-                imio = io.BytesIO()
-                plot.plot_qpi_sphere(qpi_real=qpi_real,
-                                     qpi_sim=qpi_sim,
-                                     path=imio,
-                                     simtype=cfg["sphere"]["model"])
-                imio.seek(0)
-                imdat = (mpimg.imread(imio) * 255).astype("uint8")
-                tf.save(imdat, compress=9)
+            for qpi_real in qps_roi:
+                qpi_sim = find_qpi_by_identifier(qps_sim,
+                                                 qpi_real["identifier"])
+                if qpi_sim is not None:
+                    assert qpi_real["identifier"] in qpi_sim["identifier"]
+                    imio = io.BytesIO()
+                    plot.plot_qpi_sphere(qpi_real=qpi_real,
+                                         qpi_sim=qpi_sim,
+                                         path=imio,
+                                         simtype=cfg["sphere"]["model"])
+                    imio.seek(0)
+                    imdat = (mpimg.imread(imio) * 255).astype("uint8")
+                    tf.save(imdat, compress=9)
         print("Done")
 
     if ret_data:
         return h5sim
+
+
+def find_qpi_by_identifier(qps, identifier):
+    """Find the QPImage that has the same initial parts as identifier
+
+    Parameters
+    ----------
+    qps: qpimage.QPSereis
+        Series data
+    identifier: str
+        A string "hash:number" that identifies a QPImage
+
+    Returns
+    -------
+    qpi: qpimage.QPImage or None
+        The `QPImage` in ``qps`` whose first two identifier parts match
+        ``identifier`` or `None`, if no matching `QPImage` is found.
+    """
+    numid = identifier.count(":") + 1
+    for qpi in qps:
+        parts = qpi["identifier"].split(":")
+        if ":".join(parts[:numid]) == identifier:
+            break
+    else:
+        qpi = None
+    return qpi
