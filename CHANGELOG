@@ -1,3 +1,6 @@
+0.9.2
+ - fix: fitted phase images with the Rytov approximation sometimes
+   exhibited 2PI phase offsets (bump qpimage from 0.5.4 to 0.6.0)
 0.9.1
  - fix: skip sphere analysis when bad model parameters are detected
  - fix: allow to force-regenerate the sphere analysis images file by
