@@ -1,5 +1,5 @@
 from .parse_funcs import fbool, float01, float_or_str, int_or_path, lcstr, \
-    floattuple_or_one, strlist, tupletupleint
+    floattuple_or_one, strlist_fsort, tupletupleint
 
 config = {
     "bg": {
@@ -113,7 +113,7 @@ config = {
         "force":
             (None, tupletupleint, "Force ROI coordinates (x1,x2,y1,y2) [px]"),
         "ignore data":
-            (None, strlist, "Exclude images and ROIs from the analysis",
+            (None, strlist_fsort, "Exclude images and ROIs from the analysis",
              "To exclude individual ROIs found in a previous run, simply "
              "type the ROI index, i.e. 'exclude = 1.0, 2.2'. You may "
              "additionally exclude a full sensor image (e.g. image 3) with "

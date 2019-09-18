@@ -114,6 +114,13 @@ def strlist(alist):
     return alist
 
 
+def strlist_fsort(alist):
+    """Same as `strlist` except sorted according to float-representation"""
+    alist = strlist(alist)
+    alist = sorted(alist, key=lambda x: float(x))
+    return alist
+
+
 def tupletupleint(items):
     """A tuple containing x- and y- slice tuples from a string or tuple"""
     if isinstance(items, str):

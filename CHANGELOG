@@ -1,3 +1,6 @@
+0.9.3
+ - fix: correctly sort ignored ROIs in config
+   (might change dataset identifiers)
 0.9.2
  - fix: fitted phase images with the Rytov approximation sometimes
    exhibited 2PI phase offsets (bump qpimage from 0.5.4 to 0.6.0)
