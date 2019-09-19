@@ -1,4 +1,5 @@
 import os
+import pathlib
 import tempfile
 import time
 import shutil
@@ -174,6 +175,26 @@ def test_recompute_reuse():
     assert changed, "One ROI was removed, thus change"
     # there should still be a marging of .6s
     assert 10 * (tb1 - tb0) < ta1 - ta0
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
+def test_recreate_file_sphere_stat():
+    _qpi, path, dout = setup_test_data()
+    spkw = {"method": "edge",
+            "model": "projection"}
+    drymass.analyze_sphere(path, dir_out=dout, **spkw)
+    stats = (pathlib.Path(dout) /
+             drymass.anasphere.FILE_SPHERE_STAT.format(spkw["method"],
+                                                       spkw["model"]))
+    stats.unlink()
+    assert not stats.exists()
+    drymass.analyze_sphere(path, dir_out=dout, **spkw)
+    assert stats.exists()
 
     try:
         os.remove(path)
