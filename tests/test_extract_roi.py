@@ -162,6 +162,27 @@ def test_no_search():
     shutil.rmtree(dout, ignore_errors=True)
 
 
+def test_no_search_missing_file_slices():
+    radius = 30
+    pxsize = 1e-6
+    _qpi, path, dout = setup_test_data(radius=radius, pxsize=pxsize)
+    try:
+        drymass.extract_roi(path,
+                            dir_out=dout,
+                            size_m=2*radius*pxsize,
+                            search_enabled=False)
+    except ValueError:
+        pass
+    else:
+        assert False, "should not be possible to disable search without ROIs"
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()
