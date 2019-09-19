@@ -59,7 +59,7 @@ def cli_analyze_sphere(path=None, ret_data=False, profile=None):
         "stop_dn": cfg["sphere"]["image stop delta refractive index"],
         "verbose": cfg["sphere"]["image verbosity"],
     }
-    h5sim, changed = analyze_sphere(
+    h5sim, changed, reused = analyze_sphere(
         h5roi=h5roi,
         dir_out=path_out,
         r0=cfg["specimen"]["size um"] / 2 * 1e-6,
@@ -70,12 +70,13 @@ def cli_analyze_sphere(path=None, ret_data=False, profile=None):
         edgekw=edgekw,
         imagekw=imagekw,
         ret_changed=True,
+        ret_reused=True,
         )
 
-    if changed:
-        print("Done.")
+    if reused:
+        print("Done (reused {} previous fits).".format(reused))
     else:
-        print("Done (reused previous results).")
+        print("Done.")
 
     tifout = path_out / FILE_SPHERE_ANALYSIS_IMAGE.format(
         cfg["sphere"]["method"],

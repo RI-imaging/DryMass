@@ -18,7 +18,8 @@ class EdgeDetectionFailedWarning(UserWarning):
 
 def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                    model="projection", edgekw={}, imagekw={},
-                   alpha=.18, rad_fact=1.2, ret_changed=False):
+                   alpha=.18, rad_fact=1.2, ret_changed=False,
+                   ret_reused=False):
     """Perform sphere analysis
 
     Parameters
@@ -45,8 +46,11 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
         Radial inclusion factor for dry mass computation
     ret_changed: bool
         Return boolean indicating whether the sphere data on disk was
-        created/updated (True) or whether previously created ROI
+        created/updated (True) or whether only previously created ROI
         data was used (False).
+    ret_reused: bool
+        Return integer indicating how many previous fits
+        were reused.
     """
     dir_out = pathlib.Path(dir_out).resolve()
 
@@ -65,6 +69,7 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
     # Previous reference dataset may contain valuable fitting results
     h5ref = None
     changed = True
+    reused = 0
     if util.is_series_file(h5out):
         with qpimage.QPSeries(h5file=h5out, h5mode="r") as qps_ref:
             refids = qps_ref.identifier.split(":")
@@ -108,6 +113,7 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                 r = qpi_sim["sim radius"]
                 c = qpi_sim["sim center"]
                 ids_ref.remove(simident)
+                reused += 1
             else:
                 try:
                     # fit sphere model
@@ -170,10 +176,15 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
     if h5ref is not None:
         h5ref.unlink()
 
+    ret = [h5out]
     if ret_changed:
-        return h5out, changed
-    else:
-        return h5out
+        ret.append(changed)
+    if ret_reused:
+        ret.append(reused)
+
+    if len(ret) == 1:
+        ret = ret[0]
+    return ret
 
 
 def absolute_dry_mass_sphere(qpi, radius, center, alpha=.18, rad_fact=1.2):
