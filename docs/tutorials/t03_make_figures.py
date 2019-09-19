@@ -5,7 +5,7 @@ import matplotlib.pylab as plt
 import qpimage
 
 
-path = "QLSR_PAA_beads_modified.h5"
+path = "data/QLSR_PAA_beads_modified.h5"
 
 # setup output directory
 path_in, path_out = cli.dialog.main(path)

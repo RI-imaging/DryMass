@@ -104,3 +104,4 @@ _version_save.py
 *.bib.sav
 .pytest_cache
 
+docs/tutorials/data/

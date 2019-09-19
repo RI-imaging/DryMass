@@ -20,7 +20,7 @@ For this tutorial, you need:
 
 - Python 3.6 or above and DryMass version 0.6.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
-- Experimental dataset: `QLSR_PAA_beads.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads.zip>`_
+- Experimental dataset: `QLSR_PAA_beads.zip <https://ndownloader.figshare.com/files/17722790>`_ :cite:`MuellerQPIref19`
 
 Execute dm_analyze_sphere
 -------------------------
@@ -65,7 +65,7 @@ Photo Viewer). This is the first image stored in the tif file:
 
 It shows the full sensor phase image of the first bead. The white rectangle
 indicates the ROI that was found by DryMass, labeled with the identifier
-*e8717:1.1*. The file *sensor_roi_images.tif* allows you to check that
+*a8dca:1.1*. The file *sensor_roi_images.tif* allows you to check that
 DryMass has correctly found the objects that you are interested in. If the
 beads were not detected correctly, we would probably have to adjust the
 size parameter in the :ref:`sec_configuration_file` (see also 
@@ -91,7 +91,7 @@ Post-processing
 ---------------
 A closer examination of the phase-difference images shows that there seem to
 be either deformed beads or imaging artifacts in the images with the identifiers
-(prepend *e8717:*): *4.1, 7.1, 24.1, 26.1, 27.1, 35.1, 36.1, 39.1, 40.1, 51.1,
+(prepend *a8dca:*): *4.1, 7.1, 24.1, 26.1, 27.1, 35.1, 36.1, 39.1, 40.1, 51.1,
 52.1, 55.1, 58.1, 60.1, 64.1, 67.1,* and *71.1*. Due to their asymmetry
 we ignore these images in our analysis by editing the configuration file:
 

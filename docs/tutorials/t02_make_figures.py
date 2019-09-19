@@ -5,10 +5,16 @@ import numpy as np
 
 from t02_method_comparison import dot_boxplot
 
-path = "DHM_HL60_cells.zip"
+path = "data/DHM_HL60_cells.zip"
 
 # setup output directory
 path_in, path_out = cli.dialog.main(path)
+
+cfg = path_out / "drymass.cfg"
+if cfg.exists():
+    # cleanup first
+    cfg.unlink()
+
 
 # set metadata
 cfg = cli.config.ConfigFile(path_out)
@@ -21,7 +27,7 @@ cli.cli_extract_roi(path=path_in)
 
 # get image 27
 # Note: Remove the DHM_HL60_cells.zip_dm folder to reproduce the figure
-senpath = path_out / cli.FILE_SENSOR_WITH_ROI_IMAGE
+senpath = path_out / cli.extracting.FILE_SENSOR_WITH_ROI_IMAGE
 sentif = imageio.mimread(senpath)[26]
 imageio.imsave("_t02_roi_search1.jpg", sentif[..., :3])
 
@@ -44,8 +50,8 @@ cfg.set_value("sphere", "method", "edge")
 cfg.set_value("sphere", "model", "projection")
 cli.cli_analyze_sphere(path=path_in)
 
-senpath = path_out / cli.FILE_SPHERE_ANALYSIS_IMAGE.format("edge",
-                                                           "projection")
+senpath = path_out / cli.analyzing.FILE_SPHERE_ANALYSIS_IMAGE.format(
+    "edge", "projection")
 sentif = imageio.mimread(senpath)[52]
 imageio.imsave("_t02_edge_projection.jpg", sentif[..., :3])
 
@@ -64,8 +70,9 @@ cfg.set_value("sphere", "method", "image")
 cfg.set_value("sphere", "model", "rytov-sc")
 cli.cli_analyze_sphere(path=path_in)
 
-senpath = path_out / cli.FILE_SPHERE_ANALYSIS_IMAGE.format("image",
-                                                           "rytov-sc")
+
+senpath = path_out / cli.analyzing.FILE_SPHERE_ANALYSIS_IMAGE.format(
+    "image", "rytov-sc")
 sentif = imageio.mimread(senpath)[52]
 imageio.imsave("_t02_image_rytov-sc.jpg", sentif[..., :3])
 
@@ -89,5 +96,5 @@ ax = plt.subplot(111, title="HL60 (DHM)")
 ax.set_ylabel("refractive index")
 dot_boxplot(ax=ax, data=ri_data, colors=colors, labels=labels)
 plt.tight_layout()
-plt.savefig("_t02_reproduced_5d.jpg")
+plt.savefig("_t02_reproduced_5d.png")
 plt.close()

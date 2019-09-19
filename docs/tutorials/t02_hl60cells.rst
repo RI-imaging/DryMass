@@ -18,7 +18,7 @@ For this tutorial, you need:
 
 - Python 3.6 or above and DryMass version 0.6.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
-- Experimental dataset: `DHM_HL60_cells.zip <https://github.com/RI-imaging/QPI-data/raw/master/DHM_HL60_cells.zip>`_
+- Experimental dataset: `DHM_HL60_cells.zip <https://ndownloader.figshare.com/files/17722787>`_ :cite:`MuellerQPIref19`
 
 Find regions of interest
 ------------------------
@@ -115,7 +115,8 @@ this step:
 
 .. note::
 
-    Warnings about *slice and QPImage identifiers* can safely be ignored.
+    If you are using *roi_slices.txt* (above note), you can safely
+    ignore warnings about *slice and QPImage identifiers*.
     Setting the RI of the medium changes the internal ROI identifiers.
     Since we have fixed the ROIs, the identifiers do not match anymore,
     but the enumeration is still correct.

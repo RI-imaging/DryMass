@@ -3,10 +3,15 @@ import imageio
 import numpy as np
 
 
-path = "QLSR_PAA_beads"
+path = "data/QLSR_PAA_beads.zip"
 
 # setup output directory
 path_in, path_out = cli.dialog.main(path)
+
+cfg = path_out / "drymass.cfg"
+if cfg.exists():
+    # cleanup first
+    cfg.unlink()
 
 # set metadata
 cfg = cli.config.ConfigFile(path_out)
@@ -18,13 +23,13 @@ cfg.set_value("meta", "wavelength nm", 647)
 cli.cli_analyze_sphere(path=path_in)
 
 # get first sensor image
-senpath = path_out / cli.FILE_SENSOR_WITH_ROI_IMAGE
+senpath = path_out / cli.extracting.FILE_SENSOR_WITH_ROI_IMAGE
 sentif = imageio.imread(senpath)
 imageio.imsave("_t01_sensor_roi_image.jpg", sentif[..., :3])
 
 # get first sphere image
-roipath = path_out / cli.FILE_SPHERE_ANALYSIS_IMAGE.format("edge",
-                                                           "projection")
+roipath = path_out / cli.analyzing.FILE_SPHERE_ANALYSIS_IMAGE.format(
+    "edge", "projection")
 roitif = imageio.imread(roipath)
 imageio.imsave("_t01_sphere_edge_projection_image.jpg", roitif[..., :3])
 

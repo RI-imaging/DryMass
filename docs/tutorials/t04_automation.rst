@@ -18,7 +18,7 @@ Prerequisites
 For this tutorial, you need:
 
 - Python 3.6 or above and DryMass version 0.8.0 or above (see :ref:`section_install`)
-- Experimental dataset: `DHM_HL60_cells.zip <https://github.com/RI-imaging/QPI-data/raw/master/DHM_HL60_cells.zip>`_
+- Experimental dataset: `DHM_HL60_cells.zip <https://ndownloader.figshare.com/files/17722787>`_ :cite:`MuellerQPIref19`
 
 Setup example measurements
 --------------------------
