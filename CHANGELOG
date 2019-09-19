@@ -2,7 +2,7 @@
  - fix: correctly sort ignored ROIs in config
  - enh: reuse fits from previous runs in "dm_analyze_sphere"
  - enh: print number of reused fits in "dm_analyze_sphere"
- - ref: changed convention for QPSeries an QPImage data identifiers
+ - ref: changed convention for QPSeries and QPImage data identifiers
    (QPSeries contains full trace of hashes, QPImage only contains
    dataset hash, image index, and simulation type)
 0.9.2
