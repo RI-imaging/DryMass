@@ -8,12 +8,11 @@ import qpimage
 import drymass
 
 
-def setup_test_data(radius=30, pxsize=1e-6, size=200, num=1, identifier=None,
-                    medium_index=1.335, wavelength=550e-9, bg=None):
+def setup_test_data(radius=30, pxsize=1e-6, size=200, cx=80, cy=120, num=1,
+                    identifier=None, medium_index=1.335, wavelength=550e-9,
+                    bg=None):
     x = np.arange(size).reshape(-1, 1)
     y = np.arange(size).reshape(1, -1)
-    cx = 80
-    cy = 120
     r = np.sqrt((x - cx)**2 + (y - cy)**2)
     image = (r < radius) * 1.3
     if bg is not None:

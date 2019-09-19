@@ -1,5 +1,6 @@
 import os
 import tempfile
+import time
 import shutil
 
 import numpy as np
@@ -8,6 +9,8 @@ import qpimage
 import qpsphere
 
 import drymass
+
+from test_extract_roi import setup_test_data as setup_test_data_roi
 
 
 def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
@@ -125,6 +128,52 @@ def test_recompute_edge_when_otherkw_changes():
                                          edgekw={"clip_rmax": 1.2},
                                          ret_changed=True)
     assert changed, "change due to other edgekw"
+
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+    shutil.rmtree(dout, ignore_errors=True)
+
+
+def test_recompute_reuse():
+    cx = 14
+    cy = 16
+    radius = 7
+    size = 30
+    pxsize = 1e-6
+    _qpi, path, dout = setup_test_data_roi(num=2,
+                                           radius=radius,
+                                           pxsize=pxsize,
+                                           size=size,
+                                           cx=cx,
+                                           cy=cy)
+
+    # extract ROIs
+    roikw = {"size_m": 2*radius*pxsize,
+             "dist_border": 0,
+             "pad_border": 3}
+    path_rois = drymass.extract_roi(path, dir_out=dout, **roikw)
+    # perform sphere analysis
+    ta0 = time.perf_counter()
+    drymass.analyze_sphere(path_rois, dir_out=dout,
+                           method="image",
+                           model="projection")
+    ta1 = time.perf_counter()
+
+    # extract ROIs, ignoring first image
+    drymass.extract_roi(path, dir_out=dout, ignore_data=["1"], **roikw)
+    # this time it should be very fast
+    tb0 = time.perf_counter()
+    _out, changed = drymass.analyze_sphere(path_rois, dir_out=dout,
+                                           method="image",
+                                           model="projection",
+                                           ret_changed=True)
+    tb1 = time.perf_counter()
+
+    assert changed, "One ROI was removed, thus change"
+    # there should still be a marging of .6s
+    assert 10 * (tb1 - tb0) < ta1 - ta0
 
     try:
         os.remove(path)
