@@ -3,6 +3,7 @@ import hashlib
 import pathlib
 
 import numpy as np
+import qpimage
 
 
 def hash_file(path, blocksize=65536):
@@ -44,6 +45,20 @@ def hash_object(obj):
     ihasher = hashlib.sha256()
     ihasher.update(obj2bytes(obj))
     return ihasher.hexdigest()[:6]
+
+
+def is_series_file(path):
+    """Return True if `path` is a qpimage.QPSeries file with identifier"""
+    valid = False
+    if pathlib.Path(path).exists():
+        try:
+            with qpimage.QPSeries(h5file=path, h5mode="r") as qps:
+                if len(qps) and qps.identifier is not None:
+                    valid = True
+        except (IOError, OSError):
+            # corrupt file
+            pass
+    return valid
 
 
 def obj2bytes(obj):

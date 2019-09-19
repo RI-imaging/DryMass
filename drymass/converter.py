@@ -7,6 +7,8 @@ import qpformat
 import qpimage
 from skimage.external import tifffile
 
+from . import util
+
 #: Output qpimage.QPSeries sensor data
 FILE_SENSOR_DATA_H5 = "sensor_data.h5"
 #: Output phase/amplitude TIFF sensor data
@@ -54,7 +56,7 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
                                   which_data=("phase", "amplitude"))
         ds.set_bg(bg_data)
 
-    if h5out.exists():
+    if util.is_series_file(h5out):
         with qpimage.QPSeries(h5file=h5out, h5mode="r") as qpsr:
             if (ds.identifier == qpsr.identifier and
                     len(ds) == len(qpsr)):

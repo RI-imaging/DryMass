@@ -54,22 +54,37 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
     statout = dir_out / FILE_SPHERE_STAT.format(method, model)
 
     with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps:
-        cfgid = util.hash_object([qps,
-                                  r0,
+        dataid, roiparid, roiexclid = qps.identifier.split(":")
+        cfgid = util.hash_object([r0,
                                   method,
                                   model,
                                   edgekw,
                                   imagekw if method == "image" else None,
                                   alpha,
                                   rad_fact])
+    # Previous reference dataset may contain valuable fitting results
+    h5ref = None
+    changed = True
+    if util.is_series_file(h5out):
+        with qpimage.QPSeries(h5file=h5out, h5mode="r") as qps_ref:
+            refids = qps_ref.identifier.split(":")
+            refids.pop(2)  # remove roiexclid from identifier
+        if [dataid, roiparid, cfgid] == refids:
+            # reuse (rename to temporary file)
+            h5ref = h5out.with_suffix(".ref.h5")
+            h5out.rename(h5ref)
+            changed = False
 
-    create = mode_for_sphere_analysis(h5in=h5roi, h5out=h5out, cfgid=cfgid)
+    ids_ref = []
+    if h5ref is not None:
+        with qpimage.QPSeries(h5file=h5ref, h5mode="r") as qps_ref:
+            ids_ref = [qpi["identifier"] for qpi in qps_ref]
 
-    # initialize file
-    initmode = "w" if create else "r"
-    with qpimage.QPSeries(h5file=h5out, h5mode=initmode) as qps_out:
-        # get all simulation identifiers from previous analysis
-        ids_out = [qpi["identifier"] for qpi in qps_out]
+    # initialize output file with identifier
+    identifier = ":".join([dataid, roiparid, roiexclid, cfgid])
+    with qpimage.QPSeries(h5file=h5out, h5mode="w",
+                          identifier=identifier) as qps_out:
+        pass
 
     with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_in, \
             statout.open(mode="w") as fd:
@@ -85,13 +100,14 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
         fd.write("#" + "\t".join(header) + "\r\n")
 
         for qpi in qps_in:
-            simident = "{}:{}:sim:{}".format(qpi["identifier"], cfgid, model)
-            if simident in ids_out:
-                # read simulation results
-                with qpimage.QPSeries(h5file=h5out, h5mode="r") as qps_out:
-                    n = qps_out[simident]["sim index"]
-                    r = qps_out[simident]["sim radius"]
-                    c = qps_out[simident]["sim center"]
+            simident = "{}:{}".format(qpi["identifier"], model)
+            if simident in ids_ref:
+                with qpimage.QPSeries(h5file=h5ref, h5mode="r") as qps_ref:
+                    qpi_sim = qps_ref[simident].copy()
+                n = qpi_sim["sim index"]
+                r = qpi_sim["sim radius"]
+                c = qpi_sim["sim center"]
+                ids_ref.remove(simident)
             else:
                 try:
                     # fit sphere model
@@ -113,9 +129,11 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                     exc.args = ("ROI {}: ".format(qpi["identifier"])
                                 + exc.args[0],)
                     raise
-                # write simulation results
-                with qpimage.QPSeries(h5file=h5out, h5mode="a") as qps_out:
-                    qps_out.add_qpimage(qpi=qpi_sim, identifier=simident)
+                else:
+                    changed = True
+            # write simulation results
+            with qpimage.QPSeries(h5file=h5out, h5mode="a") as qps_out:
+                qps_out.add_qpimage(qpi=qpi_sim, identifier=simident)
             # finally, update text file
             if "time" in qpi:
                 qptime = qpi["time"]
@@ -145,8 +163,15 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
             fd.write("\t".join([str(data[k]) for k in header]) + "\r\n")
             fd.flush()
 
+    if ids_ref:
+        # leftovers
+        changed = True
+    # cleanup
+    if h5ref is not None:
+        h5ref.unlink()
+
     if ret_changed:
-        return h5out, create
+        return h5out, changed
     else:
         return h5out
 
@@ -260,57 +285,3 @@ def relative_dry_mass(qpi, radius, center, alpha=.18, rad_fact=1.2):
     # [kg]
     dm = wavelength / (2 * np.pi * alpha * fact) * phi_tot * pxarea
     return dm
-
-
-def mode_for_sphere_analysis(h5in, h5out, cfgid):
-    """Determine the mode for the QPSeries file for subsequent analysis
-
-    Sometimes an analysis is interrupted and the output files are
-    still intact. This method determines whether it is possible to
-    continue the analysis where left off or not.
-
-    Parameters
-    ----------
-    h5in: pathlib.Path
-        The input QPSeries file
-    h5out: pathlib.Path
-        The output QPSeries file
-    cfgid: str
-        The configuration hash of the sphere analysis which is
-        part of the output QPSeries analysis
-
-    Returns
-    -------
-    create: bool
-        Whether the output QPSeries file is ok. This is dependent
-        on the following scenarios:
-
-        - True: There is no output QPSeries file, it is corrupt,
-              or at least one of the qpimage identifiers is not present
-              in the input QPSeries.
-        - False: Some of the input QPSeries identifiers are
-              present in the output QPSeries.
-    """
-    with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps_in:
-        # read all identifiers
-        idsin = [qpi["identifier"] for qpi in qps_in]
-
-    try:
-        with qpimage.QPSeries(h5file=h5out, h5mode="r") as qps_out:
-            # read all identifiers
-            idsout = [qpi["identifier"] for qpi in qps_out]
-    except (IOError, OSError):
-        # corrupt file
-        idsout = []
-
-    valid = []  # matching identifiers
-    bad = []  # those exist in h5out but not in h5in
-
-    for oid in idsout:
-        iid, iicfg = oid.rsplit(":", 3)[:2]
-        if iid in idsin and iicfg == cfgid:
-            valid.append(iid)
-        else:
-            bad.append(iid)
-
-    return bad or not valid

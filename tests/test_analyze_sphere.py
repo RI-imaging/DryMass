@@ -25,7 +25,8 @@ def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
                                      "wavelength": wavelength})
     path = tempfile.mktemp(suffix=".h5", prefix="drymass_test_sphere")
     dout = tempfile.mkdtemp(prefix="drymass_test_sphere_")
-    with qpimage.QPSeries(h5file=path) as qps:
+    identifier = "abcdef:123456:a1b2c3"
+    with qpimage.QPSeries(h5file=path, identifier=identifier) as qps:
         for ii in range(num):
             qps.add_qpimage(qpi, identifier="test_{}".format(ii))
     return qpi, path, dout
@@ -40,7 +41,7 @@ def test_basic():
         assert qpso[0]["wavelength"] == qpi["wavelength"]
         assert qpso[0]["pixel size"] == qpi["pixel size"]
         assert qpso[0]["medium index"] == qpi["medium index"]
-        assert qpso[0]["identifier"].count("sim:projection")
+        assert qpso[0]["identifier"].count("projection")
 
     try:
         os.remove(path)

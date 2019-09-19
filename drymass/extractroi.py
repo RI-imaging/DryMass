@@ -257,11 +257,11 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
     -----
     The output hdf5 file `dir_out/FILE_ROI_DATA_H5` is a
     :class:`qpimage.QPSeries` file with the keyword "identifier"
-    consisting of two hashes: one from the relevant arguments
-    to this method and one from the file `dir_out/FILE_SLICES`.
-    This is to ensure that user-manipulated data is taken into
-    account when deciding whether the ROIs should be re-computed
-    after an initial run.
+    consisting of three hashes in the form
+    "hash_data:hash_roiparms:hash_roisexcl", where "hash_data" is
+    the hash of the source dataset, "hash_roiparms", is the hash of
+    the ROI extraction configuration, and "hash_roisexcl" is the hash
+    of the ROI indices excluded.
     """
     h5in = pathlib.Path(h5series)
     dout = pathlib.Path(dir_out)
@@ -270,33 +270,48 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
     imout = dout / FILE_ROI_DATA_TIF
     slout = dout / FILE_SLICES
 
-    with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps:
-        cfgid = util.hash_object([qps,
-                                  size_m,
-                                  size_var,
-                                  max_ecc,
-                                  dist_border,
-                                  pad_border,
-                                  exclude_overlap,
-                                  threshold,
-                                  ignore_data,
-                                  force_roi,
-                                  bg_amp_kw,
-                                  bg_amp_bin,
-                                  bg_amp_mask_radial_clearance,
-                                  bg_pha_kw,
-                                  bg_pha_bin,
-                                  bg_pha_mask_radial_clearance,
-                                  bg_sphere_edge_kw,
-                                  search_enabled,
-                                  ])
-
-    # Determine whether we have to extract the ROIs
-    if h5out.exists() and slout.exists():
+    if slout.exists():
         slid = util.hash_file(slout)
-        identifier = "{}-{}".format(cfgid, slid)
+    elif not search_enabled:
+        raise ValueError("File '{}' does not exist but is ".format(slout)
+                         + "required when `search_enabled` is `False`.")
+    with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps:
+        cfgid = util.hash_object([
+            size_m,
+            size_var,
+            max_ecc,
+            dist_border,
+            pad_border,
+            exclude_overlap,
+            # `ignore_data` is not here, because it is not related to
+            # extracting ROIs, but rather their selection, which is why it
+            # should only affect `slid`, not `cfgid` (We need cfgid later
+            # in the sphere analysis to avoid recomputation of fits when
+            # a ROI is excluded by the user in a subsequent run).
+            threshold,
+            force_roi,
+            bg_amp_kw,
+            bg_amp_bin,
+            bg_amp_mask_radial_clearance,
+            bg_pha_kw,
+            bg_pha_bin,
+            bg_pha_mask_radial_clearance,
+            bg_sphere_edge_kw,
+            # If no search is performed, then `slid` is, by definition,
+            # an important part of the ROI extraction process and must
+            # be part of `cfgid`.
+            slid if not search_enabled else None,
+            ])
+        identifier_roi = "{}:{}".format(qps.identifier, cfgid)
+    # identifies which indices of those ROIs computed are used
+    if ignore_data:
+        idxid = util.hash_object(ignore_data)
+    else:
+        idxid = "full"
+    # Determine whether we have to extract the ROIs
+    if util.is_series_file(h5out) and slout.exists():
         with qpimage.QPSeries(h5file=h5out, h5mode="r") as qpo:
-            if qpo.identifier == identifier:
+            if qpo.identifier == "{}:{}".format(identifier_roi, idxid):
                 create = False
             else:
                 create = True
@@ -358,11 +373,8 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
             bg_pha_mask_sphere_kw=bg_pha_mask_sphere_kw,
             search_enabled=search_enabled,
             )
-        # manually set the identifier with the updated file slout
-        slid = util.hash_file(slout)
-        identifier = "{}-{}".format(cfgid, slid)
         with qpimage.QPSeries(h5file=h5out, h5mode="a") as qpo:
-            qpo.h5.attrs["identifier"] = identifier
+            qpo.h5.attrs["identifier"] = "{}:{}".format(identifier_roi, idxid)
     else:
         with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps:
             rmgr = ROIManager(qps.identifier)
