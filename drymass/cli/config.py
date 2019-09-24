@@ -208,7 +208,7 @@ class ConfigFile(object):
                 if value is not None:
                     value = typefunc(value)
                     if typefunc in [parse_funcs.strlist,
-                                    parse_funcs.strlist_fsort]:
+                                    parse_funcs.strlist_vsort]:
                         # cosmetics for e.g. '[roi]: ignore data'
                         value = ", ".join(value)
                 lines.append("{} = {}".format(sk, value))

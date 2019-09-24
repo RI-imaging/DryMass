@@ -1,3 +1,6 @@
+0.9.4
+ - fix: correctly sort ignored ROIs in config
+   (previously used float-representation, now use version-representation)
 0.9.3
  - fix: correctly sort ignored ROIs in config
  - enh: reuse fits from previous runs in "dm_analyze_sphere"

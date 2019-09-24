@@ -122,6 +122,11 @@ def test_lcstr():
     assert parse_funcs.lcstr("ASD") == "asd"
 
 
+def test_strlist_vsort():
+    assert parse_funcs.strlist_vsort("1.1, 2.1, 3") == ["1.1", "2.1", "3"]
+    assert parse_funcs.strlist_vsort("1.10, 1.9") == ["1.9", "1.10"]
+
+
 def test_tupletupleint():
     assert parse_funcs.tupletupleint("[(1, 2), (3, 4)]") == ((1, 2), (3, 4))
     assert parse_funcs.tupletupleint("1, 2, 3, 4") == ((1, 2), (3, 4))
