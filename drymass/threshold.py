@@ -77,11 +77,17 @@ def threshold_drymass_nuclei(image):
     return thresh
 
 
+def threshold_li(image):
+    """Li threshold optimized for cells in QPI"""
+    return skfilters.threshold_li(image,
+                                  initial_guess=np.percentile(image, q=95))
+
+
 #: Dictionary containing all thresholding methods available in DryMass
 threshold_dict = {
     'dm-nuclei': threshold_drymass_nuclei,
     'isodata': skfilters.threshold_isodata,
-    'li': skfilters.threshold_li,
+    'li': threshold_li,
     'mean': skfilters.threshold_mean,
     'minimum': skfilters.threshold_minimum,
     'otsu': skfilters.threshold_otsu,

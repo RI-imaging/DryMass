@@ -1,3 +1,5 @@
+0.10.0
+ - ref: migrate to scikit-image 0.16.1
 0.9.4
  - fix: correctly sort ignored ROIs in config
    (previously used float-representation, now use version-representation)
