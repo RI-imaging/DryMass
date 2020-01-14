@@ -1,3 +1,7 @@
+0.10.1
+ - setup: bump qpfromat from 0.10.3 to 0.10.4
+ - setup: bump qpimage from 0.6.0 to 0.6.1
+ - setup: bump qpsphere frmo 0.5.5 to 0.5.7
 0.10.0
  - ref: migrate to scikit-image 0.16.1
 0.9.4
