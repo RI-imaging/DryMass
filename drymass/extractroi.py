@@ -68,9 +68,12 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                  dist_border, pad_border, exclude_overlap, ignore_data,
                  bg_amp_kw, bg_amp_bin, bg_amp_mask_sphere_kw,
                  bg_pha_kw, bg_pha_bin, bg_pha_mask_sphere_kw,
-                 search_enabled, threshold):
+                 search_enabled, threshold, count, max_count):
     # Determine ROI location
     with qpimage.QPSeries(h5file=h5in, h5mode="r") as qps:
+        if max_count is not None:
+            with max_count.get_lock():
+                max_count.value += 2*len(qps)
         rmgr = ROIManager(qps.identifier)
         if search_enabled:
             for ii in range(len(qps)):
@@ -95,8 +98,14 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                              image_index=image_index,
                              roi_index=roi_index,
                              identifier=slident)
+                if count is not None:
+                    with count.get_lock():
+                        count.value += 1
             rmgr.save(slout)
         else:
+            if count is not None:
+                with count.get_lock():
+                    count.value += len(qps)
             rmgr.load(slout)
 
     # Verify ignore_data parameter
@@ -158,6 +167,9 @@ def _extract_roi(h5in, h5out, slout, imout, size_m, size_var, max_ecc,
                     # override `slident` with user identifier
                     slident = roi.identifier
                 qps_roi.add_qpimage(qpisl, identifier=slident)
+            if count is not None:
+                with count.get_lock():
+                    count.value += 1
 
         if len(qps_roi):
             # Write TIF
@@ -184,7 +196,8 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
                 bg_pha_kw=BG_DEFAULT_KW, bg_pha_bin=None,
                 bg_pha_mask_radial_clearance=None,
                 bg_sphere_edge_kw={}, search_enabled=True,
-                ret_roimgr=False, ret_changed=False):
+                ret_roimgr=False, ret_changed=False,
+                count=None, max_count=None):
     """Extract ROIs from a qpimage.QPSeries hdf5 file
 
     Parameters
@@ -252,6 +265,11 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
         Return boolean indicating whether the ROI data on disk was
         created/updated (True) or whether previously created ROI
         data was used (False).
+    count, max_count: multiprocessing.Value
+        Can be used to monitor the progress of the algorithm.
+        Initially, the value of `max_count.value` is incremented
+        by the total number of steps. At each step, the value
+        of `count.value` is incremented.
 
     Notes
     -----
@@ -301,7 +319,7 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
             # an important part of the ROI extraction process and must
             # be part of `cfgid`.
             slid if not search_enabled else None,
-            ])
+        ])
         identifier_roi = "{}:{}".format(qps.identifier, cfgid)
     # identifies which indices of those ROIs computed are used
     if ignore_data:
@@ -372,7 +390,9 @@ def extract_roi(h5series, dir_out, size_m, size_var=.5, max_ecc=.7,
             bg_pha_bin=bg_pha_bin,
             bg_pha_mask_sphere_kw=bg_pha_mask_sphere_kw,
             search_enabled=search_enabled,
-            )
+            count=count,
+            max_count=max_count,
+        )
         with qpimage.QPSeries(h5file=h5out, h5mode="a") as qpo:
             qpo.h5.attrs["identifier"] = "{}:{}".format(identifier_roi, idxid)
     else:

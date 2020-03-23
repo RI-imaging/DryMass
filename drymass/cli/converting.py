@@ -4,6 +4,7 @@ from ..converter import convert
 
 from . import config
 from . import dialog
+from .task_watcher import TaskWatcher
 
 
 def cli_convert(path=None, ret_data=False, profile=None):
@@ -24,7 +25,7 @@ def cli_convert(path=None, ret_data=False, profile=None):
         # nothing else to do
         return
     cfg = config.ConfigFile(path_out)
-    print("Converting input data... ", end="", flush=True)
+
     meta_data = {"pixel size": cfg["meta"]["pixel size um"] * 1e-6,
                  "wavelength": cfg["meta"]["wavelength nm"] * 1e-9,
                  "medium index": cfg["meta"]["medium index"],
@@ -40,16 +41,20 @@ def cli_convert(path=None, ret_data=False, profile=None):
     bg_data_pha = parse_bg_value(cfg["bg"]["phase data"],
                                  reldir=path_in.parent)
 
-    h5series, ds, changed = convert(path_in=path_in,
-                                    dir_out=path_out,
-                                    meta_data=meta_data,
-                                    holo_kw=holo_kw,
-                                    bg_data_amp=bg_data_amp,
-                                    bg_data_pha=bg_data_pha,
-                                    write_tif=cfg["output"]["sensor tif data"],
-                                    ret_dataset=True,
-                                    ret_changed=True,
-                                    )
+    with TaskWatcher("Converting input data... ") as tw:
+        h5series, ds, changed = convert(
+            path_in=path_in,
+            dir_out=path_out,
+            meta_data=meta_data,
+            holo_kw=holo_kw,
+            bg_data_amp=bg_data_amp,
+            bg_data_pha=bg_data_pha,
+            write_tif=cfg["output"]["sensor tif data"],
+            ret_dataset=True,
+            ret_changed=True,
+            count=tw.count,
+            max_count=tw.max_count,
+            )
     if "hologram" not in ds.storage_type:
         # remove "holo" section from configuration
         cfg.remove_section("holo")

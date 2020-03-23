@@ -19,7 +19,7 @@ class EdgeDetectionFailedWarning(UserWarning):
 def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                    model="projection", edgekw={}, imagekw={},
                    alpha=.18, rad_fact=1.2, ret_changed=False,
-                   ret_reused=False):
+                   ret_reused=False, count=None, max_count=None):
     """Perform sphere analysis
 
     Parameters
@@ -51,6 +51,11 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
     ret_reused: bool
         Return integer indicating how many previous fits
         were reused.
+    count, max_count: multiprocessing.Value
+        Can be used to monitor the progress of the algorithm.
+        Initially, the value of `max_count.value` is incremented
+        by the total number of steps. At each step, the value
+        of `count.value` is incremented.
     """
     dir_out = pathlib.Path(dir_out).resolve()
 
@@ -103,6 +108,10 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
                   "medium",
                   ]
         fd.write("#" + "\t".join(header) + "\r\n")
+
+        if max_count is not None:
+            with max_count.get_lock():
+                max_count.value += len(qps_in)
 
         for qpi in qps_in:
             simident = "{}:{}".format(qpi["identifier"], model)
@@ -168,6 +177,9 @@ def analyze_sphere(h5roi, dir_out, r0=10e-6, method="edge",
             }
             fd.write("\t".join([str(data[k]) for k in header]) + "\r\n")
             fd.flush()
+            if count is not None:
+                with count.get_lock():
+                    count.value += 1
 
     if ids_ref:
         # leftovers

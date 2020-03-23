@@ -7,10 +7,11 @@ from skimage.external import tifffile
 
 from ..anasphere import analyze_sphere
 
-from . import plot
 from . import config
 from . import dialog
 from .extracting import cli_extract_roi
+from . import plot
+from .task_watcher import TaskWatcher
 
 
 #: Matplotlib images of sphere analysis (TIFF)
@@ -37,7 +38,6 @@ def cli_analyze_sphere(path=None, ret_data=False, profile=None):
         return
     cfg = config.ConfigFile(path_out)
     h5roi = cli_extract_roi(path=path_in, ret_data=True)
-    print("Performing sphere analysis... ", end="", flush=True)
 
     # canny edge detection parameters
     edgekw = {
@@ -59,18 +59,22 @@ def cli_analyze_sphere(path=None, ret_data=False, profile=None):
         "stop_dn": cfg["sphere"]["image stop delta refractive index"],
         "verbose": cfg["sphere"]["image verbosity"],
     }
-    h5sim, changed, reused = analyze_sphere(
-        h5roi=h5roi,
-        dir_out=path_out,
-        r0=cfg["specimen"]["size um"] / 2 * 1e-6,
-        method=cfg["sphere"]["method"],
-        model=cfg["sphere"]["model"],
-        alpha=cfg["sphere"]["refraction increment"],
-        rad_fact=cfg["sphere"]["radial inclusion factor"],
-        edgekw=edgekw,
-        imagekw=imagekw,
-        ret_changed=True,
-        ret_reused=True,
+
+    with TaskWatcher("Performing sphere analysis... ") as tw:
+        h5sim, changed, reused = analyze_sphere(
+            h5roi=h5roi,
+            dir_out=path_out,
+            r0=cfg["specimen"]["size um"] / 2 * 1e-6,
+            method=cfg["sphere"]["method"],
+            model=cfg["sphere"]["model"],
+            alpha=cfg["sphere"]["refraction increment"],
+            rad_fact=cfg["sphere"]["radial inclusion factor"],
+            edgekw=edgekw,
+            imagekw=imagekw,
+            ret_changed=True,
+            ret_reused=True,
+            count=tw.count,
+            max_count=tw.max_count,
         )
 
     if reused:
@@ -83,24 +87,27 @@ def cli_analyze_sphere(path=None, ret_data=False, profile=None):
         cfg["sphere"]["model"]
     )
     if (changed and cfg["output"]["sphere images"]) or not tifout.exists():
-        print("Plotting sphere images... ", end="", flush=True)
-        # plot h5series and rmgr with matplotlib
-        with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_roi, \
-                qpimage.QPSeries(h5file=h5sim, h5mode="r") as qps_sim, \
-                tifffile.TiffWriter(fspath(tifout), imagej=True) as tf:
-            for qpi_real in qps_roi:
-                qpi_sim = find_qpi_by_identifier(qps_sim,
-                                                 qpi_real["identifier"])
-                if qpi_sim is not None:
-                    assert qpi_real["identifier"] in qpi_sim["identifier"]
-                    imio = io.BytesIO()
-                    plot.plot_qpi_sphere(qpi_real=qpi_real,
-                                         qpi_sim=qpi_sim,
-                                         path=imio,
-                                         simtype=cfg["sphere"]["model"])
-                    imio.seek(0)
-                    imdat = (mpimg.imread(imio) * 255).astype("uint8")
-                    tf.save(imdat, compress=9)
+
+        with TaskWatcher("Plotting sphere images... ") as tw:
+            # plot h5series and rmgr with matplotlib
+            with qpimage.QPSeries(h5file=h5roi, h5mode="r") as qps_roi, \
+                    qpimage.QPSeries(h5file=h5sim, h5mode="r") as qps_sim, \
+                    tifffile.TiffWriter(fspath(tifout), imagej=True) as tf:
+                tw.max_count.value += len(qps_roi)
+                for qpi_real in qps_roi:
+                    qpi_sim = find_qpi_by_identifier(qps_sim,
+                                                     qpi_real["identifier"])
+                    if qpi_sim is not None:
+                        assert qpi_real["identifier"] in qpi_sim["identifier"]
+                        imio = io.BytesIO()
+                        plot.plot_qpi_sphere(qpi_real=qpi_real,
+                                             qpi_sim=qpi_sim,
+                                             path=imio,
+                                             simtype=cfg["sphere"]["model"])
+                        imio.seek(0)
+                        imdat = (mpimg.imread(imio) * 255).astype("uint8")
+                        tf.save(imdat, compress=9)
+                    tw.count.value += 1
         print("Done")
 
     if ret_data:

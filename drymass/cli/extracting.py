@@ -9,9 +9,11 @@ from skimage.external import tifffile
 from ..extractroi import extract_roi
 
 from . import config
+from .converting import cli_convert
 from . import dialog
 from . import plot
-from .converting import cli_convert
+from .task_watcher import TaskWatcher
+
 
 #: Matplotlib images of sensor data with labeled ROI (TIFF)
 FILE_SENSOR_WITH_ROI_IMAGE = "sensor_roi_images.tif"
@@ -35,7 +37,6 @@ def cli_extract_roi(path=None, ret_data=False, profile=None):
     h5series = cli_convert(path=path_in, ret_data=True)
     # get the configuration after cli_convert was run
     cfg = config.ConfigFile(path_out)
-    print("Extracting ROIs... ", end="", flush=True)
     # background correction
     if cfg["bg"]["enabled"]:
         bg_amp_kw = {"fit_offset": cfg["bg"]["amplitude offset"],
@@ -67,29 +68,32 @@ def cli_extract_roi(path=None, ret_data=False, profile=None):
         bg_pha_kw = None
         edge_kw = {}
 
-    h5roi, rmgr, changed = extract_roi(
-        h5series=h5series,
-        dir_out=path_out,
-        size_m=cfg["specimen"]["size um"] * 1e-6,
-        size_var=cfg["roi"]["size variation"],
-        max_ecc=cfg["roi"]["eccentricity max"],
-        dist_border=cfg["roi"]["dist border px"],
-        pad_border=cfg["roi"]["pad border px"],
-        exclude_overlap=cfg["roi"]["exclude overlap px"],
-        threshold=cfg["roi"]["threshold"],
-        ignore_data=cfg["roi"]["ignore data"],
-        force_roi=cfg["roi"]["force"],
-        bg_amp_kw=bg_amp_kw,
-        bg_amp_bin=cfg["bg"]["amplitude binary threshold"],
-        bg_amp_mask_radial_clearance=cfg["bg"]["amplitude mask sphere"],
-        bg_pha_kw=bg_pha_kw,
-        bg_pha_bin=cfg["bg"]["phase binary threshold"],
-        bg_pha_mask_radial_clearance=cfg["bg"]["phase mask sphere"],
-        bg_sphere_edge_kw=edge_kw,
-        search_enabled=cfg["roi"]["enabled"],
-        ret_roimgr=True,
-        ret_changed=True,
-    )
+    with TaskWatcher("Extracting ROIs... ") as tw:
+        h5roi, rmgr, changed = extract_roi(
+            h5series=h5series,
+            dir_out=path_out,
+            size_m=cfg["specimen"]["size um"] * 1e-6,
+            size_var=cfg["roi"]["size variation"],
+            max_ecc=cfg["roi"]["eccentricity max"],
+            dist_border=cfg["roi"]["dist border px"],
+            pad_border=cfg["roi"]["pad border px"],
+            exclude_overlap=cfg["roi"]["exclude overlap px"],
+            threshold=cfg["roi"]["threshold"],
+            ignore_data=cfg["roi"]["ignore data"],
+            force_roi=cfg["roi"]["force"],
+            bg_amp_kw=bg_amp_kw,
+            bg_amp_bin=cfg["bg"]["amplitude binary threshold"],
+            bg_amp_mask_radial_clearance=cfg["bg"]["amplitude mask sphere"],
+            bg_pha_kw=bg_pha_kw,
+            bg_pha_bin=cfg["bg"]["phase binary threshold"],
+            bg_pha_mask_radial_clearance=cfg["bg"]["phase mask sphere"],
+            bg_sphere_edge_kw=edge_kw,
+            search_enabled=cfg["roi"]["enabled"],
+            ret_roimgr=True,
+            ret_changed=True,
+            count=tw.count,
+            max_count=tw.max_count,
+        )
     if changed:
         print("Done.")
     else:

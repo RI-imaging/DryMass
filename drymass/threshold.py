@@ -93,7 +93,7 @@ threshold_dict = {
     'otsu': skfilters.threshold_otsu,
     'triangle': skfilters.threshold_triangle,
     'yen': skfilters.threshold_yen,
-    }
+}
 
 #: Available thresholding method names;
 #: The thresholding methods are either defined in this module

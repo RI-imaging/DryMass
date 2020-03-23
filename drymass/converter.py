@@ -17,11 +17,17 @@ FILE_SENSOR_DATA_TIF = "sensor_data.tif"
 
 def convert(path_in, dir_out, meta_data={}, holo_kw={},
             bg_data_amp=None, bg_data_pha=None, write_tif=False,
-            ret_dataset=False, ret_changed=False):
+            ret_dataset=False, ret_changed=False, count=None, max_count=None):
     """Convert experimental data to `qpimage.QPSeries` on disk
 
     Parameters
     ----------
+    path_in: str or pathlib.Path
+        Input path to file or directory
+    dir_out: str or pathlib.Path
+        Outuput direcory
+    meta_data: dict
+        Meta data (see `qpimage.meta.DATA_KEYS`)
     bg_data_amp, bg_data_pha: None, int, or path to file
         The background data for phase and amplitude. One of
 
@@ -34,6 +40,19 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
           Path to a separate file that is used for background
           correction, relative to the directory in which `path_in`
           is located (`path_in.parent`).
+    write_tif: bool
+        Export tif images for use with Fiji/ImageJ (tif images
+        are only created if they don't already exist or if the
+        analysis changed)
+    ret_dataset: bool
+        Return the qpformat dataset
+    ret_changed: bool
+        Return True if the dataset changed
+    count, max_count: multiprocessing.Value
+        Can be used to monitor the progress of the algorithm.
+        Initially, the value of `max_count.value` is incremented
+        by the total number of steps. At each step, the value
+        of `count.value` is incremented.
     """
     path = pathlib.Path(path_in).resolve()
     dout = pathlib.Path(dir_out).resolve()
@@ -67,13 +86,26 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
     else:
         create = True
 
+    tif_count = max(1, len(ds)//10)
+    if max_count is not None:
+        with max_count.get_lock():
+            max_count.value += len(ds)
+            max_count.value += tif_count
+
     if create:
         # Write h5 data
-        ds.saveh5(h5out)
+        ds.saveh5(h5out, count=count)
+    else:
+        if count is not None:
+            with count.get_lock():
+                count.value += len(ds)
 
     if write_tif and (create or not imout.exists()):
         # Also write tif data
         h5series2tif(h5in=h5out, tifout=imout)
+    if count is not None:
+        with count.get_lock():
+            count.value += tif_count
 
     ret = [h5out]
     if ret_dataset:
