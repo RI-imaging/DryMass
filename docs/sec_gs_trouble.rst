@@ -42,10 +42,6 @@ The solution is to adjust the brightness manually. Go to *Image* | *Adjust...* |
 *Brightness/Contrast* and click the *Auto* button.
 
 
-
-
-
-
 None of the above
 ~~~~~~~~~~~~~~~~~
 Please `create an issue <https://github.com/RI-imaging/DryMass/issues>`_ on

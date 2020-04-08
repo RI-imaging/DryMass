@@ -1,9 +1,5 @@
 .. _index:
 
-.. image:: logo/drymass.png
-
-|
-
 DryMass is a Python library and a command-line tool for manipulating
 and analyzing quantitative phase microscopy images of cell-sized objects.
 This is the documentation of DryMass version |release|.

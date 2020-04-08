@@ -30,7 +30,7 @@ We will use the DryMass command  :ref:`section_dm_analyze_sphere`
 to extract the refractive index values of a population of microgel
 beads. Using the command shell of your operating system, navigate
 to the location of
-`QLSR_PAA_beads.zip <https://github.com/RI-imaging/QPI-data/raw/master/QLSR_PAA_beads.zip>`_
+`QLSR_PAA_beads.zip <https://ndownloader.figshare.com/files/17722790>`_
 and execute the command ``dm_analyze_sphere`` with
 ``QLSR_PAA_beads.zip`` as an argument. You will be prompted for
 the refractive index of the surrounding medium (1.335), the
