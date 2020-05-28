@@ -3,7 +3,7 @@ from os import fspath
 
 import matplotlib.image as mpimg
 import qpimage
-from skimage.external import tifffile
+import tifffile
 
 from ..anasphere import analyze_sphere
 

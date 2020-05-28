@@ -5,7 +5,7 @@ import warnings
 import numpy as np
 import qpimage
 import qpsphere
-from skimage.external import tifffile
+import tifffile
 
 from .roi import ROIManager
 from . import search, util

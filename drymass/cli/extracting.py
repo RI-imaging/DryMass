@@ -4,7 +4,7 @@ import sys
 
 import matplotlib.image as mpimg
 import qpimage
-from skimage.external import tifffile
+import tifffile
 
 from ..extractroi import extract_roi
 

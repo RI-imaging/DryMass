@@ -20,8 +20,8 @@ if version.count("post") or sys.argv.count("test"):
                     "qpimage",
                     "qpsphere"]
 else:
-    release_deps = ["qpformat>=0.10.4",
-                    "qpimage>=0.6.1",
+    release_deps = ["qpformat>=0.10.5",
+                    "qpimage>=0.6.2",
                     "qpsphere>=0.5.7",
                     ]
 
@@ -41,6 +41,7 @@ setup(
                       "matplotlib>=2.2.0",
                       "numpy>=1.12.0",
                       "scikit-image>=0.16.1",  # threshold_li
+                      "tifffile>=2020.5.25",  # TIFF writer
                       ] + release_deps,
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],

@@ -5,7 +5,7 @@ import pathlib
 import numpy as np
 import qpformat
 import qpimage
-from skimage.external import tifffile
+import tifffile
 
 from . import util
 
