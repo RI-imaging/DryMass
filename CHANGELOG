@@ -1,7 +1,7 @@
 0.10.4
  - setup: use tifffile directly to write images (scikit-image has no
    externals module anymore)
- - setup: bump qpfromat from 0.10.4 to 0.10.5
+ - setup: bump qpfromat from 0.10.4 to 0.10.6
  - setup: bump qpimage from 0.6.1 to 0.6.2
 0.10.3
  - docs: update trouble-shooting section and cleanup design
