@@ -10,7 +10,7 @@ name = 'drymass'
 year = "2017"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
-from _version import version
+from _version import version  # noqa: E402
 
 if version.count("post") or sys.argv.count("test"):
     # specific versions are not desired for
@@ -58,7 +58,7 @@ setup(
               "refractive index",
               "scattering",
               ],
-    classifiers= [
+    classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Intended Audience :: Science/Research'
