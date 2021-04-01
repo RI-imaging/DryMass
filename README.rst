@@ -29,8 +29,9 @@ Testing
 ::
 
     pip install -e .
-    python setup.py test
-    
+    pip install pytest
+    pytest tests
+
 
 .. |DryMass| image:: https://raw.github.com/RI-imaging/DryMass/master/docs/logo/drymass.png
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/DryMass.svg
