@@ -34,6 +34,6 @@ install:
   - pip freeze
 
 test_script:
-  - coverage run --source=drymass setup.py test
+  - coverage run --source=drymass pytest tests
   - coverage report -m
   - codecov

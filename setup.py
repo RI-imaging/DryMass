@@ -43,8 +43,6 @@ setup(
                       "scikit-image>=0.16.1",  # threshold_li
                       "tifffile==2020.5.25",  # TIFF writer
                       ] + release_deps,
-    setup_requires=['pytest-runner'],
-    tests_require=["pytest"],
     python_requires='>=3.6, <4',
     entry_points={
        "console_scripts": [
