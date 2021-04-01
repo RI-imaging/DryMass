@@ -41,7 +41,7 @@ setup(
                       "matplotlib>=2.2.0",
                       "numpy>=1.12.0",
                       "scikit-image>=0.16.1",  # threshold_li
-                      "tifffile>=2020.5.25",  # TIFF writer
+                      "tifffile==2020.5.25",  # TIFF writer
                       ] + release_deps,
     setup_requires=['pytest-runner'],
     tests_require=["pytest"],
