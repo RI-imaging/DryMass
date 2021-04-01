@@ -38,7 +38,7 @@ def plot_comparison(path):
                    usecols=(1,)),
         np.loadtxt(path / "sphere_edge_projection_statistics.txt",
                    usecols=(1,)),
-        ]
+    ]
     colors = ["#E48620", "#DE2400", "#6e559d", "#048E00"]
     labels = ["image rytov-sc", "image rytov",
               "image projection", "edge projection"]

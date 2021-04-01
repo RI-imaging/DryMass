@@ -30,7 +30,7 @@ if __name__ == "__main__":
         np.loadtxt("sphere_image_rytov_statistics.txt", usecols=(1,)),
         np.loadtxt("sphere_image_projection_statistics.txt", usecols=(1,)),
         np.loadtxt("sphere_edge_projection_statistics.txt", usecols=(1,)),
-        ]
+    ]
     colors = ["#E48620", "#DE2400", "#6e559d", "#048E00"]
     labels = ["image rytov-sc", "image rytov",
               "image projection", "edge projection"]

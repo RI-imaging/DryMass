@@ -2,5 +2,4 @@
 Bilbliography
 =============
 
-.. bibliography:: drymass.bib
-
+.. bibliography::

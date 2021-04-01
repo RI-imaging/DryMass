@@ -85,7 +85,7 @@ ri_data = [
                usecols=(1,)),
     np.loadtxt(path_out / "sphere_edge_projection_statistics.txt",
                usecols=(1,)),
-    ]
+]
 colors = ["#E48620", "#DE2400", "#6e559d", "#048E00"]
 labels = ["image rytov-sc", "image rytov",
           "image projection", "edge projection"]
