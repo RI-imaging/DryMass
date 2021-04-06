@@ -1,5 +1,4 @@
 import tempfile
-import shutil
 
 import numpy as np
 
@@ -10,7 +9,6 @@ def test_basic():
     path = tempfile.mkdtemp(prefix="drymass_test_config_")
     cfg = config.ConfigFile(path=path)
     assert isinstance(cfg["bg"], dict)
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_compat_013():
@@ -28,7 +26,6 @@ def test_compat_013():
     cfg2 = config.ConfigFile(path=path)
     assert cfg2["bg"]["phase profile"] == "tilt"
     assert cfg2["bg"]["amplitude profile"] == "tilt"
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_compat_015():
@@ -50,7 +47,6 @@ def test_compat_015():
     assert cfg2["roi"]["dist border px"] == 3
     assert cfg2["roi"]["exclude overlap px"] == 5
     assert cfg2["roi"]["pad border px"] == 7
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_compat_081():
@@ -66,7 +62,6 @@ def test_compat_081():
     # check fix
     cfg2 = config.ConfigFile(path=path)
     assert cfg2["meta"]["medium index"] is None
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_dtype():
@@ -81,7 +76,6 @@ def test_dtype():
                   value=6.3)
     assert isinstance(cfg["bg"]["amplitude border px"], int)
     assert np.allclose(cfg["bg"]["amplitude border px"], 6)
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_invalid_1():
@@ -123,8 +117,6 @@ def test_invalid_1():
     else:
         assert False, "invalid value should not work (bool expected)"
 
-    shutil.rmtree(path, ignore_errors=True)
-
 
 def test_invalid_2():
     path = tempfile.mkdtemp(prefix="drymass_test_config_")
@@ -140,8 +132,6 @@ def test_invalid_2():
     finally:
         cfg.path.write_text("")
 
-    shutil.rmtree(path, ignore_errors=True)
-
 
 def test_update():
     path1 = tempfile.mkdtemp(prefix="drymass_test_config_")
@@ -156,9 +146,6 @@ def test_update():
     cfg2.update(cfg1)
     assert cfg2["sphere"]["refraction increment"] == 1.1
 
-    shutil.rmtree(path1, ignore_errors=True)
-    shutil.rmtree(path2, ignore_errors=True)
-
 
 def test_write_complete():
     path = tempfile.mkdtemp(prefix="drymass_test_config_")
@@ -167,7 +154,6 @@ def test_write_complete():
     cfg.path.write_text("[bg]\nenabled = True\n")
     # This triggers a completion of the configuration section [bg]
     assert cfg["bg"]["phase profile"] == "tilt"
-    shutil.rmtree(path, ignore_errors=True)
 
 
 if __name__ == "__main__":

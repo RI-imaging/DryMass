@@ -2,6 +2,7 @@
  - setup: migrate to GitHub actions
  - setup: setup.py test is deprecated
  - setup: pin tifffile to 2020.5.25 (moving target)
+ - tests: cleanup; fix tests on Windows
 0.10.4
  - setup: use tifffile directly to write images (scikit-image has no
    externals module anymore)

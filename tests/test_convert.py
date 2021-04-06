@@ -1,6 +1,4 @@
-import os
 import tempfile
-import shutil
 
 import numpy as np
 import qpimage
@@ -61,12 +59,6 @@ def test_bg_correction_index():
         assert np.allclose(qps[0].pha, qpi.pha - .5)
         assert np.allclose(qps[0].amp, qpi.amp / .9)
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_bg_correction_index_bad():
     _qpi, path, dout = setup_test_data(num=2)
@@ -99,12 +91,6 @@ def test_bg_correction_index_bad():
     else:
         assert False
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_bg_correction_invalid():
     _qpi, path, dout = setup_test_data(num=2)
@@ -122,12 +108,6 @@ def test_bg_correction_invalid():
         pass
     else:
         assert False
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 def test_bg_correction_none_bad():
@@ -147,12 +127,6 @@ def test_bg_correction_none_bad():
         assert np.all(qps[0].pha == 0)
         assert not np.all(qps[0].amp == 1)
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_bg_correction_path():
     _qpi, path, dout = setup_test_data(num=2)
@@ -166,14 +140,6 @@ def test_bg_correction_path():
         # in a flat QPImage.
         assert np.all(qps[0].pha == 0)
         assert np.all(qps[0].amp == 1)
-
-    try:
-        os.remove(path)
-        os.remove(bgpath)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-    shutil.rmtree(bgdout, ignore_errors=True)
 
 
 def test_change_wavelength():
@@ -194,12 +160,6 @@ def test_change_wavelength():
 
     assert id1 != id2, "Files should have different identifiers"
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_reuse():
     _qpi, path, dout = setup_test_data(num=2)
@@ -216,12 +176,6 @@ def test_reuse():
                                     ret_changed=True)
     assert changed1
     assert not changed2
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 if __name__ == "__main__":

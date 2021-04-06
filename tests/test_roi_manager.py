@@ -1,6 +1,5 @@
 import pathlib
 import tempfile
-import shutil
 import warnings
 
 from drymass import roi
@@ -46,8 +45,6 @@ def test_save_load():
 
     for ii in [2, 5, 7]:
         assert rmg2.get_from_image_index(ii) == rmg.get_from_image_index(ii)
-
-    shutil.rmtree(tdir, ignore_errors=True)
 
 
 def test_valueerror():

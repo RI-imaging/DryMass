@@ -1,5 +1,4 @@
 import pathlib
-import shutil
 import tempfile
 
 import numpy as np
@@ -78,14 +77,6 @@ def test_merge_config():
     assert cfg2["sphere"]["refraction increment"] == 1.1
     # This one is only valid when Nones in profile do not override path_out
     assert cfg2["meta"]["pixel size um"] == 1.12
-
-    try:
-        cfg.path.unlink()
-        cfg2.path.unlink()
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
 
 
 if __name__ == "__main__":

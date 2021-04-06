@@ -1,8 +1,6 @@
-import os
 import pathlib
 import tempfile
 import time
-import shutil
 
 import numpy as np
 import pytest
@@ -47,12 +45,6 @@ def test_basic():
         assert qpso[0]["medium index"] == qpi["medium index"]
         assert qpso[0]["identifier"].count("projection")
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 @pytest.mark.filterwarnings('ignore::drymass.anasphere.'
                             + 'EdgeDetectionFailedWarning',
@@ -68,12 +60,6 @@ def test_radius_exceeds_image_size_error():
     else:
         assert False
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_recompute_broken_output_path():
     _qpi, path, dout = setup_test_data()
@@ -88,12 +74,6 @@ def test_recompute_broken_output_path():
     _p, changed = drymass.analyze_sphere(path, dir_out=dout, ret_changed=True)
     assert changed, "non-existent file should be recomputed"
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_recompute_edge_when_imagekw_changes():
     _qpi, path, dout = setup_test_data()
@@ -106,12 +86,6 @@ def test_recompute_edge_when_imagekw_changes():
                                          imagekw={"stop_dc": .8},
                                          ret_changed=True)
     assert not changed, "different imagekw when method is edge"
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 def test_recompute_edge_when_otherkw_changes():
@@ -129,12 +103,6 @@ def test_recompute_edge_when_otherkw_changes():
                                          edgekw={"clip_rmax": 1.2},
                                          ret_changed=True)
     assert changed, "change due to other edgekw"
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 def test_recompute_reuse():
@@ -176,12 +144,6 @@ def test_recompute_reuse():
     # there should still be a marging of .6s
     assert 10 * (tb1 - tb0) < ta1 - ta0
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_recreate_file_sphere_stat():
     _qpi, path, dout = setup_test_data()
@@ -195,12 +157,6 @@ def test_recreate_file_sphere_stat():
     assert not stats.exists()
     drymass.analyze_sphere(path, dir_out=dout, **spkw)
     assert stats.exists()
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 if __name__ == "__main__":

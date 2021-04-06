@@ -1,5 +1,4 @@
 import pathlib
-import shutil
 import tempfile
 
 import numpy as np
@@ -47,12 +46,6 @@ def test_base():
         assert np.allclose(qpi.pha, qps[0].pha)
         assert np.allclose(qpi.amp, qps[0].amp)
 
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
-
 
 def test_bg_corr_file():
     _bgqpi, bg_path_in, bg_path_out = setup_test_data(num=1)
@@ -65,14 +58,6 @@ def test_bg_corr_file():
     with qpimage.QPSeries(h5file=h5data, h5mode="r") as qps:
         assert np.all(qps[0].pha == 0)
         assert np.all(qps[0].amp == 1)
-
-    try:
-        path_in.unlink()
-        bg_path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
-    shutil.rmtree(bg_path_out, ignore_errors=True)
 
 
 def test_bg_corr_file_relative():
@@ -89,14 +74,6 @@ def test_bg_corr_file_relative():
         assert np.all(qps[0].pha == 0)
         assert np.all(qps[0].amp == 1)
 
-    try:
-        path_in.unlink()
-        bg_path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
-    shutil.rmtree(bg_path_out, ignore_errors=True)
-
 
 def test_bg_corr_index():
     _qpi, path_in, path_out = setup_test_data(num=2)
@@ -108,12 +85,6 @@ def test_bg_corr_index():
     with qpimage.QPSeries(h5file=h5data, h5mode="r") as qps:
         assert np.all(qps[0].pha == 0)
         assert np.all(qps[0].amp == 1)
-
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
 
 
 def test_extract_meta_data():
@@ -132,12 +103,6 @@ def test_extract_meta_data():
     assert cfg["meta"]["medium index"] == 1.345
     assert cfg["meta"]["pixel size um"] == 1.3
     assert cfg["meta"]["wavelength nm"] == 555
-
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,5 @@
 import argparse
 import pathlib
-import shutil
 import tempfile
 import warnings
 
@@ -61,10 +60,6 @@ def test_add_fail():
     argsrem = argparse.Namespace(subparser_name="remove",
                                  name="test_8473_prof")
     profile.cli_profile(args=argsrem)
-    try:
-        path.unlink()
-    except OSError:
-        pass
 
 
 def test_add_remove():
@@ -81,10 +76,6 @@ def test_add_remove():
                                  name="test_8472_prof")
     profile.cli_profile(args=argsrem)
     assert not pps.exists()
-    try:
-        path.unlink()
-    except OSError:
-        pass
 
 
 def test_convert_with_profile():
@@ -114,12 +105,6 @@ def test_convert_with_profile():
     argsrem = argparse.Namespace(subparser_name="remove",
                                  name="test_8440_prof_convert")
     profile.cli_profile(args=argsrem)
-    try:
-        cfgpath.unlink()
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
 
 
 def test_export():
@@ -138,20 +123,11 @@ def test_export():
     argsrem = argparse.Namespace(subparser_name="remove",
                                  name="test_8491_prof")
     profile.cli_profile(args=argsrem)
-    shutil.rmtree(tdir, ignore_errors=True)
-    try:
-        path.unlink()
-    except OSError:
-        pass
 
 
 def test_get_profile_path():
     path = setup_config()
     assert path == profile.get_profile_path(name=path)
-    try:
-        path.unlink()
-    except OSError:
-        pass
 
 
 def test_list_none(capsys):
@@ -177,10 +153,6 @@ def test_list_profile(capsys):
     argsrem = argparse.Namespace(subparser_name="remove",
                                  name="test_8490_prof")
     profile.cli_profile(args=argsrem)
-    try:
-        path.unlink()
-    except OSError:
-        pass
 
 
 def test_remove_fail():

@@ -1,5 +1,4 @@
 import pathlib
-import shutil
 import tempfile
 
 import numpy as np
@@ -62,8 +61,6 @@ def test_simple_qpseries():
         with qpimage.QPSeries(h5file=ps[ii], h5mode="r") as qps:
             assert len(qps) == 3
 
-    shutil.rmtree(path, ignore_errors=True)
-
 
 def test_qpseries_with_bad_data():
     path = setup_test_data_recursive(n=2, num=3)
@@ -77,8 +74,6 @@ def test_qpseries_with_bad_data():
     for ii in range(len(ps)):
         with qpimage.QPSeries(h5file=ps[ii], h5mode="r") as qps:
             assert len(qps) == 3
-
-    shutil.rmtree(path, ignore_errors=True)
 
 
 def test_complex_qpseries():
@@ -94,9 +89,7 @@ def test_complex_qpseries():
 
     ps = dialog.recursive_search(path)
     for ii, pi in enumerate(ps):
-        assert pi == paths[ii] / "test.h5"
-
-    shutil.rmtree(path, ignore_errors=True)
+        assert pi.samefile(paths[ii] / "test.h5")
 
 
 def test_complex_folder_with_unused_qpseries():
@@ -116,20 +109,14 @@ def test_complex_folder_with_unused_qpseries():
 
     ps = dialog.recursive_search(path)
     for ii, pi in enumerate(ps):
-        assert pi == paths[ii]
-    shutil.rmtree(path, ignore_errors=True)
+        assert pi.samefile(paths[ii])
 
 
 def test_recursive_root_include1():
     qpi, path_in, path_out = setup_test_data(num=2)
     ps = dialog.recursive_search(path_in)
     assert len(ps) == 1
-    assert ps[0] == path_in
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
+    assert ps[0].samefile(path_in)
 
 
 def test_recursive_root_include2():
@@ -147,8 +134,6 @@ def test_recursive_root_include2():
 
     ds = qpformat.load_data(path=path)
     assert len(ds) == 4
-
-    shutil.rmtree(path, ignore_errors=True)
 
 
 if __name__ == "__main__":

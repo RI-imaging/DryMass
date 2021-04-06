@@ -1,5 +1,4 @@
 import pathlib
-import shutil
 import tempfile
 
 import numpy as np
@@ -48,7 +47,8 @@ def test_base():
         assert len(qps) == 2
 
     # This might fail if the default kwargs for sphere analysis change
-    assert h5data == path_out / FILE_SPHERE_DATA.format("edge", "projection")
+    assert h5data.samefile(path_out / FILE_SPHERE_DATA.format("edge",
+                                                              "projection"))
 
     # check existence of files
     assert h5data.exists()
@@ -57,12 +57,6 @@ def test_base():
     pathsl = path_out / FILE_SPHERE_STAT.format("edge", "projection")
     assert pathsl.exists()
     assert len(pathsl.read_bytes()) > 100
-
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,4 @@
 import pathlib
-import shutil
 import tempfile
 
 import numpy as np
@@ -60,12 +59,6 @@ def test_base():
     assert pathsl.exists()
     assert len(pathsl.read_bytes()) > 100
 
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
-
 
 def test_exclude_roi():
     _, path_in, path_out = setup_test_data(num=2)
@@ -92,12 +85,6 @@ def test_exclude_roi():
     h5data = cli_extract_roi(path=path_in, ret_data=True)
     with qpimage.QPSeries(h5file=h5data) as qps:
         assert len(qps) == 0
-
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
 
 
 def test_exclude_roi_bad():
@@ -135,12 +122,6 @@ def test_exclude_roi_bad():
     else:
         assert False
 
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
-
 
 def test_force_roi():
     qpi, path_in, path_out = setup_test_data(num=2)
@@ -152,11 +133,6 @@ def test_force_roi():
         assert qps[0].shape == (150, 154)
         assert np.allclose(qpi.pha[10:160, 24:178], qps[0].pha)
         assert np.all(qps[0].pha == qps[1].pha)
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
 
 
 def test_reuse():
@@ -177,12 +153,6 @@ def test_reuse():
     cli_extract_roi(path=path_in, ret_data=True)
     assert time != h5data.stat().st_mtime
 
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
-
 
 @pytest.mark.filterwarnings('ignore::RuntimeWarning')
 def test_no_roi_found():
@@ -193,12 +163,6 @@ def test_no_roi_found():
         cli_extract_roi(path=path_in, ret_data=True)
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 1
-
-    try:
-        path_in.unlink()
-    except OSError:
-        pass
-    shutil.rmtree(path_out, ignore_errors=True)
 
 
 if __name__ == "__main__":

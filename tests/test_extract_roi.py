@@ -1,6 +1,4 @@
-import os
 import tempfile
-import shutil
 
 import numpy as np
 import qpimage
@@ -45,12 +43,6 @@ def test_basic():
         assert qpi != qpi2
         assert qpi.shape != qpi2.shape
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_bg_corr_thresh():
     radius = 30
@@ -70,12 +62,6 @@ def test_bg_corr_thresh():
     with qpimage.QPSeries(h5file=path_out, h5mode="r") as qpso:
         assert np.min(qpso[0].pha) == 0
         assert np.allclose(np.max(qpso[0].pha), np.max(qpi.pha) - bg)
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 def test_bg_corr_mask():
@@ -103,14 +89,6 @@ def test_bg_corr_mask():
         assert np.allclose(np.max(qpso[0].pha), np.max(qpiref.pha),
                            atol=1.1e-7, rtol=0)
 
-    try:
-        os.remove(path)
-        os.remove(p2)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-    shutil.rmtree(d2, ignore_errors=True)
-
 
 def test_ret_changed():
     radius = 30
@@ -126,12 +104,6 @@ def test_ret_changed():
                                    ret_changed=True)
     assert ch1, "First call should create data on disk"
     assert not ch2, "Second call should reuse data on disk"
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 def test_no_search():
@@ -155,12 +127,6 @@ def test_no_search():
     assert rm1.identifier == identifier
     assert rm2.identifier == identifier
 
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
-
 
 def test_no_search_missing_file_slices():
     radius = 30
@@ -175,12 +141,6 @@ def test_no_search_missing_file_slices():
         pass
     else:
         assert False, "should not be possible to disable search without ROIs"
-
-    try:
-        os.remove(path)
-    except OSError:
-        pass
-    shutil.rmtree(dout, ignore_errors=True)
 
 
 if __name__ == "__main__":
