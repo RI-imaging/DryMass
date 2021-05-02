@@ -137,7 +137,7 @@ def test_list_none(capsys):
         argslist = argparse.Namespace(subparser_name="list")
         profile.cli_profile(args=argslist)
         captured = capsys.readouterr()
-        assert captured.out.strip() == "No profiles in local library."
+        assert "No profiles in local library." in captured.out.strip()
 
 
 def test_list_profile(capsys):
