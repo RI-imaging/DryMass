@@ -65,7 +65,7 @@ data sets (e.g. > 10 cells). Here are a few examples:
 How should I cite DryMass?
 --------------------------
 If you are using DryMass in a scientific publication, please
-cite :ref:`Muller2020`. You should also specify the version of
+cite :cite:`Muller2020`. You should also specify the version of
 DryMass that you used.
 
 Furthermore, several ideas that DryMass builds upon have been described
