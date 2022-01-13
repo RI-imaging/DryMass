@@ -65,21 +65,8 @@ data sets (e.g. > 10 cells). Here are a few examples:
 How should I cite DryMass?
 --------------------------
 If you are using DryMass in a scientific publication, please
-cite it with:
-
-::
-
-  (...) using DryMass version X.X.X (available at
-  https://pypi.python.org/pypi/drymass).
-
-or in a bibliography
-
-::
-  
-  Paul Müller (2018), DryMass version X.X.X: Phase image analysis
-  [Software]. Available at https://pypi.python.org/pypi/drymass.
-
-and replace ``X.X.X`` with the version of DryMass that you used.
+cite :ref:`Muller2020`. You should also specify the version of
+DryMass that you used.
 
 Furthermore, several ideas that DryMass builds upon have been described
 and published in scientific journals:
