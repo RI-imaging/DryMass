@@ -116,7 +116,7 @@ def search_objects_base(image, size=110, size_var=.5, max_ecc=.7,
     if dist_border:
         clear_border(object_labels,
                      buffer_size=int(dist_border),
-                     in_place=True)
+                     out=object_labels)
     used_regions = []
     # Filter/draw regions
     ignored_regions = []

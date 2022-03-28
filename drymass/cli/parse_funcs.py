@@ -1,4 +1,3 @@
-from distutils.version import LooseVersion
 import numbers
 from os import fspath
 import pathlib
@@ -118,7 +117,14 @@ def strlist(alist):
 def strlist_vsort(alist):
     """Same as `strlist` except sorted according to version-representation"""
     alist = strlist(alist)
-    alist = sorted(alist, key=lambda x: LooseVersion(x))
+
+    def version_key(string):
+        vsum = 0
+        for ii, val in enumerate(string.split(".")):
+            vsum += float(val) * 10 ** (-(ii*3))
+        return vsum
+
+    alist = sorted(alist, key=version_key)
     return alist
 
 
