@@ -15,7 +15,7 @@ FILE_SENSOR_DATA_H5 = "sensor_data.h5"
 FILE_SENSOR_DATA_TIF = "sensor_data.tif"
 
 
-def convert(path_in, dir_out, meta_data={}, holo_kw={},
+def convert(path_in, dir_out, meta_data=None, holo_kw=None, qpretrieve_kw=None,
             bg_data_amp=None, bg_data_pha=None, write_tif=False,
             ret_dataset=False, ret_changed=False, count=None, max_count=None):
     """Convert experimental data to `qpimage.QPSeries` on disk
@@ -27,7 +27,13 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
     dir_out: str or pathlib.Path
         Outuput direcory
     meta_data: dict
-        Meta data (see `qpimage.meta.DATA_KEYS`)
+        Metadata (see `qpimage.meta.META_KEYS`)
+    qpretrieve_kw: dict
+        Keyword arguments passed to
+        :ref:`qpretrieve <qpretrieve:index>` for
+        phase retrieval from interferometric data.
+    holo_kw: dict
+        This is deprecated, please use `qpretrieve_kw` instead.
     bg_data_amp, bg_data_pha: None, int, or path to file
         The background data for phase and amplitude. One of
 
@@ -60,7 +66,10 @@ def convert(path_in, dir_out, meta_data={}, holo_kw={},
     h5out = dout / FILE_SENSOR_DATA_H5
     imout = dout / FILE_SENSOR_DATA_TIF
 
-    ds = qpformat.load_data(path=path, meta_data=meta_data, holo_kw=holo_kw)
+    ds = qpformat.load_data(path=path,
+                            meta_data=meta_data,
+                            holo_kw=holo_kw,
+                            qpretrieve_kw=qpretrieve_kw)
 
     if not (bg_data_amp is None and bg_data_pha is None):
         # Only set background of data set if there is
@@ -158,7 +167,7 @@ def get_background(bg_data, dataset, which="phase"):
         bgpath = pathlib.Path(bg_data)
         dsbg = qpformat.load_data(path=bgpath,
                                   meta_data=dataset.meta_data,
-                                  holo_kw=dataset.holo_kw)
+                                  qpretrieve_kw=dataset.qpretrieve_kw)
         if len(dsbg) != 1:
             msg = "Background correction with series data not implemented!"
             raise NotImplementedError(msg)

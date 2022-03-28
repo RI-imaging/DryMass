@@ -5,7 +5,6 @@ import numpy as np
 import qpimage
 
 from drymass.cli import config, dialog
-import qpformat
 
 
 def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
@@ -95,7 +94,7 @@ def test_complex_qpseries():
 def test_complex_folder_with_unused_qpseries():
     path = tempfile.mkdtemp(prefix="drymass_test_cli_recurse2_")
     path = pathlib.Path(path)
-    qpi, _, _ = setup_test_data(num=1, path_in=path / "test.h5")
+    qpi, path0, _ = setup_test_data(num=1, path_in=path / "test.h5")
 
     path = pathlib.Path(path)
     paths = [path / "1" / "2",
@@ -108,8 +107,9 @@ def test_complex_folder_with_unused_qpseries():
             qpi.copy(h5file=pp / "test_{}.h5".format(ii))
 
     ps = dialog.recursive_search(path)
-    for ii, pi in enumerate(ps):
-        assert pi.samefile(paths[ii])
+    for ii, pi in enumerate(paths):
+        assert pi.samefile(ps[ii])
+    assert path0.samefile(ps[3])
 
 
 def test_recursive_root_include1():
@@ -117,28 +117,3 @@ def test_recursive_root_include1():
     ps = dialog.recursive_search(path_in)
     assert len(ps) == 1
     assert ps[0].samefile(path_in)
-
-
-def test_recursive_root_include2():
-    path = tempfile.mkdtemp(prefix="drymass_test_cli_recurse2_")
-    path = pathlib.Path(path)
-    # this file will be ignored
-    qpi, ignored_path, _ = setup_test_data(num=1, path_in=path / "test.h5")
-
-    for ii in range(4):
-        qpi.copy(h5file=path / "test_{}.h5".format(ii))
-
-    ps = dialog.recursive_search(path)
-    assert len(ps) == 1
-    assert ignored_path not in ps
-
-    ds = qpformat.load_data(path=path)
-    assert len(ds) == 4
-
-
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()

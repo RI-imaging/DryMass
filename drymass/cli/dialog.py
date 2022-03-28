@@ -30,7 +30,7 @@ def input_setting(path, section, key):
         cfg.set_value("meta", key, val)
 
 
-def main(path=None, req_meta=[], description="DryMass analysis.",
+def main(path=None, req_meta=None, description="DryMass analysis.",
          profile=None, recursive=False):
     """Main user dialog with optional "meta" kwargs required
 
@@ -67,6 +67,8 @@ def main(path=None, req_meta=[], description="DryMass analysis.",
         recursive search is performed, `path_out` is set to None.
     """
     # get directories
+    if req_meta is None:
+        req_meta = []
     if path is None:
         if recursive:
             msg = "'recursive' must not be set when 'path' is 'None'!"
@@ -158,49 +160,47 @@ def parse(description="DryMass analysis."):
 def recursive_search(path):
     """Perform recursive search for supported measurements"""
     path = pathlib.Path(path).resolve()
-    path_in = []
+    paths_datasets = []
     # Get all candidates
-    cands1 = list(path.rglob("*")) + [path]
-    # Exclude all directories with the suffix _dm that contain drymass.cfg
-    cands2 = []
-    for c1 in cands1:
+    paths_with_dm = sorted(list(path.rglob("*")) + [path])
+    # Exclude all files/directories that are in a results directory
+    cands_noresults = []
+    for c1 in paths_with_dm:
         tocheck = list(c1.parents)
         if c1.is_dir():
             tocheck.append(c1)
         for pp in tocheck:
-            if pp.name.endswith("_dm") and (pp / "drymass.cfg").exists():
+            if pp.name and pp.name.endswith("_dm"):
                 break
         else:
-            cands2.append(c1)
+            cands_noresults.append(c1)
+    # Try to open all series files with qpformat
+    ignore_folders = []
+    for c2 in cands_noresults:
+        if c2.is_file():
+            try:
+                ds = qpformat.load_data(path=c2)
+            except qpformat.file_formats.UnknownFileFormatError:
+                pass
+            else:
+                if ds.is_series:
+                    # The same thing that applies to SeriesFolder also
+                    # applies to SeriesData in general.
+                    paths_datasets.append(c2)
+                    # Note that we completely ignore all SingleData
+                    # file formats here.
+                    ignore_folders.append(c2.parent)
     # Determine all directory-based measurements (SeriesFolder format)
-    for c2 in cands2:
-        if c2.is_dir():
+    for c2 in cands_noresults:
+        if c2.is_dir() and c2 not in ignore_folders:
             try:
                 ds = qpformat.load_data(path=c2, fmt="SeriesFolder")
             except (NotImplementedError, qpformat.BadFileFormatError):
                 pass
             else:
                 if len(ds) > 1:
-                    path_in.append(c2)
-    if not path_in:
-        # If we have found SeriesFolder measurements, then we probably do not
-        # want to analyze any other files lying around, especially
-        # because they could be related to background correction.
-        # Try to open all the other files with qpformat
-        for c2 in cands2:
-            if c2.is_file():
-                try:
-                    ds = qpformat.load_data(path=c2)
-                except qpformat.file_formats.UnknownFileFormatError:
-                    pass
-                else:
-                    if ds.is_series:
-                        # The same thing that applies to SeriesFolder also
-                        # applies to SeriesData in general.
-                        path_in.append(c2)
-                        # Note that we completely ignore all SingleData
-                        # file formats here.
-    return sorted(path_in)
+                    paths_datasets.append(c2)
+    return sorted(paths_datasets)
 
 
 def transfer_meta_data(path_in, path_out):
