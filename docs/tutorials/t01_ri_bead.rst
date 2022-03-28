@@ -18,7 +18,7 @@ Prerequisites
 -------------
 For this tutorial, you need:
 
-- Python 3.6 or above and DryMass version 0.6.0 or above (see :ref:`section_install`)
+- Python 3.9 or above and DryMass version 0.11.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
 - Experimental dataset: `QLSR_PAA_beads.zip <https://ndownloader.figshare.com/files/17722790>`_ :cite:`MuellerQPIref19`
 
