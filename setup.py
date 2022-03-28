@@ -43,7 +43,7 @@ setup(
                       "scikit-image>=0.16.1",  # threshold_li
                       "tifffile==2020.5.25",  # TIFF writer
                       ] + release_deps,
-    python_requires='>=3.6, <4',
+    python_requires='>=3.9, <4',
     entry_points={
        "console_scripts": [
            "dm_analyze_sphere = drymass.cli:cli_analyze_sphere",
