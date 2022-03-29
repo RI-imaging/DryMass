@@ -12,18 +12,6 @@ year = "2017"
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
 from _version import version  # noqa: E402
 
-if version.count("post") or sys.argv.count("test"):
-    # specific versions are not desired for
-    # - development version
-    # - running pytest
-    release_deps = ["qpformat",
-                    "qpimage",
-                    "qpsphere"]
-else:
-    release_deps = ["qpformat>=0.13.1",
-                    "qpimage>=0.8.4",
-                    "qpsphere>=0.5.9",
-                    ]
 
 setup(
     name=name,
@@ -37,12 +25,17 @@ setup(
     license="MIT",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["appdirs",
-                      "matplotlib>=2.2.0",
-                      "numpy>=1.12.0",
-                      "scikit-image>=0.16.1",  # threshold_li
-                      "tifffile==2020.5.25",  # TIFF writer
-                      ] + release_deps,
+    install_requires=[
+        "appdirs",
+        "matplotlib>=2.2.0",
+        "numpy>=1.12.0",
+        "qpformat>=0.13.1",
+        "qpimage>=0.8.5",
+        "qpretrieve>=0.2.2",
+        "qpsphere>=0.5.9",
+        "scikit-image>=0.16.1",  # threshold_li
+        "tifffile==2020.5.25",  # TIFF writer
+        ],
     python_requires='>=3.9, <4',
     entry_points={
        "console_scripts": [

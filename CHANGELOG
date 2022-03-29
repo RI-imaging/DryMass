@@ -7,6 +7,7 @@
  - setup: bump qpimage from 0.6.2 to 0.8.4
  - setup: bump qpsphere from 0.5.7 to 0.5.9
  - setup: drop support for all Python versions below 3.9
+ - setup: add direct dependency on qpretrieve 0.2.2
 0.10.6
  - docs: update how-to-cite sections
 0.10.5
