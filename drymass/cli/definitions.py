@@ -163,11 +163,11 @@ config = {
         "image verbosity":  # verbose
             (1, int, "Verbosity level of image fitting algorithm"),
         "method":
-            ("edge", lcstr, "Method for determining sphere parameters",
+            ("image", lcstr, "Method for determining sphere parameters",
              "Valid values are 'edge' (edge-detection approach) or "
              "'image' (2D phase image fitting)."),
         "model":
-            ("projection", lcstr, "Physical sphere model",
+            ("rytov-sc", lcstr, "Physical sphere model",
              "Valid values are defined in "
              ":data:`qpsphere.models.available`. If `method=edge`, then "
              "`model` must be set to `projection`. If `method=image`, "

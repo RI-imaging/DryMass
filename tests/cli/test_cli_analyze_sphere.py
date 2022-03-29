@@ -36,6 +36,8 @@ def setup_test_data(radius_px=30, size=200, pxsize=1e-6, medium_index=1.335,
     cfg.set_value(section="meta", key="medium index", value=medium_index)
     cfg.set_value(section="specimen", key="size um",
                   value=radius_px*2*pxsize*1e6)
+    cfg.set_value(section="sphere", key="method", value="edge")
+    cfg.set_value(section="sphere", key="model", value="projection")
     return qpi, path_in, path_out
 
 
