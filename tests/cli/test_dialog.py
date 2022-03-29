@@ -79,9 +79,35 @@ def test_merge_config():
     assert cfg2["meta"]["pixel size um"] == 1.12
 
 
-if __name__ == "__main__":
-    # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()
+def test_use_meta_data_from_experiment():
+    tmp_path = pathlib.Path(tempfile.mkdtemp())
+    # create test dataset
+    radius_px = 30
+    size = 200
+    pxsize = 1e-6
+    wavelength = 512e-9
+    medium_index = 1.33123
+    x = np.arange(size).reshape(-1, 1)
+    y = np.arange(size).reshape(1, -1)
+    cx = 80
+    cy = 120
+    r = np.sqrt((x - cx)**2 + (y - cy)**2)
+    pha = (r < radius_px) * 1.3
+    amp = .5 + np.roll(pha, 10) / pha.max()
+    qpi_path = tmp_path / "test.h5"
+    with qpimage.QPImage(data=(pha, amp), which_data="phase,amplitude",
+                         h5file=qpi_path,
+                         meta_data={"pixel size": pxsize,
+                                    "wavelength": wavelength,
+                                    "medium index": medium_index}):
+        pass
+    # this must run without any user input required
+    pin, pout = dialog.main(
+        path=qpi_path,
+        req_meta=["pixel size um", "wavelength nm", "medium index"],
+        )
+    assert str(pin) == str(qpi_path.resolve())
+    cfg = config.ConfigFile(path=pout)
+    assert cfg["meta"]["medium index"] == medium_index
+    assert cfg["meta"]["pixel size um"] == pxsize * 1e6
+    assert cfg["meta"]["wavelength nm"] == wavelength * 1e9

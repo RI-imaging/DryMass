@@ -1,6 +1,7 @@
 import numbers
 from os import fspath
 import pathlib
+import warnings
 
 import numpy as np
 import qpformat
@@ -169,13 +170,13 @@ def get_background(bg_data, dataset, which="phase"):
                                   meta_data=dataset.meta_data,
                                   qpretrieve_kw=dataset.qpretrieve_kw)
         if len(dsbg) != 1:
-            msg = "Background correction with series data not implemented!"
-            raise NotImplementedError(msg)
+            warnings.warn(
+                "Background correction with series data not implemented, "
+                + "using first image")
+        if which == "phase":
+            bg = dsbg.get_qpimage(0).pha
         else:
-            if which == "phase":
-                bg = dsbg.get_qpimage(0).pha
-            else:
-                bg = dsbg.get_qpimage(0).amp
+            bg = dsbg.get_qpimage(0).amp
     else:
         msg = "Unknown type for {} `bg_data`: {}".format(which, bg_data)
         raise ValueError(msg)
