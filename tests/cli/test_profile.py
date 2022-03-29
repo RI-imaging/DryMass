@@ -87,24 +87,27 @@ def test_convert_with_profile():
                                  name="test_8440_prof_convert",
                                  path=cfgpath)
     profile.cli_profile(args=argsadd)
-    # perform conversion
-    h5data = cli_convert(path=path_in,
-                         ret_data=True,
-                         profile="test_8440_prof_convert")
-    cfg = config.ConfigFile(path_out)
-    assert np.allclose(cfg["meta"]["medium index"], 1.346)
-    assert np.allclose(cfg["meta"]["pixel size um"], 1.34)
-    assert np.allclose(cfg["meta"]["wavelength nm"], 554.2)
+    try:
+        # perform conversion
+        h5data = cli_convert(path=path_in,
+                             ret_data=True,
+                             profile="test_8440_prof_convert")
+        cfg = config.ConfigFile(path_out)
+        assert np.allclose(cfg["meta"]["medium index"], 1.346)
+        assert np.allclose(cfg["meta"]["pixel size um"], 1.34)
+        assert np.allclose(cfg["meta"]["wavelength nm"], 554.2)
 
-    with qpimage.QPSeries(h5file=h5data, h5mode="r") as qps:
-        assert np.allclose(qps[0]["medium index"], 1.346)
-        assert np.allclose(qps[0]["pixel size"], 1.34e-6)
-        assert np.allclose(qps[0]["wavelength"], 554.2e-9)
-
-    # cleanup
-    argsrem = argparse.Namespace(subparser_name="remove",
-                                 name="test_8440_prof_convert")
-    profile.cli_profile(args=argsrem)
+        with qpimage.QPSeries(h5file=h5data, h5mode="r") as qps:
+            assert np.allclose(qps[0]["medium index"], 1.346)
+            assert np.allclose(qps[0]["pixel size"], 1.34e-6)
+            assert np.allclose(qps[0]["wavelength"], 554.2e-9)
+    except BaseException:
+        raise
+    finally:
+        # cleanup
+        argsrem = argparse.Namespace(subparser_name="remove",
+                                     name="test_8440_prof_convert")
+        profile.cli_profile(args=argsrem)
 
 
 def test_export():

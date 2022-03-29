@@ -20,14 +20,18 @@ META_MAPPER = {"medium index": ("medium index", 1),
 
 
 @functools.lru_cache(maxsize=32)
-def input_setting(path, section, key):
+def input_setting(path, section, key, value=None):
     """Ask the user for a configuration key"""
     cfg = config.ConfigFile(path)
     sec = cfg[section]
     description = definitions.config[section][key][2]
-    if key not in sec or sec[key] is None:
-        val = input("Please enter '{}' ({}): ".format(key, description))
-        cfg.set_value("meta", key, val)
+    val_cfg = sec.get(key, None)
+    if val_cfg is not None:
+        # values from configuration have higher priority
+        value = val_cfg
+    if value is None:
+        value = input("Please enter '{}' ({}): ".format(key, description))
+    cfg.set_value("meta", key, value)
 
 
 def main(path=None, req_meta=None, description="DryMass analysis.",
@@ -97,32 +101,40 @@ def main(path=None, req_meta=None, description="DryMass analysis.",
     else:
         # verify data set
         try:
-            qpformat.load_data(path_in)
+            ds = qpformat.load_data(path_in)
         except qpformat.BadFileFormatError as e:
             msg = "For a recursive search, please pass the " \
                   + "command line parameter '-r'."
             e.args = ("; ".join(list(e.args) + [msg]),)
             raise
-        # perform regular analysis
-        path_out = path_in.with_name(path_in.name + OUTPUT_SUFFIX)
-        path_out.mkdir(exist_ok=True)
-        if path is None:
-            # print directories only if taken from command line
-            print("Input:  {}".format(path_in))
-            print("Output: {}".format(path_out))
-        if profile:
-            # use a user-specified profile
-            ppath = get_profile_path(profile)
-            cfg_profile = config.ConfigFile(ppath)
-            cfg_out = config.ConfigFile(path_out)
-            cfg_out.update(cfg_profile)
-        # get known meta data kwargs from dataset
-        transfer_meta_data(path_in, path_out)
-        # user input missing meta data keyword values
-        for mm in sorted(req_meta):
-            input_setting(path=path_out,
-                          section="meta",
-                          key=mm)
+        else:
+            # perform regular analysis
+            path_out = path_in.with_name(path_in.name + OUTPUT_SUFFIX)
+            path_out.mkdir(exist_ok=True)
+            if path is None:
+                # print directories only if taken from command line
+                print("Input:  {}".format(path_in))
+                print("Output: {}".format(path_out))
+            if profile:
+                # use a user-specified profile
+                ppath = get_profile_path(profile)
+                cfg_profile = config.ConfigFile(ppath)
+                cfg_out = config.ConfigFile(path_out)
+                cfg_out.update(cfg_profile)
+            # get known meta data kwargs from dataset
+            transfer_meta_data(path_in, path_out)
+            # user input missing meta data keyword values
+            meta = ds.get_metadata(0)
+            for mm in sorted(req_meta):
+                key, mult = META_MAPPER[mm]
+                if key in meta:
+                    value = meta[key] * mult
+                else:
+                    value = None
+                input_setting(path=path_out,
+                              section="meta",
+                              key=mm,
+                              value=value)
     return path_in, path_out
 
 
