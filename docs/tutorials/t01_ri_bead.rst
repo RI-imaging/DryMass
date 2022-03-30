@@ -10,9 +10,11 @@ Microgel beads are transparent, homogeneous, and spherical objects
 that are ideal test objects for quantitative phase imaging. The DryMass
 command :ref:`section_dm_analyze_sphere` can estimate the average
 refractive index of such homogeneous objects. This is a short tutorial
-that will reproduce the data presented in
+that will analyze data previously presented in
 `supplementary figure 2a <https://arxiv.org/src/1706.00715v3/anc/S02_2D_phase_measurements.pdf>`_
 of reference :cite:`Schuermann2017`.
+Instead of a simple edge-detection algorithm, DryMass will perform a 2D
+image fit to determine the radii and refractive indices :cite:`Mueller2018`.
 
 Prerequisites
 -------------
@@ -20,7 +22,7 @@ For this tutorial, you need:
 
 - Python 3.9 or above and DryMass version 0.11.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
-- Experimental dataset: `QLSR_PAA_beads.zip <https://ndownloader.figshare.com/files/17722790>`_ :cite:`MuellerQPIref19`
+- Experimental dataset: `QLSI_PAA_beads.zip <https://ndownloader.figshare.com/files/17722790>`_ :cite:`MuellerQPIref19`
 
 Execute dm_analyze_sphere
 -------------------------
@@ -30,9 +32,9 @@ We will use the DryMass command  :ref:`section_dm_analyze_sphere`
 to extract the refractive index values of a population of microgel
 beads. Using the command shell of your operating system, navigate
 to the location of
-`QLSR_PAA_beads.zip <https://ndownloader.figshare.com/files/17722790>`_
+`QLSI_PAA_beads.zip <https://ndownloader.figshare.com/files/17722790>`_
 and execute the command ``dm_analyze_sphere`` with
-``QLSR_PAA_beads.zip`` as an argument. You will be prompted for
+``QLSI_PAA_beads.zip`` as an argument. You will be prompted for
 the refractive index of the surrounding medium (1.335), the
 detector pixel size in microns (0.14), and the wavelength in
 nanometers (647). Simply type in these values (press the `Enter`
@@ -41,7 +43,11 @@ will look similar to this:
 
 .. figure:: t01_analyze_sphere.gif
 
-DryMass has created a directory called ``QLSR_PAA_beads.zip_dm`` (the
+    The execution of ``dm_analyze_sphere`` in older DryMass versions was
+    much faster, because by default it used the less accurate edge detection
+    algorithm for determining refractive index and radius.
+
+DryMass has created a directory called ``QLSI_PAA_beads.zip_dm`` (the
 input argument with `_dm` appended) which contains the following
 files
 
@@ -52,9 +58,9 @@ files
 - **sensor_data.h5**: full sensor QPI data
 - **sensor_data.tif**: full sensor phase and amplitude data as a tif file
 - **sensor_roi_images.tif**: plotted full sensor phase images with ROIs
-- **sphere_edge_projection_data.h5**: simulated (projection) phase and amplitude data
-- **sphere_edge_projection_images.tif**: visualization of the sphere analysis of the ROIs as a tif file
-- **sphere_edge_projection_statistics.txt**:  sphere analysis results as a text file
+- **sphere_image_rytov-sc_data.h5**: simulated (corrected Rytov) phase and amplitude data
+- **sphere_image_rytov-sc_images.tif**: visualization of the sphere analysis of the ROIs as a tif file
+- **sphere_image_rytov-sc_statistics.txt**:  sphere analysis results as a text file
 
 Examine the results
 -------------------
@@ -72,14 +78,14 @@ size parameter in the :ref:`sec_configuration_file` (see also
 :ref:`section_dm_extract_roi`).
 
 It appears that DryMass has correctly found all beads with the default
-settings. Next, open the file *sphere_edge_projection_images.tif*. The
+settings. Next, open the file *sphere_image_rytov-sc_images.tif*. The
 identifier of the first ROI is shown at the top, the first column contains
 phase and intensity of the experimental data, the second column contains
 the modeled data (with refractive index and radius used for the simulation),
 and the third column shows the phase-difference as well as line plots through
 the phase images.
 
-.. figure:: t01_sphere_edge_projection_image.jpg
+.. figure:: t01_sphere_image_rytov-sc_image.jpg
 
 Note that the modeled intensity image is all-one, because the projection
 model only models the optical thickness and thus only affects the phase data.
@@ -101,14 +107,14 @@ we ignore these images in our analysis by editing the configuration file:
   ignore data = 4.1, 7.1, 24.1, 26.1, 27.1, 35.1, 36.1, 39.1, 40.1, 51.1, 52.1, 55.1, 58.1, 60.1, 64.1, 67.1, 71.1
 
 After executing ``dm_analyze_sphere`` again, we can load the statistics file
-*sphere_edge_projection_statistics.txt* into a statistical analysis application
+*sphere_image_rytov-sc_statistics.txt* into a statistical analysis application
 and compute the average and the standard deviation of the refractive index.
 In Python, this can be done with
 
 .. code-block:: python
 
    import numpy as np
-   ri = np.loadtxt("sphere_edge_projection_statistics.txt", usecols=(1,))
+   ri = np.loadtxt("sphere_image_rytov-sc_statistics.txt", usecols=(1,))
 
    print("average: ", np.average(ri))
    print("standard deviation: ", np.std(ri))

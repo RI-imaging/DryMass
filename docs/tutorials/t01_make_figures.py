@@ -3,7 +3,7 @@ import imageio
 import numpy as np
 
 
-path = "data/QLSR_PAA_beads.zip"
+path = "data/QLSI_PAA_beads.zip"
 
 # setup output directory
 path_in, path_out = cli.dialog.main(path)
@@ -29,9 +29,9 @@ imageio.imsave("_t01_sensor_roi_image.jpg", sentif[..., :3])
 
 # get first sphere image
 roipath = path_out / cli.analyzing.FILE_SPHERE_ANALYSIS_IMAGE.format(
-    "edge", "projection")
+    "image", "rytov-sc")
 roitif = imageio.imread(roipath)
-imageio.imsave("_t01_sphere_edge_projection_image.jpg", roitif[..., :3])
+imageio.imsave("_t01_sphere_image_rytov-sc_image.jpg", roitif[..., :3])
 
 
 cfg.set_value("roi", "ignore data", ["4.1", "7.1", "24.1", "26.1", "27.1",
@@ -42,7 +42,7 @@ cfg.set_value("roi", "ignore data", ["4.1", "7.1", "24.1", "26.1", "27.1",
 cli.cli_analyze_sphere(path=path_in)
 
 # extract mean and SD of RI
-ri = np.loadtxt(path_out / "sphere_edge_projection_statistics.txt",
+ri = np.loadtxt(path_out / "sphere_image_rytov-sc_statistics.txt",
                 usecols=(1,))
 print("average: ", np.average(ri))
 print("standard deviation: ", np.std(ri))

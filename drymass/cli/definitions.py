@@ -161,7 +161,7 @@ config = {
         "image stop delta refractive index":  # stop_dn
             (0.0005, float, "Stopping criterion for refractive index"),
         "image verbosity":  # verbose
-            (1, int, "Verbosity level of image fitting algorithm"),
+            (0, int, "Verbosity level of image fitting algorithm"),
         "method":
             ("image", lcstr, "Method for determining sphere parameters",
              "Valid values are 'edge' (edge-detection approach) or "

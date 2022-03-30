@@ -216,4 +216,5 @@ intersphinx_mapping = {
     "qpimage": ('http://qpimage.readthedocs.io/en/'+rtd_link, None),
     "qpsphere": ('http://qpsphere.readthedocs.io/en/'+rtd_link, None),
     "qpformat": ('http://qpformat.readthedocs.io/en/'+rtd_link, None),
+    "qpretrieve": ('http://qpretrieve.readthedocs.io/en/'+rtd_link, None),
     }

@@ -1,14 +1,18 @@
 0.11.0
  - BREAKING CHANGE: handling folders in recursive mode changed slightly
- - feat: extract metadata required for analysis from data files
+ - feat: improve metadata extraction from file formats where only
+   individual images contain metadata and global metadata per file
+   cannot be used (user is prompted in this case)
  - enh: allow background correction with series data file by only
    taking the first image (warning is still issued)
  - enh: set the default method of sphere analysis to rytov-sc
+ - enh: reduce default verbosity for image fitting
  - setup: bump qpformat from 0.10.6 to 0.13.0
  - setup: bump qpimage from 0.6.2 to 0.8.4
  - setup: bump qpsphere from 0.5.7 to 0.5.9
  - setup: drop support for all Python versions below 3.9
  - setup: add direct dependency on qpretrieve 0.2.2
+ - docs: update tutorials and documentation accordingly
 0.10.6
  - docs: update how-to-cite sections
 0.10.5

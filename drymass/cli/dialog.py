@@ -29,8 +29,14 @@ def input_setting(path, section, key, value=None):
     if val_cfg is not None:
         # values from configuration have higher priority
         value = val_cfg
-    if value is None:
-        value = input("Please enter '{}' ({}): ".format(key, description))
+    else:
+        if value is None:
+            default = ""
+        else:
+            default = f" [{value}]"
+        resp = input(f"Please enter '{description}'{default}: ")
+        # If the user presses return, then `resp` is empty.
+        value = resp.strip() or value
     cfg.set_value("meta", key, value)
 
 
@@ -216,7 +222,7 @@ def recursive_search(path):
 
 
 def transfer_meta_data(path_in, path_out):
-    """Read input meta data and write it to the configuration file"""
+    """Read input metadata and write it to the configuration file"""
     ds = qpformat.load_data(path=path_in)
     cfg = config.ConfigFile(path_out)
     sec = cfg["meta"]

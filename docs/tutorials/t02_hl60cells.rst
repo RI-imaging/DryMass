@@ -106,12 +106,12 @@ We now run
 
 and are asked to enter
 the RI of the medium (1.335). By default, the RI of the cells is computed
-according to :cite:`Schuermann2015`. The following files are created during
+according to :cite:`Mueller2018`. The following files are created during
 this step:
 
-- *sphere_edge_projection_data.h5*: QPI data
-- *sphere_edge_projection_images.tif*: data visualization
-- *sphere_edge_projection_statistics.txt*: results
+- *sphere_image_rytov-sc_data.h5*: QPI data
+- *sphere_image_rytov-sc_images.tif*: data visualization
+- *sphere_image_rytov-sc_statistics.txt*: results
 
 .. note::
 
@@ -122,30 +122,22 @@ this step:
     but the enumeration is still correct.
 
 Let's have a look at the visualization of ROI 24.1 in
-*sphere_edge_projection_images.tif*. 
+*sphere_image_rytov-sc_images.tif*.
 
-.. figure:: t02_edge_projection.jpg
+.. figure:: t02_image_rytov-sc.jpg
 
-The first column shows the experimental data, the second column shows
-the modeled data (with the cell perimeter indicated by a dashed circle),
-and the third column contains a residual image (pay attention to the colorbar,
-green means that the values are outside of the displayed range) and a
-line plot through the center of the cell. What is most striking about these
-data is that the RI is overestimated while the radius is underestimated
-by the edge-projection model.
-The explanation is that the radius of the cell is determined with an
-edge-detection algorithm applied to the phase image. Since the
-edge-detection algorithm determines the edge on the slope of the phase
-profile and not where the phase profile starts to deviate from the background,
-it underestimates the radius. The solution to this problem is to take into
-account the full phase image when determining RI and radius :cite:`Kemper2007b`
-:cite:`Mueller2018`.
+    The first column shows the experimental data, the second column shows
+    the modeled data (with the cell perimeter indicated by a dashed circle),
+    and the third column contains a residual image (pay attention to the colorbar,
+    green means that the values are outside of the displayed range) and a
+    line plot through the center of the cell.
 
+As a little exercise, let's have a look at the different RI-retrieval methods.
 This can be achieved by modifying the ``[sphere]`` section of *drymass.cfg*.
 In figure 5d of reference :cite:`Mueller2018`, multiple RI-retrieval methods are
 applied and compared for the same cell population. To repdroduce these
 data, we run ``dm_analyze_sphere DHM_HL60_cells.zip`` three more times
-with a modified ``[sphere]`` section (note that this may take a while).
+with a modified ``[sphere]`` section.
 
 - Run 1: phase image fit with a projection model
   
@@ -176,19 +168,19 @@ with a modified ``[sphere]`` section (note that this may take a while).
   - *sphere_image_rytov_statistics.txt*
 
 
-- Run 3: phase image fit with the systematically corrected Rytov approximation
+- Run 3: edge fit with the projection model
   
   .. code-block:: none
   
     [sphere]
-    method = image
-    model = rytov-sc
+    method = edge
+    model = projection
 
   which produces the files
   
-  - *sphere_image_rytov-sc_data.h5*
-  - *sphere_image_rytov-sc_images.tif*
-  - *sphere_image_rytov-sc_statistics.txt*
+  - *sphere_edge_projection_data.h5*
+  - *sphere_edge_projection-sc_images.tif*
+  - *sphere_edge_projection-sc_statistics.txt*
 
 
 .. note::
@@ -202,10 +194,10 @@ To verify that the full-phase-image-based approaches indeed yield lower
 residuals than the edge-detection approach, let's have a look at ROI 24.1
 of *sphere_image_rytov-sc_images.tif*.
 
-.. figure:: t02_image_rytov-sc.jpg
+.. figure:: t02_edge_projection.jpg
  
-The phase difference and the phase line plots look much better now. Observed
-deviations mostly originate from the inhomogeneity of the cell.
+    The phase difference and the phase line plots look much worse for the
+    edge-projection method.
 
 
 Plot the results

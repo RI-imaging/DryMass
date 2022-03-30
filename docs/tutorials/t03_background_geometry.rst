@@ -34,14 +34,12 @@ For this tutorial, you need:
 
 - Python 3.9 or above and DryMass version 0.11.0 or above (see :ref:`section_install`)
 - `Fiji <https://fiji.sc/>`_ or Windows Photo Viewer (for data visualization)
-- Experimental dataset: `QLSR_PAA_beads_modified.zip <https://ndownloader.figshare.com/files/17722793>`_ :cite:`MuellerQPIref19`
+- Experimental dataset: `QLSR_PAA_beads_modified.h5 <https://ndownloader.figshare.com/files/17722793>`_ :cite:`MuellerQPIref19`
 
 
 Take a glimpse at the data
 --------------------------
-For this tutorial, the downloaded zip archive has to be extracted prior
-to the analysis. The extracted archive contains a readme file and the
-experimental data *QLSR_PAA_beads_modified.h5* in the qpimage file format.
+The downloaded HDF5 file contains the experimental data in the qpimage file format.
 DryMass can extract all relevant metadata from this file format (in contrast to
 the file formats used in tutorials 1 and 2), such that no manual
 intervention is required when running :ref:`section_dm_analyze_sphere`:
@@ -53,12 +51,12 @@ intervention is required when running :ref:`section_dm_analyze_sphere`:
 Please open the output folder (*QLSR_PAA_beads_modified.h5_dm*) and
 take a look at the file *sensor_roi_images.tif*. You can see
 the different artifacts discussed above (offset, tilt, etc.). In the file
-*sphere_edge_projection_images.tif*, you see that the default
+*sphere_image_rytov-sc_images.tif*, you see that the default
 background correction strategy works for the offset and tilt artifacts,
 but fails when the background phase has quadratic components.
 Furthermore, notice that for the last three measurements no regions of interest
 (ROIs) were detected with the default parameters. As a result, these
-three measurements are not represented in *sphere_edge_projection_images.tif*.
+three measurements are not represented in *sphere_image_rytov-sc_images.tif*.
 These issues are discussed and resolved in the following.
 
 
@@ -100,7 +98,7 @@ these beads, we lift this restriction by modifying the *[roi]* section:
 
 In *sensor_roi_images.tif*, you can see that the ROIs of the beads
 are now included in the analysis. However, in
-*sphere_edge_projection_images.tif* you observe that the second bead
+*sphere_image_rytov-sc_images.tif* you observe that the second bead
 seems to have a negative effect on the background correction. To resolve
 this issue, we set a binary threshold in the original ROI above which
 no data is used for background correction. Since it is difficult to set
