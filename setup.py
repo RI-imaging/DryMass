@@ -29,9 +29,9 @@ setup(
         "appdirs",
         "matplotlib>=2.2.0",
         "numpy>=1.12.0",
-        "qpformat>=0.13.1",
-        "qpimage>=0.8.5",
-        "qpretrieve>=0.2.2",
+        "qpformat>=0.14.0",
+        "qpimage>=0.9.1",
+        "qpretrieve>=0.2.8",
         "qpsphere>=0.5.9",
         "scikit-image>=0.16.1",  # threshold_li
         "tifffile==2020.5.25",  # TIFF writer

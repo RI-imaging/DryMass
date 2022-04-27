@@ -55,7 +55,7 @@ def cli_convert(path=None, ret_data=False, profile=None):
             count=tw.count,
             max_count=tw.max_count,
             )
-    if "hologram" not in ds.storage_type:
+    if ds.storage_type not in ["raw-oah", "raw-qlsi"]:
         # remove "holo" section from configuration
         cfg.remove_section("holo")
     if changed:

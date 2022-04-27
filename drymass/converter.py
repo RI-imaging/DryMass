@@ -3,7 +3,9 @@ from os import fspath
 import pathlib
 import warnings
 
+import appdirs
 import numpy as np
+import pyfftw
 import qpformat
 import qpimage
 import tifffile
@@ -14,6 +16,14 @@ from . import util
 FILE_SENSOR_DATA_H5 = "sensor_data.h5"
 #: Output phase/amplitude TIFF sensor data
 FILE_SENSOR_DATA_TIF = "sensor_data.tif"
+
+CACHE_DIR = pathlib.Path(appdirs.user_cache_dir(appname="drymass"))
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
+PYFFTW_WIDOM_PATH = CACHE_DIR / "pyfftw.wisdom"
+
+if PYFFTW_WIDOM_PATH.exists():
+    pyfftw.import_wisdom(
+        [w.encode() for w in PYFFTW_WIDOM_PATH.read_text().split("\t")])
 
 
 def convert(path_in, dir_out, meta_data=None, holo_kw=None, qpretrieve_kw=None,
@@ -124,6 +134,11 @@ def convert(path_in, dir_out, meta_data=None, holo_kw=None, qpretrieve_kw=None,
         ret.append(create)
     if len(ret) == 1:
         ret = ret[0]
+
+
+    PYFFTW_WIDOM_PATH.write_text(
+        "\t".join([w.decode() for w in pyfftw.export_wisdom()]))
+
     return ret
 
 

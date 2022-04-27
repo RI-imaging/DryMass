@@ -1,3 +1,9 @@
+0.12.0
+ - feat: support new "raw-oah" and "raw-qlsi" file formats from qpformat
+ - enh: write FFTW wisdom to cache directory
+ - setup: bump qpformat from 0.13.1 to 0.14.0
+ - setup: bump qpimage from 0.8.5 to 0.9.1
+ - setup: bump qpretrieve from 0.2.2 to 0.2.8
 0.11.0
  - BREAKING CHANGE: handling folders in recursive mode changed slightly
  - feat: improve metadata extraction from file formats where only
