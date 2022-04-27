@@ -135,7 +135,6 @@ def convert(path_in, dir_out, meta_data=None, holo_kw=None, qpretrieve_kw=None,
     if len(ret) == 1:
         ret = ret[0]
 
-
     PYFFTW_WIDOM_PATH.write_text(
         "\t".join([w.decode() for w in pyfftw.export_wisdom()]))
 
